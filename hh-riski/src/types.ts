@@ -9,6 +9,15 @@ export type Country = {
     name: {
         fi: string
         en: string
+    },
+    risk: {
+        corruption: number,
+        security: number,
+        academicFreedom: number,
+        development: number,
+        GDPR: number,
+        sanctions: number,
+        ruleOfLaw: number
     }
 }
 

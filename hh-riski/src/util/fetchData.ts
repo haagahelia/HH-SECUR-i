@@ -3,25 +3,96 @@ import { delay } from "./utils";
 
 //Temporary data sources
 const countries = [{
-    id: 'fin',
+    id: 'fi',
     name: {
         fi: 'Suomi',
         en: 'Finland'
     },
+    risk: { //placeholder values
+        corruption: 1,
+        security: 1,
+        academicFreedom: 1,
+        development: 1,
+        GDPR: 1,
+        sanctions: 1,
+        ruleOfLaw: 1
+    }
 
 },
 {
-    id: 'swe',
+    id: 'se',
     name: {
         fi: 'Ruotsi',
         en: 'Sweden'
+    },
+    risk: { //placeholder values
+        corruption: 1,
+        security: 1,
+        academicFreedom: 1,
+        development: 1,
+        GDPR: 1,
+        sanctions: 1,
+        ruleOfLaw: 1
     }
-}]
+},
+{
+    id: 'yy',
+    name: {
+        fi: 'Ruotsi',
+        en: 'Sweden'
+    },
+    risk: { //placeholder values
+        corruption: 1,
+        security: 1,
+        academicFreedom: 1,
+        development: 1,
+        GDPR: 1,
+        sanctions: 1,
+        ruleOfLaw: 1
+    },
+
+},
+{ //test countries
+    id: 'yx',
+    name: {
+        fi: 'Testimaa matala riski',
+        en: 'Test country low risk'
+    },
+    risk: {
+        corruption: 1,
+        security: 1,
+        academicFreedom: 2,
+        development: 2,
+        GDPR: 1,
+        sanctions: 1,
+        ruleOfLaw: 1
+    },
+
+},
+{
+    id: 'yy',
+    name: {
+        fi: 'Testimaa korkea riski',
+        en: 'Test country high risk'
+    },
+    risk: { //placeholder values
+        corruption: 2,
+        security: 3,
+        academicFreedom: 2,
+        development: 3,
+        GDPR: 3,
+        sanctions: 2,
+        ruleOfLaw: 3
+    },
+
+}
+
+]
 
 const organizations = [
     {
         id: 'HH',
-        countryId: 'fin',
+        countryId: 'fi',
         name: {
             fi: 'Haaga-Helia Ammattikorkeakoulu',
             en: 'Haaga-Helia University of Applied Sciences'
@@ -29,7 +100,7 @@ const organizations = [
     },
     {
         id: 'HY',
-        countryId: 'fin',
+        countryId: 'fi',
         name: {
             fi: 'Helsingin Yliopisto',
             en: 'University of Helsinki'
@@ -37,7 +108,7 @@ const organizations = [
     },
     {
         id: 'HaY',
-        countryId: 'swe',
+        countryId: 'se',
         name: {
             fi: 'Halmstadin Yliopisto',
             en: 'University of Halmstad'
@@ -45,7 +116,7 @@ const organizations = [
     },
     {
         id: 'TY',
-        countryId: 'swe',
+        countryId: 'se',
         name: {
             fi: 'Tukholman Yliopisto',
             en: 'University of Stockholm'
