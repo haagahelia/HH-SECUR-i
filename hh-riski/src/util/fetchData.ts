@@ -70,7 +70,7 @@ const countries = [{
 
 },
 {
-    id: 'yy',
+    id: 'ys',
     name: {
         fi: 'Testimaa korkea riski',
         en: 'Test country high risk'
