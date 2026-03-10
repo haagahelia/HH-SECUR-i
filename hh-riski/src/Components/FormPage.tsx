@@ -49,8 +49,8 @@ const FormPage = () => {
           {languages.map((language) => (
             <option key={language.id} value={language.id}>
               {selectedLanguage === "fi"
-                ? language.name.fi
-                : language.name.en}
+                ? language.id
+                : language.id}
             </option>
           ))}
         </select>
