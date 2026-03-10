@@ -4,6 +4,7 @@ import { fetchCountries, fetchOrganizations } from "../../util/fetchData";
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
 import RiskSummary from "./RiskSummary";
+import { sortElements } from "../../util/utils";
 
 import type { Country, Organization } from "../../types";
 
@@ -21,17 +22,19 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
   );
+  const sortedOrganizations = sortElements(filteredOrganizations, language);
 
   const selectedCountryData = countries.find(
     (country) => country.id === selectedCountry
   );
+  const sortedCountries = sortElements(countries, language);
 
   return (
     <div>
       <CountrySelect
         selectedCountry={selectedCountry}
         selectedLanguage={language}
-        countries={countries}
+        countries={sortedCountries}
         onChange={(value) => {
           setSelectedCountry(value);
           setSelectedOrganization("");
@@ -41,7 +44,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
       <OrganizationSelect
         selectedOrganization={selectedOrganization}
         selectedLanguage={language}
-        organizations={filteredOrganizations}
+        organizations={sortedOrganizations}
         onChange={setSelectedOrganization}
       />
 
