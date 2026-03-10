@@ -35,23 +35,6 @@ const countries = [{
         ruleOfLaw: 1
     }
 },
-{
-    id: 'yy',
-    name: {
-        fi: 'Ruotsi',
-        en: 'Sweden'
-    },
-    risk: { //placeholder values
-        corruption: 1,
-        security: 1,
-        academicFreedom: 1,
-        development: 1,
-        GDPR: 1,
-        sanctions: 1,
-        ruleOfLaw: 1
-    },
-
-},
 { //test countries
     id: 'yx',
     name: {
