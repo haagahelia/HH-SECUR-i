@@ -26,19 +26,41 @@ const FormPage = () => {
 
   return (
     <>
-      <div>
-        {user && <p>Logged in as {user.username}</p>}
-        {user && <button onClick={clearUser}>Logout</button>}
-      </div>
+      {user &&
+        <div>
+          {selectedLanguage === 'fi' ?
+            <p>Kirjautuneena {user.username}</p>
+            :
+            <p>Logged in as {user.username}</p>
+          }
+          {selectedLanguage === 'fi' ?
+            <button onClick={clearUser}>Kirjaudu ulos</button>
+            :
+            <button onClick={clearUser}>Logout</button>
+          }
+        </div>
+      }
 
       <div>
-        <Link to="/">Home</Link>
+        {selectedLanguage === 'fi' ?
+          <Link to="/">Riskilomake</Link>
+          :
+          <Link to="/">Risk form</Link>
+        }
         {" | "}
-        <Link to="/user">User Page</Link>
+        {selectedLanguage === 'fi' ?
+          <Link to="/user">Kirjaudu sisään</Link>
+          :
+          <Link to="/user">Login</Link>
+        }
       </div>
 
       <div>
-        <h1>Form Page</h1>
+        {selectedLanguage === 'fi' ?
+          <h1>Riskiarviolomake</h1>
+          :
+          <h1>Risk assessment form</h1>
+        }
 
         <select
           value={selectedLanguage}
