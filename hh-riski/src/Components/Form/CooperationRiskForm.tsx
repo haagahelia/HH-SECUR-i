@@ -7,6 +7,7 @@ import RiskSummary from "./RiskSummary";
 import { sortElements } from "../../util/utils";
 
 import type { Country, Organization } from "../../types";
+import styles from '../../styles.module.css';
 
 type CooperationRiskFormProps = {
   language: "fi" | "en";
@@ -30,7 +31,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const sortedCountries = sortElements(countries, language);
 
   return (
-    <div>
+    <div className={styles.form}>
       <CountrySelect
         selectedCountry={selectedCountry}
         selectedLanguage={language}

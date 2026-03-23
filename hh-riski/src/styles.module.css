@@ -1,0 +1,15 @@
+@font-face {
+    font-family: "Inter";
+    src: local("Inter"),
+        url("./fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+    font-weight: normal;
+}
+
+.form {
+    font-family: "Inter";
+    padding: 20px;
+    text-align: left;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+}
