@@ -118,3 +118,30 @@ export const fetchOrganizations = () => {
     //delay(Math.floor((Math.random() * 1750) + 250));
     return organizations;
 }
+
+export const fetchHhRole = () => {
+    return {
+      question: {
+        id: "hhRole",
+        fi: "Haaga-Helia ammattikorkeakoulun rooli yhteistyössä",
+        en: "Haaga-Helia university of applied sciences role in partnership"
+      },
+        answers: [
+          {
+            id: "coordinator",
+            fi: "Yhteistyön koordinaattori",
+            en: "Coordinator"
+          },
+          {
+            id: "partner",
+            fi: "Kumppani tai tasaveroinen partner",
+            en: "Equal partner"
+          },
+          {
+            id: "other",
+            fi: "Muu",
+            en: "Other"
+          }
+        ]
+    } 
+}

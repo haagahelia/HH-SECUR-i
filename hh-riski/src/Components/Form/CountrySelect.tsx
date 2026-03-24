@@ -15,7 +15,7 @@ const CountrySelect = ({
 }: CountrySelectProps) => {
   return (
     <div>
-      <h2>{selectedLanguage === "fi" ? "Maa" : "Country"}</h2>
+      <p>{selectedLanguage === "fi" ? "Yhteistyökumppanin sijaintimaa" : "Partner's country of residence"}</p>
 
       <select
         value={selectedCountry}

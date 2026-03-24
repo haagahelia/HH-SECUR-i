@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { fetchCountries, fetchOrganizations } from "../../util/fetchData";
+import { fetchCountries, fetchHhRole, fetchOrganizations } from "../../util/fetchData";
 
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
 import RiskSummary from "./RiskSummary";
 import { sortElements } from "../../util/utils";
 
-import type { Country, Organization } from "../../types";
+import type { Country, Organization, SingleChoiceQuestion } from "../../types";
 import styles from "../../styles.module.css";
 
 import FormSection from "./Sections/FormSection";
 import ProjectInfoSection from "./Sections/ProjectInfoSection";
+import SingleChoice from "./SingleChoice";
 
 type CooperationRiskFormProps = {
   language: "fi" | "en";
@@ -18,6 +19,7 @@ type CooperationRiskFormProps = {
 
 const countries: Country[] = fetchCountries();
 const organizations: Organization[] = fetchOrganizations();
+const hhRoleQuestionData: SingleChoiceQuestion = fetchHhRole();
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [selectedCountry, setSelectedCountry] = useState("fi");
@@ -26,6 +28,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [projectDescription, setProjectDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [hhRole, setHhRole] = useState("");
 
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
@@ -63,6 +66,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           organizations={sortedOrganizations}
           onChange={setSelectedOrganization}
         />
+
+          <SingleChoice question={hhRoleQuestionData.question}
+            answers={hhRoleQuestionData.answers}
+            language={language}
+            value={hhRole}
+            onChange={(value) => {
+              setHhRole(value);
+            }} />
       </FormSection>
 
       <ProjectInfoSection
