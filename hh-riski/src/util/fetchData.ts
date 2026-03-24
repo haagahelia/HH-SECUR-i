@@ -278,3 +278,31 @@ export const fetchFunding = (): SingleChoiceQuestion => {
         ]
     }
 }
+
+//Financial liability
+export const fetchLiability = (): SingleChoiceQuestion => {
+    return {
+        question: {
+            id: "liability",
+            fi: "Anna arvio yhteistyön taloudellisista kokonaisvastuista (sis. omarahoitus) sen kokonaiskeston aikana.",
+            en: "Estimate of financial liability (including self funding) for the full duration of the project."
+        },
+        answers: [
+            {
+                id: "0",
+                fi: "0-200.000",
+                en: "0-200.000"
+            },
+            {
+                id: "200.000",
+                fi: "200.000-500.000",
+                en: "200.000-500.000"
+            },
+            {
+                id: "500.000",
+                fi: "Yli 500.000",
+                en: "Over 500.000"
+            },
+        ]
+    }
+}
