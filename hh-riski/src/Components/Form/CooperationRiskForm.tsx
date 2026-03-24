@@ -19,13 +19,13 @@ type CooperationRiskFormProps = {
 const countries: Country[] = fetchCountries();
 const organizations: Organization[] = fetchOrganizations();
 
+
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [selectedCountry, setSelectedCountry] = useState("fi");
   const [selectedOrganization, setSelectedOrganization] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [duration, setDuration] = useState("");
 
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
@@ -69,12 +69,10 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         language={language}
         projectName={projectName}
         projectDescription={projectDescription}
-        startDate={startDate}
-        endDate={endDate}
+        duration={duration}
         onProjectNameChange={setProjectName}
         onProjectDescriptionChange={setProjectDescription}
-        onStartDateChange={setStartDate}
-        onEndDateChange={setEndDate}
+        onDurationChange={setDuration}
       />
 
       {selectedCountryData && (
