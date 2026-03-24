@@ -171,3 +171,26 @@ export const fetchConsortiumType = (): SingleChoiceQuestion => {
         ]
     }
 }
+
+//Cooperation history
+export const fetchCooperationHistory = (): SingleChoiceQuestion => {
+        return {
+        question: {
+            id: "history",
+            fi: "Onko yhteistyöorganisaation kanssa tehty onnistunutta yhteistyötä aiemmin?",
+            en: "Has there been previous successfull cooperation with the organization?"
+        },
+        answers: [
+            {
+                id: "yes",
+                fi: "Kyllä",
+                en: "Yes"
+            },
+            {
+                id: "no",
+                fi: "Ei",
+                en: "No"
+            }
+        ]
+    }
+}
