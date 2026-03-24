@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchCountries, fetchHhRole, fetchOrganizations } from "../../util/fetchData";
+import { fetchConsortiumType, fetchCountries, fetchHhRole, fetchOrganizations } from "../../util/fetchData";
 
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
@@ -20,6 +20,7 @@ type CooperationRiskFormProps = {
 const countries: Country[] = fetchCountries();
 const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: SingleChoiceQuestion = fetchHhRole();
+const consortiumQuestionData: SingleChoiceQuestion = fetchConsortiumType();
 
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
@@ -29,6 +30,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [projectDescription, setProjectDescription] = useState("");
   const [duration, setDuration] = useState("");
   const [hhRole, setHhRole] = useState("");
+  const [consortium, setConsortium] = useState("");
 
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
@@ -50,6 +52,22 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             : "Select country and organization"
         }
       >
+        <SingleChoice question={hhRoleQuestionData.question}
+          answers={hhRoleQuestionData.answers}
+          language={language}
+          value={hhRole}
+          onChange={(value) => {
+            setHhRole(value);
+          }} />
+
+        <SingleChoice question={consortiumQuestionData.question}
+          answers={consortiumQuestionData.answers}
+          language={language}
+          value={consortium}
+          onChange={(value) => {
+            setConsortium(value);
+          }} />
+
         <CountrySelect
           selectedCountry={selectedCountry}
           selectedLanguage={language}
@@ -66,14 +84,6 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           organizations={sortedOrganizations}
           onChange={setSelectedOrganization}
         />
-
-          <SingleChoice question={hhRoleQuestionData.question}
-            answers={hhRoleQuestionData.answers}
-            language={language}
-            value={hhRole}
-            onChange={(value) => {
-              setHhRole(value);
-            }} />
       </FormSection>
 
       <ProjectInfoSection

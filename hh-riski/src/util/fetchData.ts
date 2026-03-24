@@ -1,5 +1,6 @@
 
 import { delay } from "./utils";
+import type { SingleChoiceQuestion } from "../types";
 
 //Temporary data sources
 const countries = [{
@@ -119,29 +120,54 @@ export const fetchOrganizations = () => {
     return organizations;
 }
 
-export const fetchHhRole = () => {
+
+//Haaga-Helia role in cooperation
+export const fetchHhRole = (): SingleChoiceQuestion => {
     return {
-      question: {
-        id: "hhRole",
-        fi: "Haaga-Helia ammattikorkeakoulun rooli yhteistyössä",
-        en: "Haaga-Helia university of applied sciences role in partnership"
-      },
+        question: {
+            id: "hhRole",
+            fi: "Haaga-Helia ammattikorkeakoulun rooli yhteistyössä",
+            en: "Haaga-Helia university of applied sciences role in partnership"
+        },
         answers: [
-          {
-            id: "coordinator",
-            fi: "Yhteistyön koordinaattori",
-            en: "Coordinator"
-          },
-          {
-            id: "partner",
-            fi: "Kumppani tai tasaveroinen partner",
-            en: "Equal partner"
-          },
-          {
-            id: "other",
-            fi: "Muu",
-            en: "Other"
-          }
+            {
+                id: "coordinator",
+                fi: "Yhteistyön koordinaattori",
+                en: "Coordinator"
+            },
+            {
+                id: "partner",
+                fi: "Kumppani tai tasaveroinen partner",
+                en: "Equal partner"
+            },
+            {
+                id: "other",
+                fi: "Muu",
+                en: "Other"
+            }
         ]
-    } 
+    }
+}
+
+//Consortium type
+export const fetchConsortiumType = (): SingleChoiceQuestion => {
+    return {
+        question: {
+            id: "cooperationtype",
+            fi: "Yhteistyökonsortion koostumus",
+            en: "Consortium type"
+        },
+        answers: [
+            {
+                id: "bilateral",
+                fi: "Kahdenvälinen",
+                en: "Bilateral"
+            },
+            {
+                id: "multilateral",
+                fi: "Monenkeskeinen",
+                en: "Multilateral"
+            }
+        ]
+    }
 }
