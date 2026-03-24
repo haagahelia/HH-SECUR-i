@@ -255,3 +255,26 @@ export const fetchContractInfo = (): SingleChoiceQuestion => {
         ]
     }
 }
+
+//Outside funding
+export const fetchFunding = (): SingleChoiceQuestion => {
+    return {
+        question: {
+            id: "funding",
+            fi: "Sisältyykö yhteistyöhön ulkopuolista rahoitusta?",
+            en: "Is the cooperation funded by outside sources?"
+        },
+        answers: [
+            {
+                id: "yes",
+                fi: "Kyllä",
+                en: "Yes"
+            },
+            {
+                id: "no",
+                fi: "Ei",
+                en: "No"
+            }
+        ]
+    }
+}

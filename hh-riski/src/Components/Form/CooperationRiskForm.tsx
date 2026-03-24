@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCountries, fetchHhRole, fetchOrganizations, fetchOrganizationType } from "../../util/fetchData";
+import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCountries, fetchFunding, fetchHhRole, fetchOrganizations, fetchOrganizationType } from "../../util/fetchData";
 
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
@@ -24,6 +24,7 @@ const consortiumQuestionData: SingleChoiceQuestion = fetchConsortiumType();
 const historyQuestionData: SingleChoiceQuestion = fetchCooperationHistory();
 const organizationTypeData: SingleChoiceQuestion = fetchOrganizationType();
 const contractInfoData: SingleChoiceQuestion = fetchContractInfo();
+const fundingData: SingleChoiceQuestion = fetchFunding();
 
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
@@ -37,6 +38,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [history, setHistory] = useState("");
   const [organizationType, setOrganizationType] = useState("");
   const [contractStatus, setContractStatus] = useState("");
+  const [funding, setFunding] = useState("");
 
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
@@ -113,6 +115,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           value={contractStatus}
           onChange={(value) => {
             setContractStatus(value);
+          }} />
+
+        <SingleChoice question={fundingData.question}
+          answers={fundingData.answers}
+          language={language}
+          value={funding}
+          onChange={(value) => {
+            setFunding(value);
           }} />
 
       </FormSection>
