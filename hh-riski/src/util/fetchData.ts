@@ -174,7 +174,7 @@ export const fetchConsortiumType = (): SingleChoiceQuestion => {
 
 //Cooperation history
 export const fetchCooperationHistory = (): SingleChoiceQuestion => {
-        return {
+    return {
         question: {
             id: "history",
             fi: "Onko yhteistyöorganisaation kanssa tehty onnistunutta yhteistyötä aiemmin?",
@@ -197,7 +197,7 @@ export const fetchCooperationHistory = (): SingleChoiceQuestion => {
 
 //Organization type
 export const fetchOrganizationType = (): SingleChoiceQuestion => {
-            return {
+    return {
         question: {
             id: "organizationType",
             fi: "Yhteistyöorganisaation tyyppi?",
@@ -228,6 +228,29 @@ export const fetchOrganizationType = (): SingleChoiceQuestion => {
                 id: "other",
                 fi: "Muu",
                 en: "Other"
+            }
+        ]
+    }
+}
+
+//Contract information
+export const fetchContractInfo = (): SingleChoiceQuestion => {
+    return {
+        question: {
+            id: "contract",
+            fi: "Onko kirjallinen sopimus solmittu tai tullaanko sellainen solmimaan ennen yhteistyön aloittamista?",
+            en: "Has a written contract been signed or will one be signed before the start of the cooperation?"
+        },
+        answers: [
+            {
+                id: "yes",
+                fi: "Kyllä",
+                en: "Yes"
+            },
+            {
+                id: "no",
+                fi: "Ei",
+                en: "No"
             }
         ]
     }
