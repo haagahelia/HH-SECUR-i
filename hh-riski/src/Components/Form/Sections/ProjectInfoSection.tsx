@@ -4,24 +4,27 @@ type ProjectInfoSectionProps = {
     language: "fi" | "en";
     projectName: string;
     projectDescription: string;
-    startDate: string;
-    endDate: string;
+    duration: string;
     onProjectNameChange: (value: string) => void;
     onProjectDescriptionChange: (value: string) => void;
-    onStartDateChange: (value: string) => void;
-    onEndDateChange: (value: string) => void;
+    onDurationChange: (value: string) => void;
 };
+
+const durationOptions = [
+    { value: "0-24", fi: "0–24 kk", en: "0–24 months" },
+    { value: "24-60", fi: "24–60 kk", en: "24–60 months" },
+    { value: "60+", fi: "yli 60 kk", en: "over 60 months" },
+];
+
 
 const ProjectInfoSection = ({
     language,
     projectName,
     projectDescription,
-    startDate,
-    endDate,
+    duration,
     onProjectNameChange,
     onProjectDescriptionChange,
-    onStartDateChange,
-    onEndDateChange,
+    onDurationChange
 }: ProjectInfoSectionProps) => {
     return (
         <FormSection
@@ -55,24 +58,22 @@ const ProjectInfoSection = ({
 
             <div>
                 <label>
-                    {language === "fi" ? "Aloituspäivä" : "Start date"}
+                    {language === "fi" ? "Projektin kesto" : "Project duration"}
                 </label>
-                <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => onStartDateChange(e.target.value)}
-                />
-            </div>
+                <select
+                    value={duration}
+                    onChange={(e) => onDurationChange(e.target.value)}
+                >
+                    <option value="">
+                        {language === "fi" ? "Valitse kesto" : "Select duration"}
+                    </option>
 
-            <div>
-                <label>
-                    {language === "fi" ? "Päättymispäivä" : "End date"}
-                </label>
-                <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => onEndDateChange(e.target.value)}
-                />
+                    {durationOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option[language]}
+                        </option>
+                    ))}
+                </select>
             </div>
         </FormSection>
     );
