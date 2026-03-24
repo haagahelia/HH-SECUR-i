@@ -7,6 +7,7 @@ import RiskSummary from "./RiskSummary";
 import { sortElements } from "../../util/utils";
 
 import type { Country, Organization } from "../../types";
+import styles from "../../styles.module.css";
 
 import FormSection from "./Sections/FormSection";
 import ProjectInfoSection from "./Sections/ProjectInfoSection";
@@ -15,9 +16,6 @@ type CooperationRiskFormProps = {
   language: "fi" | "en";
 };
 
-
-
-
 const countries: Country[] = fetchCountries();
 const organizations: Organization[] = fetchOrganizations();
 
@@ -25,9 +23,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [selectedCountry, setSelectedCountry] = useState("fi");
   const [selectedOrganization, setSelectedOrganization] = useState("");
   const [projectName, setProjectName] = useState("");
-const [projectDescription, setProjectDescription] = useState("");
-const [startDate, setStartDate] = useState("");
-const [endDate, setEndDate] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
@@ -40,7 +38,7 @@ const [endDate, setEndDate] = useState("");
   const sortedCountries = sortElements(countries, language);
 
   return (
-    <div>
+    <div className={styles.form}>
       <FormSection
         title={language === "fi" ? "Perustiedot" : "Basic Information"}
         description={
@@ -66,6 +64,7 @@ const [endDate, setEndDate] = useState("");
           onChange={setSelectedOrganization}
         />
       </FormSection>
+
       <ProjectInfoSection
         language={language}
         projectName={projectName}
@@ -77,6 +76,7 @@ const [endDate, setEndDate] = useState("");
         onStartDateChange={setStartDate}
         onEndDateChange={setEndDate}
       />
+
       {selectedCountryData && (
         <FormSection
           title={language === "fi" ? "Riskiyhteenveto" : "Risk Summary"}
