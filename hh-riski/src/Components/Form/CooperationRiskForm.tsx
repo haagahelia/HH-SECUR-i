@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchConsortiumType, fetchCooperationHistory, fetchCountries, fetchHhRole, fetchOrganizations } from "../../util/fetchData";
+import { fetchConsortiumType, fetchCooperationHistory, fetchCountries, fetchHhRole, fetchOrganizations, fetchOrganizationType } from "../../util/fetchData";
 
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
@@ -22,6 +22,7 @@ const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: SingleChoiceQuestion = fetchHhRole();
 const consortiumQuestionData: SingleChoiceQuestion = fetchConsortiumType();
 const historyQuestionData: SingleChoiceQuestion = fetchCooperationHistory();
+const organizationTypeData: SingleChoiceQuestion = fetchOrganizationType();
 
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
@@ -33,6 +34,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [hhRole, setHhRole] = useState("");
   const [consortium, setConsortium] = useState("");
   const [history, setHistory] = useState("");
+  const [organizationType, setOrganizationType] = useState("");
 
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
@@ -86,6 +88,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           value={history}
           onChange={(value) => {
             setHistory(value);
+          }} />
+
+        <SingleChoice question={organizationTypeData.question}
+          answers={organizationTypeData.answers}
+          language={language}
+          value={organizationType}
+          onChange={(value) => {
+            setOrganizationType(value);
           }} />
 
         <OrganizationSelect

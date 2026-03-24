@@ -153,7 +153,7 @@ export const fetchHhRole = (): SingleChoiceQuestion => {
 export const fetchConsortiumType = (): SingleChoiceQuestion => {
     return {
         question: {
-            id: "cooperationtype",
+            id: "cooperationType",
             fi: "Yhteistyökonsortion koostumus",
             en: "Consortium type"
         },
@@ -190,6 +190,44 @@ export const fetchCooperationHistory = (): SingleChoiceQuestion => {
                 id: "no",
                 fi: "Ei",
                 en: "No"
+            }
+        ]
+    }
+}
+
+//Organization type
+export const fetchOrganizationType = (): SingleChoiceQuestion => {
+            return {
+        question: {
+            id: "organizationType",
+            fi: "Yhteistyöorganisaation tyyppi?",
+            en: "Type of the cooperative organization?"
+        },
+        answers: [
+            {
+                id: "university",
+                fi: "Yliopisto",
+                en: "University"
+            },
+            {
+                id: "otherResearch",
+                fi: "Muu tutkimuslaitos",
+                en: "Other research institution"
+            },
+            {
+                id: "business",
+                fi: "Yritys",
+                en: "Business"
+            },
+            {
+                id: "ngo",
+                fi: "Kansalaisjärjestö",
+                en: "Non-governmental organization"
+            },
+            {
+                id: "other",
+                fi: "Muu",
+                en: "Other"
             }
         ]
     }
