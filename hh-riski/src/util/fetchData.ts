@@ -334,3 +334,31 @@ export const fetchPersonalInformation = (): SingleChoiceQuestion => {
         ]
     }
 }
+
+//Possible military use
+export const fetchDualUse = (): SingleChoiceQuestion => {
+        return {
+        question: {
+            id: "dualUse",
+            fi: "Onko mahdollista, että yhteistyössä siirtyy sotilaskäyttöön soveltuvaa teknologiaa tai osaamista kumppanille (vrt. Dual Use)?",
+            en: "Is it possible that cooperators are given access to technology or processes suitable for military use (Dual Use)?"
+        },
+        answers: [
+            {
+                id: "yes",
+                fi: "Kyllä",
+                en: "Yes"
+            },
+            {
+                id: "no",
+                fi: "Ei",
+                en: "No"
+            },
+            {
+                id: "unknown",
+                fi: "Ei tiedossa",
+                en: "Unknown"
+            }
+        ]
+    }
+}
