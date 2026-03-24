@@ -8,9 +8,15 @@ import { sortElements } from "../../util/utils";
 
 import type { Country, Organization } from "../../types";
 
+import FormSection from "./Sections/FormSection";
+import ProjectInfoSection from "./Sections/ProjectInfoSection";
+
 type CooperationRiskFormProps = {
   language: "fi" | "en";
 };
+
+
+
 
 const countries: Country[] = fetchCountries();
 const organizations: Organization[] = fetchOrganizations();
@@ -18,6 +24,10 @@ const organizations: Organization[] = fetchOrganizations();
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [selectedCountry, setSelectedCountry] = useState("fi");
   const [selectedOrganization, setSelectedOrganization] = useState("");
+  const [projectName, setProjectName] = useState("");
+const [projectDescription, setProjectDescription] = useState("");
+const [startDate, setStartDate] = useState("");
+const [endDate, setEndDate] = useState("");
 
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
@@ -31,25 +41,48 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
   return (
     <div>
-      <CountrySelect
-        selectedCountry={selectedCountry}
-        selectedLanguage={language}
-        countries={sortedCountries}
-        onChange={(value) => {
-          setSelectedCountry(value);
-          setSelectedOrganization("");
-        }}
-      />
+      <FormSection
+        title={language === "fi" ? "Perustiedot" : "Basic Information"}
+        description={
+          language === "fi"
+            ? "Valitse maa ja organisaatio"
+            : "Select country and organization"
+        }
+      >
+        <CountrySelect
+          selectedCountry={selectedCountry}
+          selectedLanguage={language}
+          countries={sortedCountries}
+          onChange={(value) => {
+            setSelectedCountry(value);
+            setSelectedOrganization("");
+          }}
+        />
 
-      <OrganizationSelect
-        selectedOrganization={selectedOrganization}
-        selectedLanguage={language}
-        organizations={sortedOrganizations}
-        onChange={setSelectedOrganization}
+        <OrganizationSelect
+          selectedOrganization={selectedOrganization}
+          selectedLanguage={language}
+          organizations={sortedOrganizations}
+          onChange={setSelectedOrganization}
+        />
+      </FormSection>
+      <ProjectInfoSection
+        language={language}
+        projectName={projectName}
+        projectDescription={projectDescription}
+        startDate={startDate}
+        endDate={endDate}
+        onProjectNameChange={setProjectName}
+        onProjectDescriptionChange={setProjectDescription}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
       />
-
       {selectedCountryData && (
-        <RiskSummary country={selectedCountryData} language={language} />
+        <FormSection
+          title={language === "fi" ? "Riskiyhteenveto" : "Risk Summary"}
+        >
+          <RiskSummary country={selectedCountryData} language={language} />
+        </FormSection>
       )}
     </div>
   );

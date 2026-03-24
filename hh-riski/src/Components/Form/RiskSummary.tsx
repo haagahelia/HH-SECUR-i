@@ -24,7 +24,7 @@ const RiskSummary = ({ country, language }: RiskSummaryProps) => {
 
   return (
     <div>
-      <h2>{language === "fi" ? "Riskiyhteenveto" : "Risk Summary"}</h2>
+      
 
       <p>
         <strong>{language === "fi" ? "Maa" : "Country"}:</strong>{" "}
