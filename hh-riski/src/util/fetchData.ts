@@ -337,7 +337,7 @@ export const fetchPersonalInformation = (): SingleChoiceQuestion => {
 
 //Possible military use
 export const fetchDualUse = (): SingleChoiceQuestion => {
-        return {
+    return {
         question: {
             id: "dualUse",
             fi: "Onko mahdollista, että yhteistyössä siirtyy sotilaskäyttöön soveltuvaa teknologiaa tai osaamista kumppanille (vrt. Dual Use)?",
@@ -358,6 +358,44 @@ export const fetchDualUse = (): SingleChoiceQuestion => {
                 id: "unknown",
                 fi: "Ei tiedossa",
                 en: "Unknown"
+            }
+        ]
+    }
+}
+
+//Ethics assessment
+export const fetchEthicsAssessment = (): SingleChoiceQuestion => {
+    return {
+        question: {
+            id: "ethics",
+            fi: "Arvioi, sisältääkö yhteistyö eettisiä ongelmakohtia (ihmisoikeudet, tasa-arvo, yhdenvertaisuus) tai ristiriitaa Haaga-Helian arvojen kanssa.",
+            en: "Estimate whether cooperation includes ethical issues (human rights, equality, parity) or conflicts with Haaga-Helia's values." 
+        },
+        answers: [
+            {
+                id: "1",
+                fi: "Ei missään tapauksessa",
+                en: "Absolutely not"
+            },
+            {
+                id: "2",
+                fi: "Melko varmasti ei",
+                en: "Most likely not"
+            },
+            {
+                id: "3",
+                fi: "Ehkä",
+                en: "Possibly"
+            },
+            {
+                id: "4",
+                fi: "Melko varmasti",
+                en: "Likely"
+            },
+            {
+                id: "5",
+                fi: "Varmasti",
+                en: "For certain"
             }
         ]
     }

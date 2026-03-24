@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCountries, fetchDualUse, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
+import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCountries, fetchDualUse, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
 
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
@@ -28,6 +28,7 @@ const fundingData: SingleChoiceQuestion = fetchFunding();
 const liabilityData: SingleChoiceQuestion = fetchLiability();
 const personalData: SingleChoiceQuestion = fetchPersonalInformation();
 const dualUseData: SingleChoiceQuestion = fetchDualUse();
+const ethicsData: SingleChoiceQuestion = fetchEthicsAssessment();
 
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
@@ -45,6 +46,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [liability, setLiability] = useState("");
   const [personalInformation, setPersonalInformation] = useState("");
   const [dualUse, setDualUse] = useState("");
+  const [ethics, setEthics] = useState("");
 
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
@@ -162,6 +164,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           value={dualUse}
           onChange={(value) => {
             setDualUse(value);
+          }} />
+
+        <SingleChoice question={ethicsData.question}
+          answers={ethicsData.answers}
+          language={language}
+          value={ethics}
+          onChange={(value) => {
+            setEthics(value);
           }} />
 
       </FormSection>
