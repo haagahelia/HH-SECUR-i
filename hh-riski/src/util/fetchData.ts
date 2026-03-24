@@ -306,3 +306,31 @@ export const fetchLiability = (): SingleChoiceQuestion => {
         ]
     }
 }
+
+//Personal data
+export const fetchPersonalInformation = (): SingleChoiceQuestion => {
+    return {
+        question: {
+            id: "personal",
+            fi: "Onko mahdollista, että yhteistyössä siirretään henkilötietoja yhtiestyökumppaneille?",
+            en: "Is it possible that personal information is given to consortium members?"
+        },
+        answers: [
+            {
+                id: "yes",
+                fi: "Kyllä",
+                en: "Yes"
+            },
+            {
+                id: "no",
+                fi: "Ei",
+                en: "No"
+            },
+            {
+                id: "unknown",
+                fi: "Ei tiedossa",
+                en: "Unknown"
+            }
+        ]
+    }
+}
