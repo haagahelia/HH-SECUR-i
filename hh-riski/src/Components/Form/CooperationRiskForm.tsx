@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCountries, fetchDualUse, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
+import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCountries, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
 
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
@@ -10,7 +10,7 @@ import type { Country, Organization, SingleChoiceQuestion } from "../../types";
 import styles from "../../styles.module.css";
 
 import FormSection from "./Sections/FormSection";
-import ProjectInfoSection from "./Sections/ProjectInfoSection";
+/* import ProjectInfoSection from "./Sections/ProjectInfoSection"; */
 import SingleChoice from "./SingleChoice";
 
 type CooperationRiskFormProps = {
@@ -29,6 +29,7 @@ const liabilityData: SingleChoiceQuestion = fetchLiability();
 const personalData: SingleChoiceQuestion = fetchPersonalInformation();
 const dualUseData: SingleChoiceQuestion = fetchDualUse();
 const ethicsData: SingleChoiceQuestion = fetchEthicsAssessment();
+const durationData: SingleChoiceQuestion = fetchDuration();
 
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
@@ -48,6 +49,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [dualUse, setDualUse] = useState("");
   const [ethics, setEthics] = useState("");
 
+
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
   );
@@ -60,15 +62,15 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
   return (
     <div className={styles.form}>
-      <ProjectInfoSection
+      {/* <ProjectInfoSection
         language={language}
         projectName={projectName}
         projectDescription={projectDescription}
         duration={duration}
         onProjectNameChange={setProjectName}
         onProjectDescriptionChange={setProjectDescription}
-        onDurationChange={setDuration}
-      />
+        
+      /> */}
       <FormSection
         title={language === "fi" ? "Perustiedot" : "Basic Information"}
         description={
@@ -173,6 +175,15 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           onChange={(value) => {
             setEthics(value);
           }} />
+
+        <SingleChoice question={durationData.question}
+          answers={durationData.answers}
+          language={language}
+          value={duration}
+          onChange={(value) => {
+            setDuration(value);
+          }} />
+
 
       </FormSection>
 

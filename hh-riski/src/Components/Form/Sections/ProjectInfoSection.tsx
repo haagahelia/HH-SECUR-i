@@ -1,4 +1,4 @@
-import FormSection from "./FormSection";
+/* import FormSection from "./FormSection";
 
 type ProjectInfoSectionProps = {
     language: "fi" | "en";
@@ -79,4 +79,4 @@ const ProjectInfoSection = ({
     );
 };
 
-export default ProjectInfoSection;
+export default ProjectInfoSection; */

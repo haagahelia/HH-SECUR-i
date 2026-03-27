@@ -369,7 +369,7 @@ export const fetchEthicsAssessment = (): SingleChoiceQuestion => {
         question: {
             id: "ethics",
             fi: "Arvioi, sisältääkö yhteistyö eettisiä ongelmakohtia (ihmisoikeudet, tasa-arvo, yhdenvertaisuus) tai ristiriitaa Haaga-Helian arvojen kanssa.",
-            en: "Estimate whether cooperation includes ethical issues (human rights, equality, parity) or conflicts with Haaga-Helia's values." 
+            en: "Estimate whether cooperation includes ethical issues (human rights, equality, parity) or conflicts with Haaga-Helia's values."
         },
         answers: [
             {
@@ -397,6 +397,34 @@ export const fetchEthicsAssessment = (): SingleChoiceQuestion => {
                 fi: "Varmasti",
                 en: "For certain"
             }
+        ]
+    }
+}
+
+//Duration of cooperation
+export const fetchDuration = (): SingleChoiceQuestion => {
+    return {
+        question: {
+            id: "duration",
+            fi: "Mikä on yhteistyön kesto?",
+            en: "What is the duration of the cooperation?"
+        },
+        answers: [
+            {
+                id: "1",
+                fi: "0-24 kk",
+                en: "0-24 months"
+            },
+            {
+                id: "2",
+                fi: "24-60 kk",
+                en: "24-60 months"
+            },
+            {
+                id: "3",
+                fi: "yli 60 kk",
+                en: "Over 60 months"
+            },
         ]
     }
 }
