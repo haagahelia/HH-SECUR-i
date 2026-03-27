@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+
 import { useState } from "react";
 import { useCurrentUser } from "../context/UserContext";
 import CooperationRiskForm from "./Form/CooperationRiskForm";
+
+import Navbar from "./Layout/Navbar";
 
 
 const languages = [
@@ -27,33 +29,23 @@ const FormPage = () => {
 
   return (
     <>
-      {user &&
-        <div>
-          {selectedLanguage === 'fi' ?
-            <p>Kirjautuneena {user.username}</p>
-            :
-            <p>Logged in as {user.username}</p>
-          }
-          {selectedLanguage === 'fi' ?
-            <button onClick={clearUser}>Kirjaudu ulos</button>
-            :
-            <button onClick={clearUser}>Logout</button>
-          }
-        </div>
-      }
+      <Navbar language={selectedLanguage} />
 
       <div>
-        {selectedLanguage === 'fi' ?
-          <Link to="/">Riskilomake</Link>
-          :
-          <Link to="/">Risk form</Link>
-        }
-        {" | "}
-        {selectedLanguage === 'fi' ?
-          <Link to="/user">Kirjaudu sisään</Link>
-          :
-          <Link to="/user">Login</Link>
-        }
+        {user && (
+          <div>
+            {selectedLanguage === "fi" ? (
+              <p>Kirjautuneena {user.username}</p>
+            ) : (
+              <p>Logged in as {user.username}</p>
+            )}
+            {selectedLanguage === "fi" ? (
+              <button onClick={clearUser}>Kirjaudu ulos</button>
+            ) : (
+              <button onClick={clearUser}>Logout</button>
+            )}
+          </div>
+        )}
       </div>
 
       <div>
