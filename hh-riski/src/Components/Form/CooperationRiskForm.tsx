@@ -6,7 +6,7 @@ import OrganizationSelect from "./OrganizationSelect";
 import RiskSummary from "./RiskSummary";
 import { sortElements } from "../../util/utils";
 
-import type { Country, Organization, SingleChoiceQuestion } from "../../types";
+import type { Country, Organization, Question } from "../../types";
 import styles from "../../styles.module.css";
 
 import FormSection from "./Sections/FormSection";
@@ -20,18 +20,18 @@ type CooperationRiskFormProps = {
 
 const countries: Country[] = fetchCountries();
 const organizations: Organization[] = fetchOrganizations();
-const hhRoleQuestionData: SingleChoiceQuestion = fetchHhRole();
-const consortiumQuestionData: SingleChoiceQuestion = fetchConsortiumType();
-const historyQuestionData: SingleChoiceQuestion = fetchCooperationHistory();
-const organizationTypeData: SingleChoiceQuestion = fetchOrganizationType();
-const contractInfoData: SingleChoiceQuestion = fetchContractInfo();
-const fundingData: SingleChoiceQuestion = fetchFunding();
-const liabilityData: SingleChoiceQuestion = fetchLiability();
-const personalData: SingleChoiceQuestion = fetchPersonalInformation();
-const dualUseData: SingleChoiceQuestion = fetchDualUse();
-const ethicsData: SingleChoiceQuestion = fetchEthicsAssessment();
-const durationData: SingleChoiceQuestion = fetchDuration();
-const cooperationTypeData: SingleChoiceQuestion = fetchCooperationType();
+const hhRoleQuestionData: Question = fetchHhRole();
+const consortiumQuestionData: Question = fetchConsortiumType();
+const historyQuestionData: Question = fetchCooperationHistory();
+const organizationTypeData: Question = fetchOrganizationType();
+const contractInfoData: Question = fetchContractInfo();
+const fundingData: Question = fetchFunding();
+const liabilityData: Question = fetchLiability();
+const personalData: Question = fetchPersonalInformation();
+const dualUseData: Question = fetchDualUse();
+const ethicsData: Question = fetchEthicsAssessment();
+const durationData: Question = fetchDuration();
+const cooperationTypeData: Question = fetchCooperationType();
 
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {

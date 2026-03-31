@@ -1,6 +1,6 @@
 
 import { delay } from "./utils";
-import type { SingleChoiceQuestion } from "../types";
+import type { Question } from "../types";
 
 //Temporary data sources
 const countries = [{
@@ -122,7 +122,7 @@ export const fetchOrganizations = () => {
 
 
 //Haaga-Helia role in cooperation
-export const fetchHhRole = (): SingleChoiceQuestion => {
+export const fetchHhRole = (): Question => {
     return {
         question: {
             id: "hhRole",
@@ -150,7 +150,7 @@ export const fetchHhRole = (): SingleChoiceQuestion => {
 }
 
 //Consortium type
-export const fetchConsortiumType = (): SingleChoiceQuestion => {
+export const fetchConsortiumType = (): Question => {
     return {
         question: {
             id: "cooperationType",
@@ -173,7 +173,7 @@ export const fetchConsortiumType = (): SingleChoiceQuestion => {
 }
 
 //Cooperation history
-export const fetchCooperationHistory = (): SingleChoiceQuestion => {
+export const fetchCooperationHistory = (): Question => {
     return {
         question: {
             id: "history",
@@ -196,7 +196,7 @@ export const fetchCooperationHistory = (): SingleChoiceQuestion => {
 }
 
 //Organization type
-export const fetchOrganizationType = (): SingleChoiceQuestion => {
+export const fetchOrganizationType = (): Question => {
     return {
         question: {
             id: "organizationType",
@@ -234,12 +234,12 @@ export const fetchOrganizationType = (): SingleChoiceQuestion => {
 }
 
 //Contract information
-export const fetchContractInfo = (): SingleChoiceQuestion => {
+export const fetchContractInfo = (): Question => {
     return {
         question: {
             id: "contract",
             fi: "Onko kirjallinen sopimus solmittu tai tullaanko sellainen solmimaan ennen yhteistyön aloittamista?",
-            en: "Has a written contract been signed or will one be signed before the start of the cooperation?"
+            en: "Has a written agreement been signed, or will one be signed before the collaboration begins?"
         },
         answers: [
             {
@@ -257,12 +257,12 @@ export const fetchContractInfo = (): SingleChoiceQuestion => {
 }
 
 //Outside funding
-export const fetchFunding = (): SingleChoiceQuestion => {
+export const fetchFunding = (): Question => {
     return {
         question: {
             id: "funding",
             fi: "Sisältyykö yhteistyöhön ulkopuolista rahoitusta?",
-            en: "Is the cooperation funded by outside sources?"
+            en: "Does the collaboration involve external funding?"
         },
         answers: [
             {
@@ -280,12 +280,12 @@ export const fetchFunding = (): SingleChoiceQuestion => {
 }
 
 //Financial liability
-export const fetchLiability = (): SingleChoiceQuestion => {
+export const fetchLiability = (): Question => {
     return {
         question: {
             id: "liability",
             fi: "Anna arvio yhteistyön taloudellisista kokonaisvastuista (sis. omarahoitus) sen kokonaiskeston aikana.",
-            en: "Estimate of financial liability (including self funding) for the full duration of the project."
+            en: "Provide an estimate of the collaboration’s total financial responsibilities (including self-funding) for the university over its entire duration."
         },
         answers: [
             {
@@ -308,12 +308,12 @@ export const fetchLiability = (): SingleChoiceQuestion => {
 }
 
 //Personal data
-export const fetchPersonalInformation = (): SingleChoiceQuestion => {
+export const fetchPersonalInformation = (): Question => {
     return {
         question: {
             id: "personal",
             fi: "Onko mahdollista, että yhteistyössä siirretään henkilötietoja yhtiestyökumppaneille?",
-            en: "Is it possible that personal information is given to consortium members?"
+            en: "Is it possible that personal data will be transferred to the partner organization during the collaboration?"
         },
         answers: [
             {
@@ -336,12 +336,12 @@ export const fetchPersonalInformation = (): SingleChoiceQuestion => {
 }
 
 //Possible military use
-export const fetchDualUse = (): SingleChoiceQuestion => {
+export const fetchDualUse = (): Question => {
     return {
         question: {
             id: "dualUse",
             fi: "Onko mahdollista, että yhteistyössä siirtyy sotilaskäyttöön soveltuvaa teknologiaa tai osaamista kumppanille (vrt. Dual Use)?",
-            en: "Is it possible that cooperators are given access to technology or processes suitable for military use (Dual Use)?"
+            en: "Is it possible that technology or expertise suitable for military use (i.e., Dual Use) will be transferred to the partner organization during the collaboration?"
         },
         answers: [
             {
@@ -364,12 +364,12 @@ export const fetchDualUse = (): SingleChoiceQuestion => {
 }
 
 //Ethics assessment
-export const fetchEthicsAssessment = (): SingleChoiceQuestion => {
+export const fetchEthicsAssessment = (): Question => {
     return {
         question: {
             id: "ethics",
             fi: "Arvioi, sisältääkö yhteistyö eettisiä ongelmakohtia (ihmisoikeudet, tasa-arvo, yhdenvertaisuus) tai ristiriitaa Haaga-Helian arvojen kanssa.",
-            en: "Estimate whether cooperation includes ethical issues (human rights, equality, parity) or conflicts with Haaga-Helia's values."
+            en: "Assess whether the collaboration involves any ethical issues (human rights, equality, non-discrimination) or conflicts with the university’s values."
         },
         answers: [
             {
@@ -390,24 +390,24 @@ export const fetchEthicsAssessment = (): SingleChoiceQuestion => {
             {
                 id: "4",
                 fi: "Melko varmasti",
-                en: "Likely"
+                en: "Very likely"
             },
             {
                 id: "5",
                 fi: "Varmasti",
-                en: "For certain"
+                en: "Definitely"
             }
         ]
     }
 }
 
 //Duration of cooperation
-export const fetchDuration = (): SingleChoiceQuestion => {
+export const fetchDuration = (): Question => {
     return {
         question: {
             id: "duration",
             fi: "Mikä on yhteistyön kesto?",
-            en: "What is the duration of the cooperation?"
+            en: "Duration of Collaboration"
         },
         answers: [
             {
@@ -430,7 +430,7 @@ export const fetchDuration = (): SingleChoiceQuestion => {
 }
 
 //Cooperation type
-export const fetchCooperationType = (): SingleChoiceQuestion => {
+export const fetchCooperationType = (): Question => {
     return {
         question: {
             id: "cooperationType",

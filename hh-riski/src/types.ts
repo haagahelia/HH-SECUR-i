@@ -30,7 +30,7 @@ export type Organization = {
     countryId: string
 }
 
-export type SingleChoiceQuestion = {
+export type Question = {
     question: {
         id: string,
         fi: string,
