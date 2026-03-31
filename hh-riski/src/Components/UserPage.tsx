@@ -9,7 +9,8 @@ const UserPage = () => {
     const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
     return (
         <>
-      <Navbar language={selectedLanguage} />
+      <Navbar language={selectedLanguage}
+        setLanguage={setSelectedLanguage} />
 
       <div>
         {user && <p>Logged in as {user.username}</p>}

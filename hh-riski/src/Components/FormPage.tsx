@@ -4,7 +4,7 @@ import { useCurrentUser } from "../context/UserContext";
 import CooperationRiskForm from "./Form/CooperationRiskForm";
 
 import Navbar from "./Layout/Navbar";
-
+import InfoBox from "./Layout/InfoBox";
 
 const languages = [
   {
@@ -29,7 +29,8 @@ const FormPage = () => {
 
   return (
     <>
-      <Navbar language={selectedLanguage} />
+      <Navbar language={selectedLanguage}
+        setLanguage={setSelectedLanguage} />
 
       <div>
         {user && (
