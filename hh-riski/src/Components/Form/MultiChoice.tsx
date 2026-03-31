@@ -1,7 +1,4 @@
 import { Checkbox, FormControl, FormControlLabel, FormLabel } from "@mui/material";
-
-import type { SingleChoiceQuestion } from "../../types";
-
 type Option = {
     id: string;
     fi: string;
