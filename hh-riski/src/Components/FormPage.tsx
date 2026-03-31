@@ -5,6 +5,7 @@ import CooperationRiskForm from "./Form/CooperationRiskForm";
 
 import Navbar from "./Layout/Navbar";
 import InfoBox from "./Layout/InfoBox";
+import Box from "@mui/material/Box";
 
 { /*} "Vanha kielivalikko, joka on korvattu NavBarin kielivalinnalla"
 const languages = [
@@ -77,7 +78,7 @@ const FormPage = () => {
           <>
             <InfoBox language={selectedLanguage} />
 
-            <div style={{ marginTop: "20px" }} />
+           <Box sx={{ mt: 3 }}></Box>
 
             <CooperationRiskForm language={selectedLanguage} />
           </>

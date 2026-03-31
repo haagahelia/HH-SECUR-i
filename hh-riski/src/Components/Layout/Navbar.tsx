@@ -1,5 +1,6 @@
 import { AppBar, Toolbar, Typography, Button, Box, Slide, useScrollTrigger } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import LanguageIcon from "@mui/icons-material/Language";
 
 type NavbarProps = {
     language: "fi" | "en";
@@ -47,16 +48,24 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
 
 
                         <Box sx={{ display: "flex", gap: 2 }}>
-                            <Button variant="outlined" size="small">
-                                {language === "fi" ? "AIEMMAT RAPORTIT" : "REPORTS"}
-                            </Button>
-                            {/* placeholder kielivalikolle */}
                             <Button
-                                variant="text"
                                 onClick={() =>
                                     setLanguage(language === "fi" ? "en" : "fi")
                                 }
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    color: "#1976d2",
+                                    textTransform: "none",
+                                    padding: "6px 10px",
+                                    borderRadius: "6px",
+                                    "&:hover": {
+                                        backgroundColor: "#f0f7ff",
+                                    },
+                                }}
                             >
+                                <LanguageIcon fontSize="small" />
                                 {language.toUpperCase()}
                             </Button>
                         </Box>
