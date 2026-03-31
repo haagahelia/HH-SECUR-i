@@ -64,6 +64,25 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   );
   const sortedCountries = sortElements(countries, language);
 
+  const resetForm = () => {
+            setSelectedCountry("fi");
+            setSelectedOrganization("");
+            setProjectName("");
+            setProjectDescription("");
+            setDuration("");
+            setHhRole("");
+            setConsortium("");
+            setHistory("");
+            setOrganizationType("");
+            setContractStatus("");
+            setFunding("");
+            setLiability("");
+            setPersonalInformation("");
+            setDualUse("");
+            setEthics("");
+            setCooperationType([]);
+  }
+
   return (
     <div className={styles.form}>
       {/* <ProjectInfoSection
@@ -237,7 +256,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           }
         </Button>
         <Button
+          href="#"
           variant="outlined"
+          onClick={() => resetForm()}
         >
           {language === "fi" ?
             <a>Aloita alusta</a>
