@@ -440,7 +440,7 @@ export const fetchCooperationType = (): Question => {
         answers: [
             {
                 id: "option1",
-                fi: "Tutkimusyhteistyö",
+                fi: "TKI-yhteistyö",
                 en: "Research collaboration"
             },
             {
