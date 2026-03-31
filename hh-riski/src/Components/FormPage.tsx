@@ -4,8 +4,10 @@ import { useCurrentUser } from "../context/UserContext";
 import CooperationRiskForm from "./Form/CooperationRiskForm";
 
 import Navbar from "./Layout/Navbar";
+import InfoBox from "./Layout/InfoBox";
+import Box from "@mui/material/Box";
 
-
+{ /*} "Vanha kielivalikko, joka on korvattu NavBarin kielivalinnalla"
 const languages = [
   {
     id: "fi" as const,
@@ -21,7 +23,7 @@ const languages = [
       en: "English",
     },
   },
-];
+]; */}
 
 const FormPage = () => {
   const { user, clearUser } = useCurrentUser();
@@ -29,7 +31,8 @@ const FormPage = () => {
 
   return (
     <>
-      <Navbar language={selectedLanguage} />
+      <Navbar language={selectedLanguage}
+        setLanguage={setSelectedLanguage} />
 
       <div>
         {user && (
@@ -55,6 +58,7 @@ const FormPage = () => {
           <h1>Risk assessment form</h1>
         }
 
+        { /*} "Vanha kielivalikko, joka on korvattu NavBarin kielivalinnalla"
         <select
           value={selectedLanguage}
           onChange={(e) =>
@@ -69,9 +73,17 @@ const FormPage = () => {
             </option>
           ))}
         </select>
-
+*/}
         {user ? (
-          <CooperationRiskForm language={selectedLanguage} />
+          <>
+            <InfoBox language={selectedLanguage} />
+
+           <Box sx={{ mt: 3 }}></Box>
+
+            <CooperationRiskForm language={selectedLanguage} />
+          </>
+        ) : selectedLanguage === "fi" ? (
+          <p>Kirjaudu sisään nähdäksesi sivun</p>
         ) : (
           <p>Log in to view the page</p>
         )}
