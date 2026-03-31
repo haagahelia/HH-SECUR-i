@@ -127,18 +127,18 @@ export const fetchHhRole = (): SingleChoiceQuestion => {
         question: {
             id: "hhRole",
             fi: "Haaga-Helia ammattikorkeakoulun rooli yhteistyössä",
-            en: "Haaga-Helia university of applied sciences role in partnership"
+            en: "Haaga-Helia university of applied sciences role in collaboration"
         },
         answers: [
             {
                 id: "coordinator",
                 fi: "Yhteistyön koordinaattori",
-                en: "Coordinator"
+                en: "Collaboration Coordnator"
             },
             {
                 id: "partner",
                 fi: "Kumppani tai tasaveroinen partner",
-                en: "Equal partner"
+                en: "Partner"
             },
             {
                 id: "other",
@@ -155,7 +155,7 @@ export const fetchConsortiumType = (): SingleChoiceQuestion => {
         question: {
             id: "cooperationType",
             fi: "Yhteistyökonsortion koostumus",
-            en: "Consortium type"
+            en: "Composition of the Collaobration Consortium"
         },
         answers: [
             {
@@ -201,7 +201,7 @@ export const fetchOrganizationType = (): SingleChoiceQuestion => {
         question: {
             id: "organizationType",
             fi: "Yhteistyöorganisaation tyyppi?",
-            en: "Type of the cooperative organization?"
+            en: "Type of Partner Organization?"
         },
         answers: [
             {
@@ -212,17 +212,17 @@ export const fetchOrganizationType = (): SingleChoiceQuestion => {
             {
                 id: "otherResearch",
                 fi: "Muu tutkimuslaitos",
-                en: "Other research institution"
+                en: "Other Research Institute"
             },
             {
                 id: "business",
                 fi: "Yritys",
-                en: "Business"
+                en: "Company"
             },
             {
                 id: "ngo",
                 fi: "Kansalaisjärjestö",
-                en: "Non-governmental organization"
+                en: "Non-Governmental Organization"
             },
             {
                 id: "other",
