@@ -65,22 +65,22 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const sortedCountries = sortElements(countries, language);
 
   const resetForm = () => {
-            setSelectedCountry("fi");
-            setSelectedOrganization("");
-            setProjectName("");
-            setProjectDescription("");
-            setDuration("");
-            setHhRole("");
-            setConsortium("");
-            setHistory("");
-            setOrganizationType("");
-            setContractStatus("");
-            setFunding("");
-            setLiability("");
-            setPersonalInformation("");
-            setDualUse("");
-            setEthics("");
-            setCooperationType([]);
+    setSelectedCountry("fi");
+    setSelectedOrganization("");
+    setProjectName("");
+    setProjectDescription("");
+    setDuration("");
+    setHhRole("");
+    setConsortium("");
+    setHistory("");
+    setOrganizationType("");
+    setContractStatus("");
+    setFunding("");
+    setLiability("");
+    setPersonalInformation("");
+    setDualUse("");
+    setEthics("");
+    setCooperationType([]);
   }
 
   return (
@@ -245,9 +245,57 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         )
       }
 
+      {language === "fi" ?
+
+        <div>
+          <h3>Kehitysvaiheen elementti: lomakkeen valinnat</h3>
+          <ul>
+            <li>Maa: {selectedCountry}</li>
+            <li>Organisaatio: {selectedOrganization}</li>
+            <li>Projektin nimi: {projectName}</li>
+            <li>Projektin kuvaus: {projectDescription}</li>
+            <li>Projektin kesto: {duration}</li>
+            <li>HH rooli: {hhRole}</li>
+            <li>Konsortio: {consortium}</li>
+            <li>Historia : {history}</li>
+            <li>Organisaation tyyppi: {organizationType}</li>
+            <li>Sopimus: {contractStatus}</li>
+            <li>Rahoitus: {funding}</li>
+            <li>Vastuu: {liability}</li>
+            <li>Henkilötiedot: {personalInformation}</li>
+            <li>Dual use: {dualUse}</li>
+            <li>Etiikka: {ethics}</li>
+            <li>Yhteistyön tyyppi: {cooperationType}</li>
+          </ul>
+        </div>
+        :
+        <div>
+          <h3>Temporary element: form choices</h3>
+          <ul>
+            <li>Country: {selectedCountry}</li>
+            <li>Organization: {selectedOrganization}</li>
+            <li>Project name: {projectName}</li>
+            <li>Project description: {projectDescription}</li>
+            <li>Project duration: {duration}</li>
+            <li>HH role: {hhRole}</li>
+            <li>Consortium: {consortium}</li>
+            <li>History : {history}</li>
+            <li>Organization type: {organizationType}</li>
+            <li>Agreement: {contractStatus}</li>
+            <li>Funding: {funding}</li>
+            <li>Liability: {liability}</li>
+            <li>Personal information: {personalInformation}</li>
+            <li>Dual use: {dualUse}</li>
+            <li>Ethics: {ethics}</li>
+            <li>Collaboration type: {cooperationType}</li>
+          </ul>
+        </div>
+      }
+
+
       <div className={styles.center}>
         <Button
-          variant="contained"
+          variant="outlined"
         >
           {language === "fi" ?
             <a>Tallenna</a>
