@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCountries, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
+import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCooperationType, fetchCountries, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
 
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
@@ -12,6 +12,7 @@ import styles from "../../styles.module.css";
 import FormSection from "./Sections/FormSection";
 /* import ProjectInfoSection from "./Sections/ProjectInfoSection"; */
 import SingleChoice from "./SingleChoice";
+import MultiChoice from "./MultiChoice";
 
 type CooperationRiskFormProps = {
   language: "fi" | "en";
@@ -30,6 +31,7 @@ const personalData: SingleChoiceQuestion = fetchPersonalInformation();
 const dualUseData: SingleChoiceQuestion = fetchDualUse();
 const ethicsData: SingleChoiceQuestion = fetchEthicsAssessment();
 const durationData: SingleChoiceQuestion = fetchDuration();
+const cooperationTypeData: SingleChoiceQuestion = fetchCooperationType();
 
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
@@ -48,6 +50,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [personalInformation, setPersonalInformation] = useState("");
   const [dualUse, setDualUse] = useState("");
   const [ethics, setEthics] = useState("");
+  const [cooperationType, setCooperationType] = useState<string[]>([]);
 
 
   const filteredOrganizations = organizations.filter(
@@ -135,6 +138,13 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           onChange={(value) => {
             setContractStatus(value);
           }} />
+
+          <MultiChoice question={cooperationTypeData.question} 
+          answers={cooperationTypeData.answers}
+          language={language}
+          value={cooperationType}
+          onChange={setCooperationType}
+          />
 
         <SingleChoice question={fundingData.question}
           answers={fundingData.answers}

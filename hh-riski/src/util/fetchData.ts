@@ -428,3 +428,51 @@ export const fetchDuration = (): SingleChoiceQuestion => {
         ]
     }
 }
+
+//Cooperation type
+export const fetchCooperationType = (): SingleChoiceQuestion => {
+    return {
+        question: {
+            id: "cooperationType",
+            fi: "Yhteistyön muodot?",
+            en: "Forms of Collaboration"
+        },
+        answers: [
+            {
+                id: "option1",
+                fi: "Tutkimusyhteistyö",
+                en: "Research collaboration"
+            },
+            {
+                id: "option2",
+                fi: "Koulutus/opetusyhteistyö",
+                en: "Education/Teaching Collaboration"
+            },
+            {
+                id: "option3",
+                fi: "Koulutusvienti",
+                en: "Export of Education"
+            },
+            {
+                id: "option4",
+                fi: "Kansainvälinen opiskelijaliikkuvuus",
+                en: "International Student Mobility"
+            },
+            {
+                id: "option5",
+                fi: "Kansainvälinen henkilöstöliikkuvuus",
+                en: "International Staff Mobility"
+            },
+            {
+                id: "option6",
+                fi: "Yhteistutkintoyhteistyö",
+                en: "Joint Degree Collaboration"
+            },
+            {
+                id: "option7",
+                fi: "Muu",
+                en: "Other"
+            },
+        ]
+    }
+}
