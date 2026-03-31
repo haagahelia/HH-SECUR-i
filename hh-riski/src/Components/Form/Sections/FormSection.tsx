@@ -1,5 +1,5 @@
 type FormSectionProps = {
-    title: string;
+    title?: string;
     description?: string;
     children: React.ReactNode;
 };

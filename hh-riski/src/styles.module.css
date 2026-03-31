@@ -13,3 +13,17 @@
     border-style: solid;
     border-color: black;
 }
+
+.center {
+    gap: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.formlist {
+    li::marker {
+        color: red;
+        content: "* ";
+    }
+}
