@@ -172,12 +172,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
                 setContractStatus(value);
               }} />
           </li>
-          <MultiChoice question={cooperationTypeData.question}
-            answers={cooperationTypeData.answers}
-            language={language}
-            value={cooperationType}
-            onChange={setCooperationType}
-          />
+          <li>
+            <MultiChoice question={cooperationTypeData.question}
+              answers={cooperationTypeData.answers}
+              language={language}
+              value={cooperationType}
+              onChange={setCooperationType}
+            />
+          </li>
           <li>
             <SingleChoice question={fundingData.question}
               answers={fundingData.answers}
