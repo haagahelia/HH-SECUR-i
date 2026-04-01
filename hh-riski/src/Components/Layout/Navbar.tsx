@@ -1,6 +1,7 @@
 import { AppBar, Toolbar, Typography, Button, Box, Slide, useScrollTrigger } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import LanguageIcon from "@mui/icons-material/Language";
+import logo from "../../assets/logo.png";
 
 type NavbarProps = {
     language: "fi" | "en";
@@ -32,12 +33,16 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                         borderBottom: "1px solid #ccc",
                     }}
                 >
-                    <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Toolbar sx={{ justifyContent: "space-between" }}>
 
-                        {/*(logo placeholder) */}
-                        <Typography sx={{ fontWeight: "bold" }}>
-                            HH-SECUR-i
-                        </Typography>
+                        {/* LOGO */}
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <img
+                                src={logo}
+                                alt="HH-SECUR-i"
+                                style={{ height: "50px" }}
+                            />
+                        </Box>
 
 
                         <Typography sx={{ fontWeight: "bold" }}>
@@ -73,7 +78,8 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
-
+            
+            {/* ALAPALKKI */}
             <AppBar
                 position="fixed"
                 color="primary"
