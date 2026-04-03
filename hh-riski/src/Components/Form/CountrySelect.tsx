@@ -21,6 +21,11 @@ const CountrySelect = ({
         value={selectedCountry}
         onChange={(e) => onChange(e.target.value)}
       >
+        <option value="">
+          {selectedLanguage === "fi"
+            ? "Valitse sijaintimaa"
+            : "Choose Country"}
+        </option>
         {countries.map((country) => (
           <option key={country.id} value={country.id}>
             {country.name[selectedLanguage]}

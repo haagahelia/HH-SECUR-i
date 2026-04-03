@@ -14,6 +14,7 @@ import FormSection from "./Sections/FormSection";
 import SingleChoice from "./SingleChoice";
 import MultiChoice from "./MultiChoice";
 import { Button } from "@mui/material";
+import { useFormAnswers } from "../../context/FormAnswersContext";
 
 type CooperationRiskFormProps = {
   language: "fi" | "en";
@@ -36,23 +37,12 @@ const cooperationTypeData: Question = fetchCooperationType();
 
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
-  const [selectedCountry, setSelectedCountry] = useState("fi");
-  const [selectedOrganization, setSelectedOrganization] = useState("");
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
-  const [duration, setDuration] = useState("");
-  const [hhRole, setHhRole] = useState("");
-  const [consortium, setConsortium] = useState("");
-  const [history, setHistory] = useState("");
-  const [organizationType, setOrganizationType] = useState("");
-  const [contractStatus, setContractStatus] = useState("");
-  const [funding, setFunding] = useState("");
-  const [liability, setLiability] = useState("");
-  const [personalInformation, setPersonalInformation] = useState("");
-  const [dualUse, setDualUse] = useState("");
-  const [ethics, setEthics] = useState("");
-  const [cooperationType, setCooperationType] = useState<string[]>([]);
-
+  
+  //const [selectedCountry, setSelectedCountry] = useState("fi");
+  const { selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, projectName, setProjectName,
+            projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType,
+            contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
+            cooperationType, setCooperationType, clearAnswers } = useFormAnswers();
 
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
@@ -63,25 +53,6 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     (country) => country.id === selectedCountry
   );
   const sortedCountries = sortElements(countries, language);
-
-  const resetForm = () => {
-    setSelectedCountry("fi");
-    setSelectedOrganization("");
-    setProjectName("");
-    setProjectDescription("");
-    setDuration("");
-    setHhRole("");
-    setConsortium("");
-    setHistory("");
-    setOrganizationType("");
-    setContractStatus("");
-    setFunding("");
-    setLiability("");
-    setPersonalInformation("");
-    setDualUse("");
-    setEthics("");
-    setCooperationType([]);
-  }
 
   return (
     <div className={styles.form}>
@@ -308,7 +279,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <Button
           href="#"
           variant="outlined"
-          onClick={() => resetForm()}
+          onClick={() => clearAnswers()}
         >
           {language === "fi" ?
             <a>Aloita alusta</a>
