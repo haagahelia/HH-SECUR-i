@@ -6,6 +6,7 @@ import CooperationRiskForm from "./Form/CooperationRiskForm";
 import Navbar from "./Layout/Navbar";
 import InfoBox from "./Layout/InfoBox";
 import Box from "@mui/material/Box";
+import { useFormAnswers } from "../context/FormAnswersContext";
 
 { /*} "Vanha kielivalikko, joka on korvattu NavBarin kielivalinnalla"
 const languages = [
@@ -27,29 +28,13 @@ const languages = [
 
 const FormPage = () => {
   const { user, clearUser } = useCurrentUser();
-  const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
+  const { selectedLanguage, setSelectedLanguage } = useFormAnswers();
 
   return (
     <>
       <Navbar language={selectedLanguage}
         setLanguage={setSelectedLanguage} />
 
-      <div>
-        {user && (
-          <div>
-            {selectedLanguage === "fi" ? (
-              <p>Kirjautuneena {user.username}</p>
-            ) : (
-              <p>Logged in as {user.username}</p>
-            )}
-            {selectedLanguage === "fi" ? (
-              <button onClick={clearUser}>Kirjaudu ulos</button>
-            ) : (
-              <button onClick={clearUser}>Logout</button>
-            )}
-          </div>
-        )}
-      </div>
 
       <div>
         {selectedLanguage === 'fi' ?

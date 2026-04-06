@@ -13,11 +13,6 @@ const UserPage = () => {
         setLanguage={setSelectedLanguage} />
 
       <div>
-        {user && <p>Logged in as {user.username}</p>}
-        {user && <button onClick={clearUser}>Logout</button>}
-      </div>
-
-      <div>
         <h1>User Page</h1>
       </div>
             <div>

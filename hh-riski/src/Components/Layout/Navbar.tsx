@@ -2,6 +2,9 @@ import { AppBar, Toolbar, Typography, Button, Box, Slide, useScrollTrigger } fro
 import { Link as RouterLink } from "react-router-dom";
 import LanguageIcon from "@mui/icons-material/Language";
 import logo from "../../assets/logo.png";
+import { useCurrentUser } from "../../context/UserContext";
+
+import styles from "../../styles.module.css";
 
 type NavbarProps = {
     language: "fi" | "en";
@@ -20,6 +23,7 @@ function HideOnScroll(props: { children: React.ReactElement }) {
 
 
 const Navbar = ({ language, setLanguage }: NavbarProps) => {
+    const { user, clearUser } = useCurrentUser();
     return (
         <>
             {/* YLÄPALKKI */}
@@ -98,6 +102,20 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                         <Button color="inherit" component={RouterLink} to="/user">
                             {language === "fi" ? "Käyttäjä" : "User"}
                         </Button>
+                        {user && (
+                            <div className={styles.center}>
+                                {language === "fi" ? (
+                                    <p>Kirjautuneena {user.username}</p>
+                                ) : (
+                                    <p>Logged in as {user.username}</p>
+                                )}
+                                {language === "fi" ? (
+                                    <button onClick={clearUser}>Kirjaudu ulos</button>
+                                ) : (
+                                    <button onClick={clearUser}>Logout</button>
+                                )}
+                            </div>
+                        )}
                     </Box>
                 </Toolbar>
             </AppBar>

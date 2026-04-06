@@ -22,9 +22,26 @@
     align-items: center;
 }
 
+.left {
+    gap: 20px;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+}
+
 .formlist {
     li::marker {
         color: red;
         content: "* ";
     }
+}
+
+.results {
+    div {
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+        border-bottom-color: #837D7D;
+        padding: 10px
+    }
+
 }
