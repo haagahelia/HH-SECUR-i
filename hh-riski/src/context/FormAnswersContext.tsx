@@ -1,6 +1,8 @@
 import { useState, createContext, useContext } from "react";
 
 type FormAnswersContextValues = {
+    selectedLanguage: "fi" | "en";
+    setSelectedLanguage: React.Dispatch<React.SetStateAction<"fi" | "en">>;
     selectedCountry: string
     setSelectedCountry: React.Dispatch<React.SetStateAction<string>>;
     selectedOrganization: string;
@@ -56,6 +58,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const [dualUse, setDualUse] = useState("");
     const [ethics, setEthics] = useState("");
     const [cooperationType, setCooperationType] = useState<string[]>([]);
+    const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
 
     const clearAnswers = () => {
         setSelectedCountry("");
@@ -79,7 +82,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     return (
         <FormAnswersContext.Provider value={{
-            selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, projectName, setProjectName,
+            selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, projectName, setProjectName,
             projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType,
             contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
             cooperationType, setCooperationType, clearAnswers

@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCooperationType, fetchCountries, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
 
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
 import RiskSummary from "./RiskSummary";
 import { sortElements } from "../../util/utils";
+import { Link as RouterLink } from "react-router-dom";
 
 import type { Country, Organization, Question } from "../../types";
 import styles from "../../styles.module.css";
@@ -38,7 +38,6 @@ const cooperationTypeData: Question = fetchCooperationType();
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   
-  //const [selectedCountry, setSelectedCountry] = useState("fi");
   const { selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, projectName, setProjectName,
             projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType,
             contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
@@ -269,6 +268,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
       <div className={styles.center}>
         <Button
           variant="outlined"
+          component={RouterLink} to="/results"
         >
           {language === "fi" ?
             <a>Tallenna</a>

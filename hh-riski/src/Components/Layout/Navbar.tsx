@@ -78,7 +78,7 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
-            
+
             {/* ALAPALKKI */}
             <AppBar
                 position="fixed"
