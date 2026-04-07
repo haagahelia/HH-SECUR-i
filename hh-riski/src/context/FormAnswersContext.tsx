@@ -77,6 +77,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setDualUse("");
         setEthics("");
         setCooperationType([]);
+        window.scrollTo(0, 0);
     }
 
 

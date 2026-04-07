@@ -1,10 +1,11 @@
 import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCooperationType, fetchCountries, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
 
+import { useState } from "react";
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
 import RiskSummary from "./RiskSummary";
 import { sortElements } from "../../util/utils";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
 
 import type { Country, Organization, Question } from "../../types";
 import styles from "../../styles.module.css";
@@ -37,11 +38,11 @@ const cooperationTypeData: Question = fetchCooperationType();
 
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
-  
+
   const { selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, projectName, setProjectName,
-            projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType,
-            contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
-            cooperationType, setCooperationType, clearAnswers } = useFormAnswers();
+    projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType,
+    contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
+    cooperationType, setCooperationType, clearAnswers } = useFormAnswers();
 
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry
@@ -52,6 +53,29 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     (country) => country.id === selectedCountry
   );
   const sortedCountries = sortElements(countries, language);
+
+  const navigate = useNavigate();
+
+  const saveForm = () => {
+    if (formFilled()) {
+      navigate("/results");
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }
+
+  const formFilled = () => {
+    const values = [selectedCountry, selectedOrganization, duration, hhRole, consortium, history, organizationType, contractStatus, funding, liability, personalInformation, dualUse, ethics]
+    for (let i = 0; i < values.length; i++) {
+      if (values[i].trim() === "") {
+        return false;
+      }
+    }
+    if (cooperationType.length < 1) {
+      return false;
+    }
+    return true;
+  }
 
   return (
     <div className={styles.form}>
@@ -271,13 +295,22 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           component={RouterLink} to="/results"
         >
           {language === "fi" ?
+            <a>Temp: tallenna täyttämättä</a>
+            :
+            <a>Temp: save unfilled</a>
+          }
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={() => saveForm()}
+        >
+          {language === "fi" ?
             <a>Tallenna</a>
             :
             <a>Save</a>
           }
         </Button>
         <Button
-          href="#"
           variant="outlined"
           onClick={() => clearAnswers()}
         >

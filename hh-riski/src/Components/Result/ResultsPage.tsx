@@ -1,17 +1,32 @@
 
-import { useState } from "react";
 import { useCurrentUser } from "../../context/UserContext";
 
 import Navbar from ".././Layout/Navbar";
-import InfoBox from ".././Layout/InfoBox";
-import Box from "@mui/material/Box";
 import { useFormAnswers } from "../../context/FormAnswersContext";
 import { Button } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-
-import styles from "../../styles.module.css";
 import { West } from "@mui/icons-material";
 
+import styles from "../../styles.module.css";
+import type { Country, Organization, Question } from "../../types";
+
+import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCooperationType, fetchCountries, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
+
+
+const countries: Country[] = fetchCountries();
+const organizations: Organization[] = fetchOrganizations();
+const hhRoleQuestionData: Question = fetchHhRole();
+const consortiumQuestionData: Question = fetchConsortiumType();
+const historyQuestionData: Question = fetchCooperationHistory();
+const organizationTypeData: Question = fetchOrganizationType();
+const contractInfoData: Question = fetchContractInfo();
+const fundingData: Question = fetchFunding();
+const liabilityData: Question = fetchLiability();
+const personalData: Question = fetchPersonalInformation();
+const dualUseData: Question = fetchDualUse();
+const ethicsData: Question = fetchEthicsAssessment();
+const durationData: Question = fetchDuration();
+const cooperationTypeData: Question = fetchCooperationType();
 
 const ResultsPage = () => {
     const { user, clearUser } = useCurrentUser();
@@ -41,7 +56,6 @@ const ResultsPage = () => {
                         <Button
                             component={RouterLink} to="/"
                             variant="outlined"
-                            onClick={() => clearAnswers()}
                         >
                             {selectedLanguage === "fi" ?
                                 <a>Muokkaa</a>
