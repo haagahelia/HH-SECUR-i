@@ -3,7 +3,7 @@ import { useCurrentUser } from "../../context/UserContext";
 
 import Navbar from ".././Layout/Navbar";
 import { useFormAnswers } from "../../context/FormAnswersContext";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
@@ -39,52 +39,56 @@ const ResultsPage = () => {
 
             <div className={styles.results}>
 
-                <div>
-                    <div className={styles.left}>
-                        <Button
-                            variant="outlined"
-                            onClick={clearAnswers}
-                            component={RouterLink} to="/"
-                            startIcon={<West />}
-                        >
-                            {selectedLanguage === "fi" ?
-                                <a>Luo uusi riskiarvio</a>
-                                :
-                                <a>Create New Risk Assessment</a>
-                            }
-                        </Button>
-                        <Button
-                            component={RouterLink} to="/"
-                            variant="outlined"
-                        >
-                            {selectedLanguage === "fi" ?
-                                <a>Muokkaa</a>
-                                :
-                                <a>Edit</a>
-                            }
-                        </Button>
-                    </div>
-                    <div>
-                        {selectedLanguage === 'fi' ?
-                            <h1>Yhteistyön riskit</h1>
-                            :
-                            <h1>Collaboration Risks</h1>
-                        }
-                    </div>
 
-                    {user ?
-                        (
-                            <p>TODO: Sisältökomponentti</p>
-                        )
+                <div className={styles.left}>
+                    <Button
+                        variant="outlined"
+                        onClick={clearAnswers}
+                        component={RouterLink} to="/"
+                        startIcon={<West />}
+                    >
+                        {selectedLanguage === "fi" ?
+                            <a>Luo uusi riskiarvio</a>
+                            :
+                            <a>Create New Risk Assessment</a>
+                        }
+                    </Button>
+                    <Button
+                        component={RouterLink} to="/"
+                        variant="outlined"
+                    >
+                        {selectedLanguage === "fi" ?
+                            <a>Muokkaa</a>
+                            :
+                            <a>Edit</a>
+                        }
+                    </Button>
+                </div>
+                <div>
+                    {selectedLanguage === 'fi' ?
+                        <h1>Yhteistyön riskit</h1>
                         :
-                        (
-                            selectedLanguage === "fi" ?
-                                <p>Kirjaudu sisään nähdäksesi sivun</p>
-                                :
-                                <p>Log in to view the page</p>
-                        )
+                        <h1>Collaboration Risks</h1>
                     }
-                </div >
+                </div>
+
+                {user ?
+                    (
+                        <div>
+                            <p>TODO: Sisältökomponentti</p>
+                        </div>
+                    )
+                    :
+                    (
+                        selectedLanguage === "fi" ?
+                            <p>Kirjaudu sisään nähdäksesi sivun</p>
+                            :
+                            <p>Log in to view the page</p>
+                    )
+                }
+                {user &&
+                    <p>TODO: Yhteenvetokomponentti</p>
+                }
             </div>
         </>
     );

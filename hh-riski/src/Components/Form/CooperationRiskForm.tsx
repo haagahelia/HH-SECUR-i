@@ -65,7 +65,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   }
 
   const formFilled = () => {
-    const values = [selectedCountry, selectedOrganization, duration, hhRole, consortium, history, organizationType, contractStatus, funding, liability, personalInformation, dualUse, ethics]
+    const values = [projectName, selectedCountry, selectedOrganization, duration, hhRole, consortium, history, organizationType, contractStatus, funding, liability, personalInformation, dualUse, ethics]
     for (let i = 0; i < values.length; i++) {
       if (values[i].trim() === "") {
         return false;
@@ -100,6 +100,16 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             */
       >
         <ul className={styles.formlist}>
+          <li>
+            <label>
+              {language === "fi" ? "Projektin nimi" : "Project name"}
+            </label>
+            <input
+              type="text"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+            />
+          </li>
           <li>
             <SingleChoice question={hhRoleQuestionData.question}
               answers={hhRoleQuestionData.answers}
@@ -227,6 +237,23 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
               onChange={(value) => {
                 setDuration(value);
               }} />
+          </li>
+          <li>
+            <label>
+              {language === "fi" ? "Lisätietoja" : "Additional Information"}
+            </label>
+            <textarea
+              rows={5}
+              cols={120}
+              placeholder={
+                language === "fi" ?
+                "Tähän kenttään voi esimerkiksi kirjoittaa tärkeitä lisätietoja yhteistyöstä."
+                :
+                "In this field, you can enter important additional information about the collaboration."
+              }
+              value={projectDescription}
+              onChange={(e) => setProjectDescription(e.target.value)}
+            />
           </li>
         </ul>
       </FormSection>
