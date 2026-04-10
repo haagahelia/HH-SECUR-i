@@ -13,6 +13,7 @@
     border-width: 2px;
     border-style: solid;
     border-color: black;
+
     label {
         display: block;
     }
@@ -45,5 +46,31 @@
         border-bottom-style: solid;
         border-bottom-color: #837D7D;
         padding: 10px
+    }
+}
+
+.resultsSummary {
+    div {
+        border-left-width: 1px;
+        border-left-style: solid;
+        margin-top: 10px;
+        margin-left: 10px;
+        padding-left: 20px;
+        text-align: left;
+    }
+
+}
+
+.summaryList {
+    margin-bottom: 50px;
+    li::marker {
+        content: "";
+    }
+    p {
+        margin: 0;
+        padding: 0;
+    }
+    li {
+        margin-bottom: 10px;
     }
 }
