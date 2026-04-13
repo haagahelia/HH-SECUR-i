@@ -1,9 +1,9 @@
 
 import { delay } from "./utils";
-import type { Question } from "../types";
+import type { Country, Question } from "../types";
 
 //Temporary data sources
-const countries = [{
+const countries: Country[] = [{
     id: 'fi',
     name: {
         fi: 'Suomi',

@@ -11,13 +11,13 @@ export type Country = {
         en: string
     },
     risk: {
-        corruption: number,
-        security: number,
-        academicFreedom: number,
-        development: number,
-        GDPR: number,
-        sanctions: number,
-        ruleOfLaw: number
+        corruption: 1 | 2 | 3,
+        security: 1 | 2 | 3,
+        academicFreedom: 1 | 2 | 3,
+        development: 1 | 2 | 3,
+        GDPR: 1 | 2 | 3,
+        sanctions: 1 | 2 | 3,
+        ruleOfLaw: 1 | 2 | 3
     }
 }
 

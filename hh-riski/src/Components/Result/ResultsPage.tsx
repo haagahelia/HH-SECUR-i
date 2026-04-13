@@ -11,7 +11,9 @@ import styles from "../../styles.module.css";
 import type { Country, Organization, Question } from "../../types";
 
 import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCooperationType, fetchCountries, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
-import SingleQuestionSummary from "./SingleSummary";
+import SingleQuestionSummary from "./SingleQuestionSummary";
+import { useState } from "react";
+import CountryRiskAssessment from "./CountryRiskAssessment";
 
 
 const countries: Country[] = fetchCountries();
@@ -35,6 +37,7 @@ const ResultsPage = () => {
         projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType,
         contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
         cooperationType, setCooperationType, clearAnswers } = useFormAnswers();
+    const [country, setCountry] = useState(countries.find((country) => country.id === selectedCountry))
 
     return (
         <>
@@ -75,22 +78,25 @@ const ResultsPage = () => {
                         <h1>Collaboration Risks</h1>
                     }
                 </div>
-
-                {user ?
-                    (
-                        <div>
-                            <p>TODO: Sisältökomponentti</p>
-                        </div>
-                    )
-                    :
-                    (
-                        selectedLanguage === "fi" ?
-                            <p>Kirjaudu sisään nähdäksesi sivun</p>
-                            :
-                            <p>Log in to view the page</p>
-                    )
-                }
             </div>
+
+            {user ?
+                (
+                    <div className={styles.resultsCountry}>
+                        <CountryRiskAssessment
+                            language={selectedLanguage}
+                            country={country}
+                        />
+                    </div>
+                )
+                :
+                (
+                    selectedLanguage === "fi" ?
+                        <p>Kirjaudu sisään nähdäksesi sivun</p>
+                        :
+                        <p>Log in to view the page</p>
+                )
+            }
             {user &&
                 <div className={styles.resultsSummary}>
                     <div>

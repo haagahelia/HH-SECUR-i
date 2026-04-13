@@ -63,14 +63,53 @@
 
 .summaryList {
     margin-bottom: 50px;
+
     li::marker {
         content: "";
     }
+
     p {
         margin: 0;
         padding: 0;
     }
+
     li {
         margin-bottom: 10px;
     }
+}
+
+.resultsCountry {
+    div {
+        text-align: left;
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+        border-bottom-color: #837D7D;
+    }
+
+    li::marker {
+        content: "";
+    }
+
+    li {
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        margin-top: 10px;
+    }
+
+    p {
+        display: inline-block;
+        min-width: 300px;
+        padding-left: 20px;
+    }
+
+    li p {
+        display: inline-block;
+        min-width: 260px;
+        padding-left: 20px;
+    }
+
+    h3 {
+        padding-left: 20px;
+    }
+
 }

@@ -80,7 +80,6 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
         window.scrollTo(0, 0);
     }
 
-
     return (
         <FormAnswersContext.Provider value={{
             selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, projectName, setProjectName,
