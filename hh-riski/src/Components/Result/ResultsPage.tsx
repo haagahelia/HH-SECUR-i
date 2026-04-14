@@ -87,7 +87,29 @@ const ResultsPage = () => {
     const saveAssessment = () => {
         if (!user) return;
 
-        const riskLevel: 1 | 2 | 3 = 2; // temporary until real calculation exists
+        const getAverageCountryRisk = (country?: Country): 1 | 2 | 3 => {
+            if (!country) return 1;
+
+            const values: number[] = [
+                country.risk.corruption,
+                country.risk.security,
+                country.risk.academicFreedom,
+                country.risk.development,
+                country.risk.GDPR,
+                country.risk.sanctions,
+                country.risk.ruleOfLaw,
+            ];
+
+            const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
+
+
+
+            if (avg < 1.67) return 1;
+            if (avg < 2.34) return 2;
+            return 3;
+        };
+
+        const riskLevel = getAverageCountryRisk(country);
 
         // TEMPORARY RISK LEVEL CALCULATION - replace with mock logic
         /* let riskLevel: 1 | 2 | 3 = 1;
