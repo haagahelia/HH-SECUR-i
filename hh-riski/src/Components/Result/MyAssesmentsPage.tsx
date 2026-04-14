@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
   Paper,
+  TableSortLabel
 } from "@mui/material";
 import { DeleteOutline, Search, West } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -48,8 +49,10 @@ type Assessment = {
   };
 };
 
+
+
 const getRowColor = (level: number) => {
-  if (level === 1) return "#cfeecf";
+  if (level === 1) return "#75da4e";
   if (level === 2) return "#eef0bf";
   if (level === 3) return "#f3d0d0";
   return "#f3f4f6";
@@ -57,7 +60,7 @@ const getRowColor = (level: number) => {
 
 const getRiskCircleColor = (level: number) => {
   if (level === 1) return "#44b12f";
-  if (level === 2) return "#e5de00";
+  if (level === 2) return "#d4d161";
   if (level === 3) return "#e00000";
   return "#9ca3af";
 };
@@ -97,6 +100,15 @@ const MyAssessmentsPage = () => {
     setEthics,
     setCooperationType,
   } = useFormAnswers();
+
+ const [orderBy, setOrderBy] = useState<"projectName" | "createdAt" | "riskLevel">("createdAt");
+  const [order, setOrder] = useState<"asc" | "desc">("desc");
+
+  const handleSort = (column: "projectName" | "createdAt" | "riskLevel") => {
+    const isAsc = orderBy === column && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(column);
+  };
 
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [search, setSearch] = useState("");
@@ -145,11 +157,27 @@ const MyAssessmentsPage = () => {
   };
 
   const filteredAssessments = useMemo(() => {
-    return assessments.filter((item) =>
-      item.projectName.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [assessments, search]);
+  const filtered = assessments.filter((item) =>
+    item.projectName.toLowerCase().includes(search.toLowerCase())
+  );
 
+  const sorted = [...filtered].sort((a, b) => {
+    let comparison = 0;
+
+    if (orderBy === "projectName") {
+      comparison = a.projectName.localeCompare(b.projectName);
+    } else if (orderBy === "createdAt") {
+      comparison =
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    } else if (orderBy === "riskLevel") {
+      comparison = a.riskLevel - b.riskLevel;
+    }
+
+    return order === "asc" ? comparison : -comparison;
+  });
+
+  return sorted;
+}, [assessments, search, orderBy, order]);
   return (
     <>
       <Navbar language={selectedLanguage} setLanguage={setSelectedLanguage} />
@@ -193,7 +221,7 @@ const MyAssessmentsPage = () => {
         </Box>
 
         <Box sx={{ px: 4, py: 4 }}>
-          <Typography variant="h4" sx={{ fontWeight: 400, mb: 3 }}>
+          <Typography variant="h4" sx={{color: "#1f1f1f", fontWeight: 400, mb: 3 }}>
             {selectedLanguage === "fi"
               ? "Aikaisemmat riskiarviosi"
               : "Previous risk assessments"}
@@ -254,19 +282,37 @@ const MyAssessmentsPage = () => {
                   }}
                 >
                   <TableCell>
-                    {selectedLanguage === "fi"
-                      ? "Yhteistyöprojektin nimi"
-                      : "Project name"}
+                    <TableSortLabel
+                      active={orderBy === "projectName"}
+                      direction={orderBy === "projectName" ? order : "asc"}
+                      onClick={() => handleSort("projectName")}
+                    >
+                      {selectedLanguage === "fi"
+                        ? "Yhteistyöprojektin nimi"
+                        : "Project name"}
+                    </TableSortLabel>
                   </TableCell>
 
                   <TableCell>
-                    {selectedLanguage === "fi" ? "Päivämäärä ↕" : "Date ↕"}
+                    <TableSortLabel
+                      active={orderBy === "createdAt"}
+                      direction={orderBy === "createdAt" ? order : "asc"}
+                      onClick={() => handleSort("createdAt")}
+                    >
+                      {selectedLanguage === "fi" ? "Päivämäärä" : "Date ↕"}
+                    </TableSortLabel>
                   </TableCell>
 
                   <TableCell>
-                    {selectedLanguage === "fi"
-                      ? "Kokonaisriskitaso"
-                      : "Overall risk level"}
+                    <TableSortLabel
+                      active={orderBy === "riskLevel"}
+                      direction={orderBy === "riskLevel" ? order : "asc"}
+                      onClick={() => handleSort("riskLevel")}
+                    >
+                      {selectedLanguage === "fi"
+                        ? "Kokonaisriskitaso"
+                        : "Overall risk level"}
+                    </TableSortLabel>
                   </TableCell>
 
                   <TableCell>
@@ -289,7 +335,7 @@ const MyAssessmentsPage = () => {
                       sx={{
                         backgroundColor: getRowColor(item.riskLevel),
                         "& td": {
-                          borderBottom: "1px solid rgba(0,0,0,0.06)",
+                          borderBottom: "2px solid #fbf6f6",
                           py: 2,
                         },
                       }}
