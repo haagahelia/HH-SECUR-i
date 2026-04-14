@@ -1,6 +1,6 @@
 
 import { delay } from "./utils";
-import type { Country, Question } from "../types";
+import type { Country, CountryRaw, Question } from "../types";
 
 //Temporary data sources
 const countries: Country[] = [{
@@ -13,6 +13,7 @@ const countries: Country[] = [{
         corruption: 1,
         security: 1,
         academicFreedom: 1,
+        politicalStability: 1,
         development: 1,
         GDPR: 1,
         sanctions: 1,
@@ -30,6 +31,7 @@ const countries: Country[] = [{
         corruption: 1,
         security: 1,
         academicFreedom: 1,
+        politicalStability: 1,
         development: 1,
         GDPR: 1,
         sanctions: 1,
@@ -46,6 +48,7 @@ const countries: Country[] = [{
         corruption: 1,
         security: 1,
         academicFreedom: 2,
+        politicalStability: 1,
         development: 2,
         GDPR: 1,
         sanctions: 1,
@@ -63,6 +66,7 @@ const countries: Country[] = [{
         corruption: 2,
         security: 3,
         academicFreedom: 2,
+        politicalStability: 3,
         development: 3,
         GDPR: 3,
         sanctions: 2,

@@ -14,10 +14,29 @@ export type Country = {
         corruption: 1 | 2 | 3,
         security: 1 | 2 | 3,
         academicFreedom: 1 | 2 | 3,
+        politicalStability: 1 | 2 | 3, 
         development: 1 | 2 | 3,
         GDPR: 1 | 2 | 3,
         sanctions: 1 | 2 | 3,
         ruleOfLaw: 1 | 2 | 3
+    }
+}
+
+export type CountryRaw = {
+        id: string
+    name: {
+        fi: string
+        en: string
+    },
+    risk: {
+        corruption: number,
+        security: number,
+        academicFreedom: number,
+        politicalStability: number, 
+        development: number,
+        GDPR: boolean,
+        sanctions: boolean,
+        ruleOfLaw: number
     }
 }
 

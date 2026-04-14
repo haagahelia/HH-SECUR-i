@@ -12,6 +12,10 @@ const CountryRiskAssessment = ({
 
     const results = {
         overall: {
+            title: {
+                fi: "Yhteistyön kokonaisriskiarvio",
+                en: "Overall Collaboration Risk Level"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -26,6 +30,10 @@ const CountryRiskAssessment = ({
             }
         },
         corruption: {
+            title: {
+                fi: "Korruptio",
+                en: "Corruption"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -40,6 +48,10 @@ const CountryRiskAssessment = ({
             }
         },
         security: {
+            title: {
+                fi: "Turvallisuustaso",
+                en: "Security Level"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -54,6 +66,10 @@ const CountryRiskAssessment = ({
             }
         },
         academic: {
+            title: {
+                fi: "Akateeminen vapaus",
+                en: "Academic Freedom"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -68,6 +84,10 @@ const CountryRiskAssessment = ({
             }
         },
         political: {
+            title: {
+                fi: "Poliittinen vakaus",
+                en: "Political Stability"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -82,6 +102,10 @@ const CountryRiskAssessment = ({
             }
         },
         development: {
+            title: {
+                fi: "Maan kehittyineisyys",
+                en: "Country Development Level"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -96,6 +120,10 @@ const CountryRiskAssessment = ({
             }
         },
         gdpr: {
+            title: {
+                fi: "GDPR",
+                en: "GDPR"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -110,6 +138,10 @@ const CountryRiskAssessment = ({
             }
         },
         sanctions: {
+            title: {
+                fi: "Pakotteet",
+                en: "Sanctions"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -124,6 +156,10 @@ const CountryRiskAssessment = ({
             }
         },
         law: {
+            title: {
+                fi: "Oikeusvalitio",
+                en: "Rule of Law"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -154,7 +190,7 @@ const CountryRiskAssessment = ({
     return (
 
         <>
-            {country &&
+            {country && language &&
                 <div>
                     <div>
                         {language === "fi" ?
@@ -162,85 +198,44 @@ const CountryRiskAssessment = ({
                             :
                             <h3>Collaboration Risks</h3>
                         }
-                        {language === "fi" ?
-                            <p><b>Yhteistyön kokonaisriskitaso</b></p>
-                            :
-                            <p><b>Overall Collaboration Risk Level</b></p>
-                        }
+                        <p><b>{results.overall.title[language]}</b></p>
                         <p>{riskSymbol(1)}{results.overall[1][language]}</p>
                     </div>
-                    {language === "fi" ?
-                        <ul>
-                            <li>
-                                <p>Korruptio</p>
-                                <p>{riskSymbol(country.risk.corruption)}<i>{results.corruption[country.risk.corruption][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>Turvallisuustaso</p>
-                                <p>{riskSymbol(country.risk.security)}<i>{results.security[country.risk.security][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>Akateeminen vapaus</p>
-                                <p>{riskSymbol(country.risk.academicFreedom)}<i>{results.academic[country.risk.academicFreedom][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>Poliittinen vakaus</p>
-                                <p><i>TODO: add to Country type</i></p>
-                            </li>
-                            <li>
-                                <p>Maan kehittyineisyys</p>
-                                <p>{riskSymbol(country.risk.development)}<i>{results.development[country.risk.development][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>GDPR</p>
 
-                                <p>{riskSymbol(country.risk.GDPR)}<i>{results.gdpr[country.risk.GDPR][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>Pakotteet</p>
-                                <p>{riskSymbol(country.risk.sanctions)}<i>{results.sanctions[country.risk.sanctions][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>Oikeusvalitio</p>
-                                <p>{riskSymbol(country.risk.ruleOfLaw)}<i>{results.law[country.risk.ruleOfLaw][language]}</i></p>
-                            </li>
-                        </ul>
-                        :
-                        <ul>
-                            <li>
-                                <p>Corruption</p>
-                                <p>{riskSymbol(country.risk.corruption)}<i>{results.corruption[country.risk.corruption][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>Security Level</p>
-                                <p>{riskSymbol(country.risk.security)}<i>{results.security[country.risk.security][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>Academic Freedom</p>
-                                <p>{riskSymbol(country.risk.academicFreedom)}<i>{results.academic[country.risk.academicFreedom][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>Political Stability</p>
-                                <p><i>TODO: add to Country type</i></p>
-                            </li>
-                            <li>
-                                <p>Country Development Level</p>
-                                <p>{riskSymbol(country.risk.development)}<i>{results.development[country.risk.development][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>GDPR</p>
-                                <p>{riskSymbol(country.risk.GDPR)}<i>{results.gdpr[country.risk.GDPR][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>Sanctions</p>
-                                <p>{riskSymbol(country.risk.sanctions)}<i>{results.sanctions[country.risk.sanctions][language]}</i></p>
-                            </li>
-                            <li>
-                                <p>Rule of Law</p>
-                                <p>{riskSymbol(country.risk.ruleOfLaw)}<i>{results.law[country.risk.ruleOfLaw][language]}</i></p>
-                            </li>
-                        </ul>
-                    }
+                    <ul>
+                        <li>
+                            <p>{results.corruption.title[language]}</p>
+                            <p>{riskSymbol(country.risk.corruption)}<i>{results.corruption[country.risk.corruption][language]}</i></p>
+                        </li>
+                        <li>
+                            <p>{results.security.title[language]}</p>
+                            <p>{riskSymbol(country.risk.security)}<i>{results.security[country.risk.security][language]}</i></p>
+                        </li>
+                        <li>
+                            <p>{results.academic.title[language]}</p>
+                            <p>{riskSymbol(country.risk.academicFreedom)}<i>{results.academic[country.risk.academicFreedom][language]}</i></p>
+                        </li>
+                        <li>
+                            <p>{results.political.title[language]}</p>
+                            <p>{riskSymbol(country.risk.politicalStability)}<i>{results.political[country.risk.politicalStability][language]}</i></p>
+                        </li>
+                        <li>
+                            <p>{results.development.title[language]}</p>
+                            <p>{riskSymbol(country.risk.development)}<i>{results.development[country.risk.development][language]}</i></p>
+                        </li>
+                        <li>
+                            <p>{results.gdpr.title[language]}</p>
+                            <p>{riskSymbol(country.risk.GDPR)}<i>{results.gdpr[country.risk.GDPR][language]}</i></p>
+                        </li>
+                        <li>
+                            <p>{results.sanctions.title[language]}</p>
+                            <p>{riskSymbol(country.risk.sanctions)}<i>{results.sanctions[country.risk.sanctions][language]}</i></p>
+                        </li>
+                        <li>
+                            <p>{results.law.title[language]}</p>
+                            <p>{riskSymbol(country.risk.ruleOfLaw)}<i>{results.law[country.risk.ruleOfLaw][language]}</i></p>
+                        </li>
+                    </ul>
                 </div>
             }
         </ >
