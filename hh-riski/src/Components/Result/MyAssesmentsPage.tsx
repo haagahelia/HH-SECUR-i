@@ -136,10 +136,7 @@ const MyAssessmentsPage = () => {
     navigate("/results");
   };
 
-  const editAssessment = (assessment: Assessment) => {
-    applyAssessmentToContext(assessment);
-    navigate("/");
-  };
+
 
   const deleteAssessment = (id: string) => {
     const updated = assessments.filter((item) => item.id !== id);

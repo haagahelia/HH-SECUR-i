@@ -49,26 +49,26 @@ const ResultsPage = () => {
     const { user } = useCurrentUser();
 
     const {
-    selectedLanguage,
-    setSelectedLanguage,
-    selectedCountry,
-    selectedOrganization,
-    projectName,
-    projectDescription,
-    hhRole,
-    consortium,
-    history,
-    organizationType,
-    contractStatus,
-    funding,
-    liability,
-    personalInformation,
-    dualUse,
-    ethics,
-    cooperationType,
-    duration,
-    clearAnswers,
-} = useFormAnswers();
+        selectedLanguage,
+        setSelectedLanguage,
+        selectedCountry,
+        selectedOrganization,
+        projectName,
+        projectDescription,
+        hhRole,
+        consortium,
+        history,
+        organizationType,
+        contractStatus,
+        funding,
+        liability,
+        personalInformation,
+        dualUse,
+        ethics,
+        cooperationType,
+        duration,
+        clearAnswers,
+    } = useFormAnswers();
 
     const country = countries.find((country) => country.id === selectedCountry);
 
@@ -82,48 +82,48 @@ const ResultsPage = () => {
 
 
     const saveAssessment = () => {
-    if (!user) return;
+        if (!user) return;
 
-    const riskLevel: 1 | 2 | 3 = 2; // temporary until real calculation exists
+        const riskLevel: 1 | 2 | 3 = 2; // temporary until real calculation exists
 
-    const data = {
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-        riskLevel,
+        const data = {
+            id: crypto.randomUUID(),
+            createdAt: new Date().toISOString(),
+            riskLevel,
 
-        projectName,
-        projectDescription,
-        selectedCountry,
-        selectedOrganization,
-        duration,
-        hhRole,
-        consortium,
-        history,
-        organizationType,
-        contractStatus,
-        funding,
-        liability,
-        personalInformation,
-        dualUse,
-        ethics,
-        cooperationType,
-        selectedLanguage,
+            projectName,
+            projectDescription,
+            selectedCountry,
+            selectedOrganization,
+            duration,
+            hhRole,
+            consortium,
+            history,
+            organizationType,
+            contractStatus,
+            funding,
+            liability,
+            personalInformation,
+            dualUse,
+            ethics,
+            cooperationType,
+            selectedLanguage,
 
-        savedBy: {
-            id: user.id,
-            username: user.username,
-        },
+            savedBy: {
+                id: user.id,
+                username: user.username,
+            },
+        };
+
+        const existing = JSON.parse(localStorage.getItem("assessments") || "[]");
+
+        localStorage.setItem(
+            "assessments",
+            JSON.stringify([...existing, data])
+        );
+
+        console.log("Saved assessment:", data);
     };
-
-    const existing = JSON.parse(localStorage.getItem("assessments") || "[]");
-
-    localStorage.setItem(
-        "assessments",
-        JSON.stringify([...existing, data])
-    );
-
-    console.log("Saved assessment:", data);
-};
 
     return (
         <>
@@ -332,11 +332,7 @@ const ResultsPage = () => {
 
                             <li>
                                 <p><b>{selectedLanguage === "fi" ? "Lisätiedot" : "Additional Information"}</b></p>
-                                <p>
-                                    {selectedLanguage === "fi"
-                                        ? "Ei lisätietoja tässä versiossa."
-                                        : "No additional information in this version."}
-                                </p>
+                                <p>{projectDescription || "-"}</p>
                             </li>
                         </ul>
 
