@@ -151,7 +151,84 @@ const countriesRaw: CountryRaw[] = [
     },
 ]
 
-const organizations = [
+type OrganizationRaw = {
+  id: string;
+  countryId: string;
+  name: {
+    fi: string;
+    en: string;
+  };
+  type?: string;
+};
+
+
+const organizations: OrganizationRaw[] = [
+  {
+    id: "halmstad",
+    countryId: "swe",
+    name: {
+      fi: "Halmstadin yliopisto",
+      en: "Halmstad University",
+    },
+    type: "university",
+  },
+  {
+    id: "stockholm",
+    countryId: "swe",
+    name: {
+      fi: "Tukholman yliopisto",
+      en: "Stockholm University",
+    },
+    type: "university",
+  },
+  {
+    id: "harvard",
+    countryId: "usa",
+    name: {
+      fi: "Harvardin yliopisto",
+      en: "Harvard University",
+    },
+    type: "university",
+  },
+  {
+    id: "mit",
+    countryId: "usa",
+    name: {
+      fi: "MIT",
+      en: "MIT",
+    },
+    type: "university",
+  },
+  {
+    id: "moldova-state",
+    countryId: "mda",
+    name: {
+      fi: "Moldovan valtionyliopisto",
+      en: "Moldova State University",
+    },
+    type: "university",
+  },
+  {
+    id: "peking",
+    countryId: "chn",
+    name: {
+      fi: "Pekingin yliopisto",
+      en: "Peking University",
+    },
+    type: "university",
+  },
+  {
+    id: "tsinghua",
+    countryId: "chn",
+    name: {
+      fi: "Tsinghuan yliopisto",
+      en: "Tsinghua University",
+    },
+    type: "university",
+  },
+];
+
+/* const organizations = [
     {
         id: 'HH',
         countryId: 'fi',
@@ -184,7 +261,7 @@ const organizations = [
             en: 'University of Stockholm'
         }
     }
-]
+] */
 
 //Change to async with simulated delay once FormPage lists have been updated to support that
 /*
