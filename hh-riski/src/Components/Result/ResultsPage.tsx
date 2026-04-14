@@ -86,6 +86,24 @@ const ResultsPage = () => {
 
         const riskLevel: 1 | 2 | 3 = 2; // temporary until real calculation exists
 
+        // TEMPORARY RISK LEVEL CALCULATION - replace with mock logic
+        /* let riskLevel: 1 | 2 | 3 = 1;
+
+    if (
+        selectedCountry === "ys" ||
+        dualUse === "yes" ||
+        ethics === "5"
+    ) {
+        riskLevel = 3;
+    } else if (
+        selectedCountry === "se" ||
+        funding === "yes" ||
+        personalInformation === "unknown" ||
+        liability === "500.000"
+    ) {
+        riskLevel = 2;
+    } */
+
         const data = {
             id: crypto.randomUUID(),
             createdAt: new Date().toISOString(),
