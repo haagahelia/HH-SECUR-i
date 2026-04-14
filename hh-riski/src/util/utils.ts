@@ -1,6 +1,4 @@
-import { useLocation } from "react-router-dom";
 import type { Country, CountryRaw } from "../types";
-import { useEffect } from "react";
 
 //Artificial delay for async simulations
 export async function delay(ms: number) {
@@ -108,23 +106,3 @@ export function parseCountry(countryRaw: CountryRaw) {
 
     return country;
 }
-
-/*
-    {
-        id: 'swe',
-        name: {
-            fi: 'Ruotsi',
-            en: 'Sweden'
-        },
-        risk: {
-            corruption: 97.64151,
-            security: 1,
-            academicFreedom: 0.94,
-            politicalStability: 73.459717,
-            development: 5,
-            GDPR: true,
-            sanctions: false,
-            ruleOfLaw: 4
-        }
-    },
-*/

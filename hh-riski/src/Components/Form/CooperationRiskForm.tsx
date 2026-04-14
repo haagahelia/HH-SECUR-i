@@ -57,8 +57,18 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
   const navigate = useNavigate();
 
+  const saveFormUnfilled = () => {
+    if (formFilled()) {
+      window.scrollTo(0, 0);
+      navigate("/results");
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }
+
   const saveForm = () => {
     if (formFilled()) {
+      window.scrollTo(0, 0);
       navigate("/results");
     } else {
       window.scrollTo(0, 0);
@@ -77,6 +87,8 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     }
     return true;
   }
+
+  const [debug, setDebug] = useState(false);
 
   return (
     <div className={styles.form}>
@@ -248,9 +260,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
               cols={120}
               placeholder={
                 language === "fi" ?
-                "Tähän kenttään voi esimerkiksi kirjoittaa tärkeitä lisätietoja yhteistyöstä."
-                :
-                "In this field, you can enter important additional information about the collaboration."
+                  "Tähän kenttään voi esimerkiksi kirjoittaa tärkeitä lisätietoja yhteistyöstä."
+                  :
+                  "In this field, you can enter important additional information about the collaboration."
               }
               value={projectDescription}
               onChange={(e) => setProjectDescription(e.target.value)}
@@ -260,7 +272,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
       </FormSection>
 
       {
-        selectedCountryData && (
+        selectedCountryData && debug && (
           <FormSection
             title={language === "fi" ? "Kehitysvaiheen elementti: Maan Riskiyhteenveto" : "Temporary element: Country Risk Summary"}
           >
@@ -269,58 +281,60 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         )
       }
 
-      {language === "fi" ?
+      {debug &&
+        (language === "fi" ?
 
-        <div>
-          <h3>Kehitysvaiheen elementti: lomakkeen valinnat</h3>
-          <ul>
-            <li>Maa: {selectedCountry}</li>
-            <li>Organisaatio: {selectedOrganization}</li>
-            <li>Projektin nimi: {projectName}</li>
-            <li>Projektin kuvaus: {projectDescription}</li>
-            <li>Projektin kesto: {duration}</li>
-            <li>HH rooli: {hhRole}</li>
-            <li>Konsortio: {consortium}</li>
-            <li>Historia : {history}</li>
-            <li>Organisaation tyyppi: {organizationType}</li>
-            <li>Sopimus: {contractStatus}</li>
-            <li>Rahoitus: {funding}</li>
-            <li>Vastuu: {liability}</li>
-            <li>Henkilötiedot: {personalInformation}</li>
-            <li>Dual use: {dualUse}</li>
-            <li>Etiikka: {ethics}</li>
-            <li>Yhteistyön tyyppi: {cooperationType}</li>
-          </ul>
-        </div>
-        :
-        <div>
-          <h3>Temporary element: form choices</h3>
-          <ul>
-            <li>Country: {selectedCountry}</li>
-            <li>Organization: {selectedOrganization}</li>
-            <li>Project name: {projectName}</li>
-            <li>Project description: {projectDescription}</li>
-            <li>Project duration: {duration}</li>
-            <li>HH role: {hhRole}</li>
-            <li>Consortium: {consortium}</li>
-            <li>History : {history}</li>
-            <li>Organization type: {organizationType}</li>
-            <li>Agreement: {contractStatus}</li>
-            <li>Funding: {funding}</li>
-            <li>Liability: {liability}</li>
-            <li>Personal information: {personalInformation}</li>
-            <li>Dual use: {dualUse}</li>
-            <li>Ethics: {ethics}</li>
-            <li>Collaboration type: {cooperationType}</li>
-          </ul>
-        </div>
+          <div>
+            <h3>Kehitysvaiheen elementti: lomakkeen valinnat</h3>
+            <ul>
+              <li>Maa: {selectedCountry}</li>
+              <li>Organisaatio: {selectedOrganization}</li>
+              <li>Projektin nimi: {projectName}</li>
+              <li>Projektin kuvaus: {projectDescription}</li>
+              <li>Projektin kesto: {duration}</li>
+              <li>HH rooli: {hhRole}</li>
+              <li>Konsortio: {consortium}</li>
+              <li>Historia : {history}</li>
+              <li>Organisaation tyyppi: {organizationType}</li>
+              <li>Sopimus: {contractStatus}</li>
+              <li>Rahoitus: {funding}</li>
+              <li>Vastuu: {liability}</li>
+              <li>Henkilötiedot: {personalInformation}</li>
+              <li>Dual use: {dualUse}</li>
+              <li>Etiikka: {ethics}</li>
+              <li>Yhteistyön tyyppi: {cooperationType}</li>
+            </ul>
+          </div>
+          :
+          <div>
+            <h3>Temporary element: form choices</h3>
+            <ul>
+              <li>Country: {selectedCountry}</li>
+              <li>Organization: {selectedOrganization}</li>
+              <li>Project name: {projectName}</li>
+              <li>Project description: {projectDescription}</li>
+              <li>Project duration: {duration}</li>
+              <li>HH role: {hhRole}</li>
+              <li>Consortium: {consortium}</li>
+              <li>History : {history}</li>
+              <li>Organization type: {organizationType}</li>
+              <li>Agreement: {contractStatus}</li>
+              <li>Funding: {funding}</li>
+              <li>Liability: {liability}</li>
+              <li>Personal information: {personalInformation}</li>
+              <li>Dual use: {dualUse}</li>
+              <li>Ethics: {ethics}</li>
+              <li>Collaboration type: {cooperationType}</li>
+            </ul>
+          </div>
+        )
       }
 
 
       <div className={styles.center}>
         <Button
           variant="outlined"
-          component={RouterLink} to="/results"
+          onClick={() => saveFormUnfilled()}
         >
           {language === "fi" ?
             <a>Temp: tallenna täyttämättä</a>
