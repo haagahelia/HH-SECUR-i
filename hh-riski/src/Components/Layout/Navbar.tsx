@@ -28,64 +28,84 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
         <>
             {/* YLÄPALKKI */}
             <HideOnScroll>
-                <AppBar
-                    position="fixed"
-                    elevation={0}
-                    sx={{
-                        backgroundColor: "#ffffff",
-                        color: "#000",
-                        borderBottom: "1px solid #ccc",
-                    }}
-                >
-                    <Toolbar sx={{ justifyContent: "space-between" }}>
+  <AppBar
+    position="fixed"
+    elevation={0}
+    sx={{
+      backgroundColor: "#ffffff",
+      color: "#000",
+      borderBottom: "1px solid #ccc",
+    }}
+  >
+    <Toolbar
+      sx={{
+        position: "relative",
+        minHeight: 72,
+        display: "flex",
+        justifyContent: "space-between",
+      }}
+    >
+      {/* Vasen: logo */}
+      <Box sx={{ display: "flex", alignItems: "center", zIndex: 1 }}>
+        <img
+          src={logo}
+          alt="HH-SECUR-i"
+          style={{ height: "50px" }}
+        />
+      </Box>
 
-                        {/* LOGO */}
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <img
-                                src={logo}
-                                alt="HH-SECUR-i"
-                                style={{ height: "50px" }}
-                            />
-                        </Box>
+      {/* Keskelle oikeasti */}
+      <Typography
+        sx={{
+          position: "absolute",
+          left: "50%",
+          transform: "translateX(-50%)",
+          fontWeight: "bold",
+          textAlign: "center",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {language === "fi"
+          ? "KANSAINVÄLISEN YHTEISTYÖN RISKIARVIO"
+          : "RISK ASSESSMENT"}
+      </Typography>
 
+      {/* Oikea puoli */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          ml: "auto",
+          zIndex: 1,
+        }}
+      >
+        <Button component={RouterLink} to="/my-assessments">
+          {language === "fi" ? "Aiemmat raportit" : "Reports"}
+        </Button>
 
-                        <Typography sx={{ fontWeight: "bold", alignItems: "center" }}>
-                            {language === "fi"
-                                ? "KANSAINVÄLISEN YHTEISTYÖN RISKIARVIO"
-                                : "RISK ASSESSMENT"}
-                        </Typography>
-
-                        <Box sx={{ display: "flex", gap: 2 }}>
-                            <Button component={RouterLink} to="/my-assessments">
-                                {language === "fi" ? "Aiemmat raportit" : "Reports"}
-                            </Button>
-                        </Box>
-                        <Box sx={{ display: "flex" }}>
-                            <Button
-                                onClick={() =>
-                                    setLanguage(language === "fi" ? "en" : "fi")
-                                }
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                    color: "#1976d2",
-                                    textTransform: "none",
-                                    padding: "6px 10px",
-                                    borderRadius: "6px",
-                                    "&:hover": {
-                                        backgroundColor: "#f0f7ff",
-                                    },
-                                }}
-                            >
-                                <LanguageIcon fontSize="small" />
-                                {language.toUpperCase()}
-                            </Button>
-                        </Box>
-
-                    </Toolbar>
-                </AppBar>
-            </HideOnScroll>
+        <Button
+          onClick={() => setLanguage(language === "fi" ? "en" : "fi")}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            color: "#1976d2",
+            textTransform: "none",
+            padding: "6px 10px",
+            borderRadius: "6px",
+            "&:hover": {
+              backgroundColor: "#f0f7ff",
+            },
+          }}
+        >
+          <LanguageIcon fontSize="small" />
+          {language.toUpperCase()}
+        </Button>
+      </Box>
+    </Toolbar>
+  </AppBar>
+</HideOnScroll>
 
             {/* ALAPALKKI */}
             <AppBar
