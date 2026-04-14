@@ -1,25 +1,38 @@
-
 import { useCurrentUser } from "../../context/UserContext";
 
-import Navbar from ".././Layout/Navbar";
+import Navbar from "../Layout/Navbar";
 import { useFormAnswers } from "../../context/FormAnswersContext";
-import { Box, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
 import styles from "../../styles.module.css";
 import type { Country, Organization, Question } from "../../types";
 
-import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCooperationType, fetchCountries, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
-import SingleQuestionSummary from "./SingleQuestionSummary";
-import { useState } from "react";
-import CountryRiskAssessment from "./CountryRiskAssessment";
+import {
+    fetchConsortiumType,
+    fetchContractInfo,
+    fetchCooperationHistory,
+    fetchCooperationType,
+    fetchCountries,
+    fetchDualUse,
+    fetchDuration,
+    fetchEthicsAssessment,
+    fetchFunding,
+    fetchHhRole,
+    fetchLiability,
+    fetchOrganizations,
+    fetchOrganizationType,
+    fetchPersonalInformation,
+} from "../../util/fetchData";
 
+import SingleQuestionSummary from "./SingleQuestionSummary";
+import MultiQuestionSummary from "./MultiQuestionSummary";
+import CountryRiskAssessment from "./CountryRiskAssessment";
 
 const countries: Country[] = fetchCountries();
 const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: Question = fetchHhRole();
-const consortiumQuestionData: Question = fetchConsortiumType();
 const historyQuestionData: Question = fetchCooperationHistory();
 const organizationTypeData: Question = fetchOrganizationType();
 const contractInfoData: Question = fetchContractInfo();
@@ -30,97 +43,189 @@ const dualUseData: Question = fetchDualUse();
 const ethicsData: Question = fetchEthicsAssessment();
 const durationData: Question = fetchDuration();
 const cooperationTypeData: Question = fetchCooperationType();
+const consortiumQuestionData: Question = fetchConsortiumType();
 
 const ResultsPage = () => {
-    const { user, clearUser } = useCurrentUser();
-    const { selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, projectName, setProjectName,
-        projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType,
-        contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
-        cooperationType, setCooperationType, clearAnswers } = useFormAnswers();
-    const [country, setCountry] = useState(countries.find((country) => country.id === selectedCountry))
+    const { user } = useCurrentUser();
+
+    const {
+        selectedLanguage,
+        setSelectedLanguage,
+        selectedCountry,
+        selectedOrganization,
+        projectName,
+        projectDescription,
+        hhRole,
+        consortium,
+        history,
+        organizationType,
+        contractStatus,
+        funding,
+        liability,
+        personalInformation,
+        dualUse,
+        ethics,
+        cooperationType,
+        duration,
+        clearAnswers,
+    } = useFormAnswers();
+
+    const country = countries.find((country) => country.id === selectedCountry);
+
+    const selectedCountryData = countries.find(
+        (country) => country.id === selectedCountry
+    );
+
+    const selectedOrganizationData = organizations.find(
+        (organization) => organization.id === selectedOrganization
+    );
+
+
+    const saveAssessment = () => {
+        if (!user) return;
+
+        const riskLevel: 1 | 2 | 3 = 2; // temporary until real calculation exists
+
+        // TEMPORARY RISK LEVEL CALCULATION - replace with mock logic
+        /* let riskLevel: 1 | 2 | 3 = 1;
+
+    if (
+        selectedCountry === "ys" ||
+        dualUse === "yes" ||
+        ethics === "5"
+    ) {
+        riskLevel = 3;
+    } else if (
+        selectedCountry === "se" ||
+        funding === "yes" ||
+        personalInformation === "unknown" ||
+        liability === "500.000"
+    ) {
+        riskLevel = 2;
+    } */
+
+        const data = {
+            id: crypto.randomUUID(),
+            createdAt: new Date().toISOString(),
+            riskLevel,
+
+            projectName,
+            projectDescription,
+            selectedCountry,
+            selectedOrganization,
+            duration,
+            hhRole,
+            consortium,
+            history,
+            organizationType,
+            contractStatus,
+            funding,
+            liability,
+            personalInformation,
+            dualUse,
+            ethics,
+            cooperationType,
+            selectedLanguage,
+
+            savedBy: {
+                id: user.id,
+                username: user.username,
+            },
+        };
+
+        const existing = JSON.parse(localStorage.getItem("assessments") || "[]");
+
+        localStorage.setItem(
+            "assessments",
+            JSON.stringify([...existing, data])
+        );
+
+        console.log("Saved assessment:", data);
+    };
 
     return (
         <>
-            <Navbar language={selectedLanguage}
-                setLanguage={setSelectedLanguage} />
+            <Navbar
+                language={selectedLanguage}
+                setLanguage={setSelectedLanguage}
+            />
 
             <div className={styles.results}>
-
-
                 <div className={styles.left}>
                     <Button
                         variant="outlined"
                         onClick={clearAnswers}
-                        component={RouterLink} to="/"
+                        component={RouterLink}
+                        to="/"
                         startIcon={<West />}
                     >
-                        {selectedLanguage === "fi" ?
-                            <a>Luo uusi riskiarvio</a>
-                            :
-                            <a>Create New Risk Assessment</a>
-                        }
+                        {selectedLanguage === "fi"
+                            ? "Luo uusi riskiarvio"
+                            : "Create New Risk Assessment"}
                     </Button>
+
                     <Button
-                        component={RouterLink} to="/"
+                        component={RouterLink}
+                        to="/"
                         variant="outlined"
                     >
-                        {selectedLanguage === "fi" ?
-                            <a>Muokkaa</a>
-                            :
-                            <a>Edit</a>
-                        }
+                        {selectedLanguage === "fi" ? "Muokkaa" : "Edit"}
+                    </Button>
+                    <Button
+                        onClick={saveAssessment} variant="contained">
+                        {selectedLanguage === "fi" ? "Tallenna" : "Save"}
                     </Button>
                 </div>
+
                 <div>
-                    {selectedLanguage === 'fi' ?
+                    {selectedLanguage === "fi" ? (
                         <h1>Yhteistyön riskit</h1>
-                        :
+                    ) : (
                         <h1>Collaboration Risks</h1>
-                    }
+                    )}
                 </div>
             </div>
 
-            {user ?
-                (
-                    <div className={styles.resultsCountry}>
-                        <CountryRiskAssessment
-                            language={selectedLanguage}
-                            country={country}
-                        />
-                    </div>
+            {user ? (
+                <div className={styles.resultsCountry}>
+                    <CountryRiskAssessment
+                        language={selectedLanguage}
+                        country={country}
+                    />
+                </div>
+            ) : (
+                selectedLanguage === "fi" ? (
+                    <p>Kirjaudu sisään nähdäksesi sivun</p>
+                ) : (
+                    <p>Log in to view the page</p>
                 )
-                :
-                (
-                    selectedLanguage === "fi" ?
-                        <p>Kirjaudu sisään nähdäksesi sivun</p>
-                        :
-                        <p>Log in to view the page</p>
-                )
-            }
-            {user &&
+            )}
+
+            {user && (
                 <div className={styles.resultsSummary}>
                     <div>
-                        {selectedLanguage === "fi" ?
+                        {selectedLanguage === "fi" ? (
                             <h4>Yhteenveto valinnoistasi</h4>
-                            :
-                            <h4>Selection Summary</h4>}
+                        ) : (
+                            <h4>Selection Summary</h4>
+                        )}
+
                         <ul className={styles.summaryList}>
                             <li>
-                                <p><b>TODO:</b></p>
-                                <p>Form Respondant</p>
+                                <p><b>{selectedLanguage === "fi" ? "Lomakkeen täyttäjä" : "Form Respondent"}</b></p>
+                                <p>{user.username}</p>
                             </li>
+
                             <li>
-                                <p><b>TODO:</b></p>
-                                <p>Project Owner</p>
+                                <p><b>{selectedLanguage === "fi" ? "Projektin omistaja" : "Project Owner"}</b></p>
+                                <p>{user.username}</p>
                             </li>
+
                             <li>
-                                {selectedLanguage === "fi" ?
-                                    <p><b>Yhteistyön/yhteistyöprojektin nimi</b></p>
-                                    :
-                                    <p><b>Collaboration name</b></p>
-                                }
-                                <p>{projectName}</p>
+                                <p><b>{selectedLanguage === "fi" ? "Yhteistyön/yhteistyöprojektin nimi" : "Collaboration name"}</b></p>
+                                <p>{projectName || "-"}</p>
                             </li>
+
                             <li>
                                 <SingleQuestionSummary
                                     question={hhRoleQuestionData.question}
@@ -129,15 +234,30 @@ const ResultsPage = () => {
                                     value={hhRole}
                                 />
                             </li>
+
                             <li>
-                                <p><b>TODO:</b></p>
-                                <p>Cooperation type (multi select component)</p>
+                                <MultiQuestionSummary
+                                    question={cooperationTypeData.question}
+                                    answers={cooperationTypeData.answers}
+                                    language={selectedLanguage}
+                                    values={cooperationType}
+                                />
                             </li>
 
                             <li>
-                                <p><b>TODO:</b></p>
-                                <p>Country selection</p>
+                                <SingleQuestionSummary
+                                    question={consortiumQuestionData.question}
+                                    answers={consortiumQuestionData.answers}
+                                    language={selectedLanguage}
+                                    value={consortium}
+                                />
                             </li>
+
+                            <li>
+                                <p><b>{selectedLanguage === "fi" ? "Yhteistyökumppanin sijaintimaa" : "Partner country"}</b></p>
+                                <p>{selectedCountryData ? selectedCountryData.name[selectedLanguage] : "-"}</p>
+                            </li>
+
                             <li>
                                 <SingleQuestionSummary
                                     question={historyQuestionData.question}
@@ -146,6 +266,7 @@ const ResultsPage = () => {
                                     value={history}
                                 />
                             </li>
+
                             <li>
                                 <SingleQuestionSummary
                                     question={organizationTypeData.question}
@@ -154,6 +275,16 @@ const ResultsPage = () => {
                                     value={organizationType}
                                 />
                             </li>
+
+                            <li>
+                                <p><b>{selectedLanguage === "fi" ? "Organisaatio" : "Organization"}</b></p>
+                                <p>
+                                    {selectedOrganizationData
+                                        ? selectedOrganizationData.name[selectedLanguage]
+                                        : "-"}
+                                </p>
+                            </li>
+
                             <li>
                                 <SingleQuestionSummary
                                     question={contractInfoData.question}
@@ -162,10 +293,7 @@ const ResultsPage = () => {
                                     value={contractStatus}
                                 />
                             </li>
-                            <li>
-                                <p><b>TODO:</b></p>
-                                <p>Multi answer component</p>
-                            </li>
+
                             <li>
                                 <SingleQuestionSummary
                                     question={durationData.question}
@@ -174,6 +302,7 @@ const ResultsPage = () => {
                                     value={duration}
                                 />
                             </li>
+
                             <li>
                                 <SingleQuestionSummary
                                     question={fundingData.question}
@@ -182,6 +311,7 @@ const ResultsPage = () => {
                                     value={funding}
                                 />
                             </li>
+
                             <li>
                                 <SingleQuestionSummary
                                     question={liabilityData.question}
@@ -190,6 +320,7 @@ const ResultsPage = () => {
                                     value={liability}
                                 />
                             </li>
+
                             <li>
                                 <SingleQuestionSummary
                                     question={personalData.question}
@@ -198,6 +329,7 @@ const ResultsPage = () => {
                                     value={personalInformation}
                                 />
                             </li>
+
                             <li>
                                 <SingleQuestionSummary
                                     question={dualUseData.question}
@@ -206,6 +338,7 @@ const ResultsPage = () => {
                                     value={dualUse}
                                 />
                             </li>
+
                             <li>
                                 <SingleQuestionSummary
                                     question={ethicsData.question}
@@ -214,14 +347,16 @@ const ResultsPage = () => {
                                     value={ethics}
                                 />
                             </li>
+
                             <li>
-                                <p><b>TODO:</b></p>
-                                <p>Additional Information</p>
+                                <p><b>{selectedLanguage === "fi" ? "Lisätiedot" : "Additional Information"}</b></p>
+                                <p>{projectDescription || "-"}</p>
                             </li>
                         </ul>
+
                     </div>
                 </div>
-            }
+            )}
         </>
     );
 };

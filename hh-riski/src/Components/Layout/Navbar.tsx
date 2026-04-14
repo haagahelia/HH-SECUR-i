@@ -37,10 +37,16 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                         borderBottom: "1px solid #ccc",
                     }}
                 >
-                    <Toolbar sx={{ justifyContent: "space-between" }}>
+                    <Toolbar
+                        sx={{
+                            position: "relative",
+                            minHeight: 72,
+                            display: "flex",
+                            justifyContent: "space-between",
+                        }}
+                    >
 
-                        {/* LOGO */}
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Box sx={{ display: "flex", alignItems: "center", zIndex: 1 }}>
                             <img
                                 src={logo}
                                 alt="HH-SECUR-i"
@@ -49,18 +55,39 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                         </Box>
 
 
-                        <Typography sx={{ fontWeight: "bold" }}>
+                        <Typography
+                            sx={{
+                                position: "absolute",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                fontWeight: "bold",
+                                textAlign: "center",
+                                whiteSpace: "nowrap",
+                            }}
+                        >
                             {language === "fi"
                                 ? "KANSAINVÄLISEN YHTEISTYÖN RISKIARVIO"
                                 : "RISK ASSESSMENT"}
                         </Typography>
 
 
-                        <Box sx={{ display: "flex", gap: 2 }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                                ml: "auto",
+                                zIndex: 1,
+                            }}
+                        >
+                            {user && (
+                                <Button component={RouterLink} to="/my-assessments">
+                                    {language === "fi" ? "Aiemmat raportit" : "Reports"}
+                                </Button>
+                            )}
+
                             <Button
-                                onClick={() =>
-                                    setLanguage(language === "fi" ? "en" : "fi")
-                                }
+                                onClick={() => setLanguage(language === "fi" ? "en" : "fi")}
                                 sx={{
                                     display: "flex",
                                     alignItems: "center",
@@ -78,7 +105,6 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                                 {language.toUpperCase()}
                             </Button>
                         </Box>
-
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
