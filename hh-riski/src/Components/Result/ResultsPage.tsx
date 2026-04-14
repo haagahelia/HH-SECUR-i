@@ -10,20 +10,20 @@ import styles from "../../styles.module.css";
 import type { Country, Organization, Question } from "../../types";
 
 import {
-  fetchConsortiumType,
-  fetchContractInfo,
-  fetchCooperationHistory,
-  fetchCooperationType,
-  fetchCountries,
-  fetchDualUse,
-  fetchDuration,
-  fetchEthicsAssessment,
-  fetchFunding,
-  fetchHhRole,
-  fetchLiability,
-  fetchOrganizations,
-  fetchOrganizationType,
-  fetchPersonalInformation,
+    fetchConsortiumType,
+    fetchContractInfo,
+    fetchCooperationHistory,
+    fetchCooperationType,
+    fetchCountries,
+    fetchDualUse,
+    fetchDuration,
+    fetchEthicsAssessment,
+    fetchFunding,
+    fetchHhRole,
+    fetchLiability,
+    fetchOrganizations,
+    fetchOrganizationType,
+    fetchPersonalInformation,
 } from "../../util/fetchData";
 
 import SingleQuestionSummary from "./SingleQuestionSummary";
@@ -46,14 +46,15 @@ const cooperationTypeData: Question = fetchCooperationType();
 const consortiumQuestionData: Question = fetchConsortiumType();
 
 const ResultsPage = () => {
-  const { user } = useCurrentUser();
+    const { user } = useCurrentUser();
 
-  const {
+    const {
     selectedLanguage,
     setSelectedLanguage,
     selectedCountry,
     selectedOrganization,
     projectName,
+    projectDescription,
     hhRole,
     consortium,
     history,
@@ -67,233 +68,283 @@ const ResultsPage = () => {
     cooperationType,
     duration,
     clearAnswers,
-  } = useFormAnswers();
+} = useFormAnswers();
 
-  const country = countries.find((country) => country.id === selectedCountry);
+    const country = countries.find((country) => country.id === selectedCountry);
 
-  const selectedCountryData = countries.find(
-    (country) => country.id === selectedCountry
-  );
+    const selectedCountryData = countries.find(
+        (country) => country.id === selectedCountry
+    );
 
-  const selectedOrganizationData = organizations.find(
-    (organization) => organization.id === selectedOrganization
-  );
+    const selectedOrganizationData = organizations.find(
+        (organization) => organization.id === selectedOrganization
+    );
 
-  return (
-    <>
-      <Navbar
-        language={selectedLanguage}
-        setLanguage={setSelectedLanguage}
-      />
 
-      <div className={styles.results}>
-        <div className={styles.left}>
-          <Button
-            variant="outlined"
-            onClick={clearAnswers}
-            component={RouterLink}
-            to="/"
-            startIcon={<West />}
-          >
-            {selectedLanguage === "fi"
-              ? "Luo uusi riskiarvio"
-              : "Create New Risk Assessment"}
-          </Button>
+    const saveAssessment = () => {
+    if (!user) return;
 
-          <Button
-            component={RouterLink}
-            to="/"
-            variant="outlined"
-          >
-            {selectedLanguage === "fi" ? "Muokkaa" : "Edit"}
-          </Button>
-        </div>
+    const riskLevel: 1 | 2 | 3 = 2; // temporary until real calculation exists
 
-        <div>
-          {selectedLanguage === "fi" ? (
-            <h1>Yhteistyön riskit</h1>
-          ) : (
-            <h1>Collaboration Risks</h1>
-          )}
-        </div>
-      </div>
+    const data = {
+        id: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
+        riskLevel,
 
-      {user ? (
-        <div className={styles.resultsCountry}>
-          <CountryRiskAssessment
-            language={selectedLanguage}
-            country={country}
-          />
-        </div>
-      ) : (
-        selectedLanguage === "fi" ? (
-          <p>Kirjaudu sisään nähdäksesi sivun</p>
-        ) : (
-          <p>Log in to view the page</p>
-        )
-      )}
+        projectName,
+        projectDescription,
+        selectedCountry,
+        selectedOrganization,
+        duration,
+        hhRole,
+        consortium,
+        history,
+        organizationType,
+        contractStatus,
+        funding,
+        liability,
+        personalInformation,
+        dualUse,
+        ethics,
+        cooperationType,
+        selectedLanguage,
 
-      {user && (
-        <div className={styles.resultsSummary}>
-          <div>
-            {selectedLanguage === "fi" ? (
-              <h4>Yhteenveto valinnoistasi</h4>
+        savedBy: {
+            id: user.id,
+            username: user.username,
+        },
+    };
+
+    const existing = JSON.parse(localStorage.getItem("assessments") || "[]");
+
+    localStorage.setItem(
+        "assessments",
+        JSON.stringify([...existing, data])
+    );
+
+    console.log("Saved assessment:", data);
+};
+
+    return (
+        <>
+            <Navbar
+                language={selectedLanguage}
+                setLanguage={setSelectedLanguage}
+            />
+
+            <div className={styles.results}>
+                <div className={styles.left}>
+                    <Button
+                        variant="outlined"
+                        onClick={clearAnswers}
+                        component={RouterLink}
+                        to="/"
+                        startIcon={<West />}
+                    >
+                        {selectedLanguage === "fi"
+                            ? "Luo uusi riskiarvio"
+                            : "Create New Risk Assessment"}
+                    </Button>
+
+                    <Button
+                        component={RouterLink}
+                        to="/"
+                        variant="outlined"
+                    >
+                        {selectedLanguage === "fi" ? "Muokkaa" : "Edit"}
+                    </Button>
+                    <Button
+                        onClick={saveAssessment} variant="contained">
+                        {selectedLanguage === "fi" ? "Tallenna" : "Save"}
+                    </Button>
+                </div>
+
+                <div>
+                    {selectedLanguage === "fi" ? (
+                        <h1>Yhteistyön riskit</h1>
+                    ) : (
+                        <h1>Collaboration Risks</h1>
+                    )}
+                </div>
+            </div>
+
+            {user ? (
+                <div className={styles.resultsCountry}>
+                    <CountryRiskAssessment
+                        language={selectedLanguage}
+                        country={country}
+                    />
+                </div>
             ) : (
-              <h4>Selection Summary</h4>
+                selectedLanguage === "fi" ? (
+                    <p>Kirjaudu sisään nähdäksesi sivun</p>
+                ) : (
+                    <p>Log in to view the page</p>
+                )
             )}
 
-            <ul className={styles.summaryList}>
-              <li>
-                <p><b>{selectedLanguage === "fi" ? "Lomakkeen täyttäjä" : "Form Respondent"}</b></p>
-                <p>{user.username}</p>
-              </li>
+            {user && (
+                <div className={styles.resultsSummary}>
+                    <div>
+                        {selectedLanguage === "fi" ? (
+                            <h4>Yhteenveto valinnoistasi</h4>
+                        ) : (
+                            <h4>Selection Summary</h4>
+                        )}
 
-              <li>
-                <p><b>{selectedLanguage === "fi" ? "Projektin omistaja" : "Project Owner"}</b></p>
-                <p>{user.username}</p>
-              </li>
+                        <ul className={styles.summaryList}>
+                            <li>
+                                <p><b>{selectedLanguage === "fi" ? "Lomakkeen täyttäjä" : "Form Respondent"}</b></p>
+                                <p>{user.username}</p>
+                            </li>
 
-              <li>
-                <p><b>{selectedLanguage === "fi" ? "Yhteistyön/yhteistyöprojektin nimi" : "Collaboration name"}</b></p>
-                <p>{projectName || "-"}</p>
-              </li>
+                            <li>
+                                <p><b>{selectedLanguage === "fi" ? "Projektin omistaja" : "Project Owner"}</b></p>
+                                <p>{user.username}</p>
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={hhRoleQuestionData.question}
-                  answers={hhRoleQuestionData.answers}
-                  language={selectedLanguage}
-                  value={hhRole}
-                />
-              </li>
+                            <li>
+                                <p><b>{selectedLanguage === "fi" ? "Yhteistyön/yhteistyöprojektin nimi" : "Collaboration name"}</b></p>
+                                <p>{projectName || "-"}</p>
+                            </li>
 
-              <li>
-                <MultiQuestionSummary
-                  question={cooperationTypeData.question}
-                  answers={cooperationTypeData.answers}
-                  language={selectedLanguage}
-                  values={cooperationType}
-                />
-              </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={hhRoleQuestionData.question}
+                                    answers={hhRoleQuestionData.answers}
+                                    language={selectedLanguage}
+                                    value={hhRole}
+                                />
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={consortiumQuestionData.question}
-                  answers={consortiumQuestionData.answers}
-                  language={selectedLanguage}
-                  value={consortium}
-                />
-              </li>
+                            <li>
+                                <MultiQuestionSummary
+                                    question={cooperationTypeData.question}
+                                    answers={cooperationTypeData.answers}
+                                    language={selectedLanguage}
+                                    values={cooperationType}
+                                />
+                            </li>
 
-              <li>
-                <p><b>{selectedLanguage === "fi" ? "Yhteistyökumppanin sijaintimaa" : "Partner country"}</b></p>
-                <p>{selectedCountryData ? selectedCountryData.name[selectedLanguage] : "-"}</p>
-              </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={consortiumQuestionData.question}
+                                    answers={consortiumQuestionData.answers}
+                                    language={selectedLanguage}
+                                    value={consortium}
+                                />
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={historyQuestionData.question}
-                  answers={historyQuestionData.answers}
-                  language={selectedLanguage}
-                  value={history}
-                />
-              </li>
+                            <li>
+                                <p><b>{selectedLanguage === "fi" ? "Yhteistyökumppanin sijaintimaa" : "Partner country"}</b></p>
+                                <p>{selectedCountryData ? selectedCountryData.name[selectedLanguage] : "-"}</p>
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={organizationTypeData.question}
-                  answers={organizationTypeData.answers}
-                  language={selectedLanguage}
-                  value={organizationType}
-                />
-              </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={historyQuestionData.question}
+                                    answers={historyQuestionData.answers}
+                                    language={selectedLanguage}
+                                    value={history}
+                                />
+                            </li>
 
-              <li>
-                <p><b>{selectedLanguage === "fi" ? "Organisaatio" : "Organization"}</b></p>
-                <p>
-                  {selectedOrganizationData
-                    ? selectedOrganizationData.name[selectedLanguage]
-                    : "-"}
-                </p>
-              </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={organizationTypeData.question}
+                                    answers={organizationTypeData.answers}
+                                    language={selectedLanguage}
+                                    value={organizationType}
+                                />
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={contractInfoData.question}
-                  answers={contractInfoData.answers}
-                  language={selectedLanguage}
-                  value={contractStatus}
-                />
-              </li>
+                            <li>
+                                <p><b>{selectedLanguage === "fi" ? "Organisaatio" : "Organization"}</b></p>
+                                <p>
+                                    {selectedOrganizationData
+                                        ? selectedOrganizationData.name[selectedLanguage]
+                                        : "-"}
+                                </p>
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={durationData.question}
-                  answers={durationData.answers}
-                  language={selectedLanguage}
-                  value={duration}
-                />
-              </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={contractInfoData.question}
+                                    answers={contractInfoData.answers}
+                                    language={selectedLanguage}
+                                    value={contractStatus}
+                                />
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={fundingData.question}
-                  answers={fundingData.answers}
-                  language={selectedLanguage}
-                  value={funding}
-                />
-              </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={durationData.question}
+                                    answers={durationData.answers}
+                                    language={selectedLanguage}
+                                    value={duration}
+                                />
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={liabilityData.question}
-                  answers={liabilityData.answers}
-                  language={selectedLanguage}
-                  value={liability}
-                />
-              </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={fundingData.question}
+                                    answers={fundingData.answers}
+                                    language={selectedLanguage}
+                                    value={funding}
+                                />
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={personalData.question}
-                  answers={personalData.answers}
-                  language={selectedLanguage}
-                  value={personalInformation}
-                />
-              </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={liabilityData.question}
+                                    answers={liabilityData.answers}
+                                    language={selectedLanguage}
+                                    value={liability}
+                                />
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={dualUseData.question}
-                  answers={dualUseData.answers}
-                  language={selectedLanguage}
-                  value={dualUse}
-                />
-              </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={personalData.question}
+                                    answers={personalData.answers}
+                                    language={selectedLanguage}
+                                    value={personalInformation}
+                                />
+                            </li>
 
-              <li>
-                <SingleQuestionSummary
-                  question={ethicsData.question}
-                  answers={ethicsData.answers}
-                  language={selectedLanguage}
-                  value={ethics}
-                />
-              </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={dualUseData.question}
+                                    answers={dualUseData.answers}
+                                    language={selectedLanguage}
+                                    value={dualUse}
+                                />
+                            </li>
 
-              <li>
-                <p><b>{selectedLanguage === "fi" ? "Lisätiedot" : "Additional Information"}</b></p>
-                <p>
-                  {selectedLanguage === "fi"
-                    ? "Ei lisätietoja tässä versiossa."
-                    : "No additional information in this version."}
-                </p>
-              </li>
-            </ul>
-          </div>
-        </div>
-      )}
-    </>
-  );
+                            <li>
+                                <SingleQuestionSummary
+                                    question={ethicsData.question}
+                                    answers={ethicsData.answers}
+                                    language={selectedLanguage}
+                                    value={ethics}
+                                />
+                            </li>
+
+                            <li>
+                                <p><b>{selectedLanguage === "fi" ? "Lisätiedot" : "Additional Information"}</b></p>
+                                <p>
+                                    {selectedLanguage === "fi"
+                                        ? "Ei lisätietoja tässä versiossa."
+                                        : "No additional information in this version."}
+                                </p>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            )}
+        </>
+    );
 };
 
 export default ResultsPage;

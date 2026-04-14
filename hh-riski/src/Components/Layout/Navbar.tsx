@@ -49,14 +49,18 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                         </Box>
 
 
-                        <Typography sx={{ fontWeight: "bold" }}>
+                        <Typography sx={{ fontWeight: "bold", alignItems: "center" }}>
                             {language === "fi"
                                 ? "KANSAINVÄLISEN YHTEISTYÖN RISKIARVIO"
                                 : "RISK ASSESSMENT"}
                         </Typography>
 
-
                         <Box sx={{ display: "flex", gap: 2 }}>
+                            <Button component={RouterLink} to="/my-assessments">
+                                {language === "fi" ? "Aiemmat raportit" : "Reports"}
+                            </Button>
+                        </Box>
+                        <Box sx={{ display: "flex" }}>
                             <Button
                                 onClick={() =>
                                     setLanguage(language === "fi" ? "en" : "fi")
