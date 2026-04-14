@@ -258,8 +258,8 @@ const MyAssessmentsPage = () => {
                 >
                   <TableCell>
                     {selectedLanguage === "fi"
-                      ? "Yhteistyöprojektin nimi ↕"
-                      : "Project name ↕"}
+                      ? "Yhteistyöprojektin nimi"
+                      : "Project name"}
                   </TableCell>
 
                   <TableCell>
@@ -268,8 +268,8 @@ const MyAssessmentsPage = () => {
 
                   <TableCell>
                     {selectedLanguage === "fi"
-                      ? "Kokonaisriskitaso ↕"
-                      : "Overall risk level ↕"}
+                      ? "Kokonaisriskitaso"
+                      : "Overall risk level"}
                   </TableCell>
 
                   <TableCell>
@@ -346,20 +346,11 @@ const MyAssessmentsPage = () => {
                       </TableCell>
 
                       <TableCell>
-                        <Button
-                          onClick={() => editAssessment(item)}
-                          sx={{
-                            color: "#2d6d9f",
-                            textTransform: "uppercase",
-                            fontSize: "0.98rem",
-                            p: 0,
-                            minWidth: 0,
-                          }}
-                        >
+                        
                           {selectedLanguage === "fi"
-                            ? "PÄIVITÄ RISKIARVIO"
-                            : "UPDATE ASSESSMENT"}
-                        </Button>
+                            ? "Kesken"
+                            : "In progress"}
+                        
                       </TableCell>
 
                       <TableCell>
