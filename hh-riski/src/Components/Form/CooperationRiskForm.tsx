@@ -1,13 +1,13 @@
-import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCooperationType, fetchCountries, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
+import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCooperationType, fetchCountriesRaw, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
 
 import { useState } from "react";
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
 import RiskSummary from "./RiskSummary";
-import { sortElements } from "../../util/utils";
+import { parseCountries, sortElements } from "../../util/utils";
 import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
 
-import type { Country, Organization, Question } from "../../types";
+import type { Country, CountryRaw, Organization, Question } from "../../types";
 import styles from "../../styles.module.css";
 
 import FormSection from "./Sections/FormSection";
@@ -21,7 +21,8 @@ type CooperationRiskFormProps = {
   language: "fi" | "en";
 };
 
-const countries: Country[] = fetchCountries();
+const countriesRaw: CountryRaw[] = fetchCountriesRaw();
+const countries: Country[] = parseCountries(countriesRaw);
 const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: Question = fetchHhRole();
 const consortiumQuestionData: Question = fetchConsortiumType();

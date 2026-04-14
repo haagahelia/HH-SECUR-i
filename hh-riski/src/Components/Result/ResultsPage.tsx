@@ -7,14 +7,14 @@ import { Link as RouterLink } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
 import styles from "../../styles.module.css";
-import type { Country, Organization, Question } from "../../types";
+import type { Country, CountryRaw, Organization, Question } from "../../types";
 
 import {
     fetchConsortiumType,
     fetchContractInfo,
     fetchCooperationHistory,
     fetchCooperationType,
-    fetchCountries,
+    fetchCountriesRaw,
     fetchDualUse,
     fetchDuration,
     fetchEthicsAssessment,
@@ -29,8 +29,11 @@ import {
 import SingleQuestionSummary from "./SingleQuestionSummary";
 import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
+import { parseCountries } from "../../util/utils";
 
-const countries: Country[] = fetchCountries();
+//const countries: Country[] = fetchCountries();
+const countriesRaw: CountryRaw[] = fetchCountriesRaw();
+const countries: Country[] = parseCountries(countriesRaw);
 const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: Question = fetchHhRole();
 const historyQuestionData: Question = fetchCooperationHistory();

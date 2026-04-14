@@ -3,6 +3,7 @@ import { delay } from "./utils";
 import type { Country, CountryRaw, Question } from "../types";
 
 //Temporary data sources
+/*
 const countries: Country[] = [{
     id: 'fi',
     name: {
@@ -76,6 +77,79 @@ const countries: Country[] = [{
 }
 
 ]
+*/
+const countriesRaw: CountryRaw[] = [
+    {
+        id: 'swe',
+        name: {
+            fi: 'Ruotsi',
+            en: 'Sweden'
+        },
+        risk: {
+            corruption: 97.64151,
+            security: 1,
+            academicFreedom: 0.94,
+            politicalStability: 73.459717,
+            development: 5,
+            GDPR: true,
+            sanctions: false,
+            ruleOfLaw: 0.85
+        }
+    },
+    {
+        id: 'usa',
+        name: {
+            fi: 'Yhdysvallat',
+            en: 'United States'
+        },
+        risk: {
+            corruption: 83.018867,
+            security: 1,
+            academicFreedom: 0.684,
+            politicalStability: 47.393364,
+            development: 17,
+            GDPR: false,
+            sanctions: false,
+            ruleOfLaw: .68
+        }
+    },
+
+    {
+        id: 'mda',
+        name: {
+            fi: 'Moldova',
+            en: 'Moldova'
+        },
+        risk: {
+            corruption: 46.698112,
+            security: 2,
+            academicFreedom: 0.708,
+            politicalStability: 20.379147,
+            development: 86,
+            GDPR: false,
+            sanctions: true,
+            ruleOfLaw: 0.53
+        }
+    },
+
+        {
+        id: 'chn',
+        name: {
+            fi: 'Kiina',
+            en: 'China'
+        },
+        risk: {
+            corruption: 54.245281,
+            security: 1,
+            academicFreedom: 0.067,
+            politicalStability: 25.118483,
+            development: 78,
+            GDPR: false,
+            sanctions: true,
+            ruleOfLaw: 0.48
+        }
+    },
+]
 
 const organizations = [
     {
@@ -96,7 +170,7 @@ const organizations = [
     },
     {
         id: 'HaY',
-        countryId: 'se',
+        countryId: 'swe',
         name: {
             fi: 'Halmstadin Yliopisto',
             en: 'University of Halmstad'
@@ -104,7 +178,7 @@ const organizations = [
     },
     {
         id: 'TY',
-        countryId: 'se',
+        countryId: 'swe',
         name: {
             fi: 'Tukholman Yliopisto',
             en: 'University of Stockholm'
@@ -113,9 +187,14 @@ const organizations = [
 ]
 
 //Change to async with simulated delay once FormPage lists have been updated to support that
+/*
 export const fetchCountries = () => {
     //delay(Math.floor((Math.random() * 1750) + 250));
     return countries;
+}
+*/
+export const fetchCountriesRaw = () => {
+    return countriesRaw;
 }
 
 //Change to async with simulated delay once FormPage lists have been updated to support that

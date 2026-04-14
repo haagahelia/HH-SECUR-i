@@ -1,4 +1,5 @@
 import type { Country } from "../../types";
+import styles from "../../styles.module.css";
 
 type CountryRiskAssessmentProps = {
     country: Country | undefined;
@@ -11,10 +12,36 @@ const CountryRiskAssessment = ({
 }: CountryRiskAssessmentProps) => {
 
     const results = {
-        overall: {
+        collaboration: {
             title: {
                 fi: "Yhteistyön kokonaisriskiarvio",
                 en: "Overall Collaboration Risk Level"
+            },
+            0: {
+                fi: "Virheellinen tai puuttuva riskiluokitus",
+                en: "Invalid or missing risk level"
+            },
+            1: {
+                fi: "Väliaikainen kuvausteksti tasolle 1",
+                en: "Placeholder description for rating 1"
+            },
+            2: {
+                fi: "Väliaikainen kuvausteksti tasolle 2",
+                en: "Placeholder description for rating 2"
+            },
+            3: {
+                fi: "Väliaikainen kuvausteksti tasolle 3",
+                en: "Placeholder description for rating 3"
+            }
+        },
+        overall: {
+            title: {
+                fi: "Maan riskitaso",
+                en: "Country Risk Level"
+            },
+            0: {
+                fi: "Virheellinen tai puuttuva riskiluokitus",
+                en: "Invalid or missing risk level"
             },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
@@ -34,6 +61,10 @@ const CountryRiskAssessment = ({
                 fi: "Korruptio",
                 en: "Corruption"
             },
+            0: {
+                fi: "Virheellinen tai puuttuva riskiluokitus",
+                en: "Invalid or missing risk level"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -51,6 +82,10 @@ const CountryRiskAssessment = ({
             title: {
                 fi: "Turvallisuustaso",
                 en: "Security Level"
+            },
+            0: {
+                fi: "Virheellinen tai puuttuva riskiluokitus",
+                en: "Invalid or missing risk level"
             },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
@@ -70,6 +105,10 @@ const CountryRiskAssessment = ({
                 fi: "Akateeminen vapaus",
                 en: "Academic Freedom"
             },
+            0: {
+                fi: "Virheellinen tai puuttuva riskiluokitus",
+                en: "Invalid or missing risk level"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -87,6 +126,10 @@ const CountryRiskAssessment = ({
             title: {
                 fi: "Poliittinen vakaus",
                 en: "Political Stability"
+            },
+            0: {
+                fi: "Virheellinen tai puuttuva riskiluokitus",
+                en: "Invalid or missing risk level"
             },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
@@ -106,6 +149,10 @@ const CountryRiskAssessment = ({
                 fi: "Maan kehittyineisyys",
                 en: "Country Development Level"
             },
+            0: {
+                fi: "Virheellinen tai puuttuva riskiluokitus",
+                en: "Invalid or missing risk level"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -123,6 +170,10 @@ const CountryRiskAssessment = ({
             title: {
                 fi: "GDPR",
                 en: "GDPR"
+            },
+            0: {
+                fi: "Virheellinen tai puuttuva riskiluokitus",
+                en: "Invalid or missing risk level"
             },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
@@ -142,6 +193,10 @@ const CountryRiskAssessment = ({
                 fi: "Pakotteet",
                 en: "Sanctions"
             },
+            0: {
+                fi: "Virheellinen tai puuttuva riskiluokitus",
+                en: "Invalid or missing risk level"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -160,6 +215,10 @@ const CountryRiskAssessment = ({
                 fi: "Oikeusvalitio",
                 en: "Rule of Law"
             },
+            0: {
+                fi: "Virheellinen tai puuttuva riskiluokitus",
+                en: "Invalid or missing risk level"
+            },
             1: {
                 fi: "Väliaikainen kuvausteksti tasolle 1",
                 en: "Placeholder description for rating 1"
@@ -177,13 +236,13 @@ const CountryRiskAssessment = ({
 
     const riskSymbol = (risk: number) => {
         if (risk === 1) {
-            return <span style={{ background: "green", padding: "3px", paddingLeft: "9px", paddingRight: "9px", marginRight: "15px", borderRadius: "50%" }}><b>1</b></span>
+            return <span className={styles.riskCircleGreen}><b>1</b></span>
         } else if (risk === 2) {
-            return <span style={{ background: "yellow", padding: "3px", paddingLeft: "9px", paddingRight: "9px", marginRight: "15px", borderRadius: "50%" }}><b>2</b></span>
+            return <span className={styles.riskCircleYellow}><b>2</b></span>
         } else if (risk === 3) {
-            return <span style={{ background: "red", padding: "3px", paddingLeft: "9px", paddingRight: "9px", marginRight: "15px", borderRadius: "50%" }}><b>3</b></span>
+            return <span className={styles.riskCircleRed}><b>3</b></span>
         } else {
-            return <span>error</span>
+            return <span></span>
         }
     }
 
@@ -198,8 +257,19 @@ const CountryRiskAssessment = ({
                             :
                             <h3>Collaboration Risks</h3>
                         }
+                        <p><b>{results.collaboration.title[language]}</b></p>
+                        <p>{riskSymbol(country.risk.overall)}<i>{results.collaboration[country.risk.overall][language]}</i></p>
+                    </div>
+                    <div>
+                        {language === "fi" ?
+                            <p>Alla mainittujen riskitekijöiden lisäksi kokonaisriskiin vaikuttavat antamasi tiedot Haaga-Helian roolista yhteistyössä.</p>
+                            :
+                            <p>In addition to the risk factors listed below, the overall risk is also influenced by the information you provided about Haaga-Helia’s role in the collaboration.</p>
+                        }
+                    </div>
+                    <div>
                         <p><b>{results.overall.title[language]}</b></p>
-                        <p>{riskSymbol(1)}{results.overall[1][language]}</p>
+                        <p>{riskSymbol(country.risk.overall)}<i>{results.collaboration[country.risk.overall][language]}</i></p>
                     </div>
 
                     <ul>

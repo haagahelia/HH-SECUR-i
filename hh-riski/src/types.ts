@@ -11,14 +11,15 @@ export type Country = {
         en: string
     },
     risk: {
-        corruption: 1 | 2 | 3,
-        security: 1 | 2 | 3,
-        academicFreedom: 1 | 2 | 3,
-        politicalStability: 1 | 2 | 3, 
-        development: 1 | 2 | 3,
-        GDPR: 1 | 2 | 3,
-        sanctions: 1 | 2 | 3,
-        ruleOfLaw: 1 | 2 | 3
+        overall: 0 | 1 | 2 | 3, 
+        corruption: 0 | 1 | 2 | 3,
+        security: 0 | 1 | 2 | 3,
+        academicFreedom: 0 | 1 | 2 | 3,
+        politicalStability: 0 |1 | 2 | 3, 
+        development: 0 | 1 | 2 | 3,
+        GDPR: 0 | 1 | 2 | 3,
+        sanctions: 0 |1 | 2 | 3,
+        ruleOfLaw: 0 | 1 | 2 | 3
     }
 }
 
@@ -30,7 +31,7 @@ export type CountryRaw = {
     },
     risk: {
         corruption: number,
-        security: number,
+        security: 1 | 2 | 3,
         academicFreedom: number,
         politicalStability: number, 
         development: number,
