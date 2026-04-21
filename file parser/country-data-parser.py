@@ -118,6 +118,7 @@ risk = Risk("", "", academ, "", "", "", "", "")
 country = Country(name, id, year, risk)
 line = file.readline()
 splitLine = line.split(",")
+linesProcessed = 1
 
 while line != "":
     if idNum != splitLine[idNumIndex]:
@@ -133,7 +134,11 @@ while line != "":
     country = Country(name, id, year, risk)
     line = file.readline()
     splitLine = line.split(",")
+    linesProcessed += 1
+    if linesProcessed % 2000 == 0:
+        print("Lines processed: " + str(linesProcessed))
 
+print("Total lines: " + str(linesProcessed))
 print("Countries: " + str(len(countries)))
 countries.sort(key=lambda country: country.name.en)
 
