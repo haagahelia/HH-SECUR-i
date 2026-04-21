@@ -31,8 +31,5 @@ Temporary page for user management.
 ### Navbar
 Upper and lower navigation bars.
 
-### Navbar
-Functionality to be replaced with when real authentication is implemented.
-
 # File Parser
 File parser is a Python script for parsing and combining data sources for Country risk calculation.
