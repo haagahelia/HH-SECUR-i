@@ -1,19 +1,20 @@
 import { Link } from "react-router-dom";
 import { useCurrentUser } from "../context/UserContext";
 
+import Navbar from "./Layout/Navbar";
+import { useState } from "react";
+
 const UserPage = () => {
     const { user, setUserById, clearUser, testUsers } = useCurrentUser();
+    const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
     return (
         <>
-            <div>
-                {user && <p>Logged in as {user.username}</p>}
-                {user && <button onClick={clearUser}>Logout</button>}
-            </div>
-            <div>
-                <Link to="/">Home</Link>
-                <Link to="/user">User Page</Link>
-                <h1>User Page</h1>
-            </div>
+      <Navbar language={selectedLanguage}
+        setLanguage={setSelectedLanguage} />
+
+      <div>
+        <h1>User Page</h1>
+      </div>
             <div>
                 <select onChange={e => setUserById(e.target.value)}>
                     <option value="">Select user</option>

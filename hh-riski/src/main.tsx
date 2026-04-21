@@ -4,11 +4,14 @@ import './index.css'
 
 import Router from './Router'
 import { UserProvider } from './context/UserContext'
+import { FormAnswersProvider } from './context/FormAnswersContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <UserProvider>
-      <Router />
+      <FormAnswersProvider>
+        <Router />
+      </FormAnswersProvider>
     </UserProvider>
   </StrictMode>,
 )

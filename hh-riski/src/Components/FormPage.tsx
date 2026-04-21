@@ -1,119 +1,78 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useCurrentUser } from "../context/UserContext";
+import CooperationRiskForm from "./Form/CooperationRiskForm";
 
-import { useCurrentUser } from "../context/UserContext"
-import { fetchCountries, fetchOrganizations } from "../util/fetchData";
+import Navbar from "./Layout/Navbar";
+import InfoBox from "./Layout/InfoBox";
+import Box from "@mui/material/Box";
+import { useFormAnswers } from "../context/FormAnswersContext";
 
-import type { Country } from "../types";
-
-const countries: Country[] = fetchCountries();
-const organizations = fetchOrganizations();
-
+{ /*} "Vanha kielivalikko, joka on korvattu NavBarin kielivalinnalla"
 const languages = [
-    {
-        id: 'fi',
-        name:
-        {
-            fi: 'Suomi',
-            en: 'Finnish'
-        }
+  {
+    id: "fi" as const,
+    name: {
+      fi: "Suomi",
+      en: "Finnish",
     },
-    {
-        id: 'en',
-        name:
-        {
-            fi: 'Englanti',
-            en: 'English'
-        }
-    }
-]
+  },
+  {
+    id: "en" as const,
+    name: {
+      fi: "Englanti",
+      en: "English",
+    },
+  },
+]; */}
 
 const FormPage = () => {
-    const { user, clearUser } = useCurrentUser();
-    const [selectedCountry, setSelectedCountry] = useState('fin');
-    const [selectedOrganization, setSelectedOrganization] = useState('');
-    const [selectedLanguage, setSelectedLanguage] = useState('fi');
+  const { user, clearUser } = useCurrentUser();
+  const { selectedLanguage, setSelectedLanguage } = useFormAnswers();
 
-    return (
-        <>
-            <div>
-                {user && <p>Logged in as {user.username}</p>}
-                {user && <button onClick={clearUser}>Logout</button>}
-            </div>
-            <div>
-                <Link to="/">Home</Link>
-                <Link to="/user">User Page</Link>
-            </div>
-            <div>
-                <h1>Form Page</h1>
-                <div>
-                    <select
-                        value={selectedLanguage}
-                        onChange={e => setSelectedLanguage(e.target.value)}
-                    >
-                        {selectedLanguage == 'fi' ?
-                            languages.map((language) => (
-                                <option value={language.id}>{language.name.fi}</option>
-                            ))
-                            :
-                            languages.map((language) => (
-                                <option value={language.id}>{language.name.en}</option>
-                            ))}
-                    </select>
-                </div>
-                {user ?
-                    <div>
-                        <h1>Maa</h1>
+  return (
+    <>
+      <Navbar language={selectedLanguage}
+        setLanguage={setSelectedLanguage} />
 
 
-                        <select
-                            value={selectedCountry}
-                            onChange={e => setSelectedCountry(e.target.value)}
-                        >
-                            {selectedLanguage == 'fi' ?
-                                countries.map((country) => (
-                                    <option value={country.id}>{country.name.fi}</option>
-                                ))
-                                :
-                                countries.map((country) => (
-                                    <option value={country.id}>{country.name.en}</option>
-                                ))}
-                        </select>
+      <div>
+        {selectedLanguage === 'fi' ?
+          <h1>Riskiarviolomake</h1>
+          :
+          <h1>Risk assessment form</h1>
+        }
 
-                    </div>
+        { /*} "Vanha kielivalikko, joka on korvattu NavBarin kielivalinnalla"
+        <select
+          value={selectedLanguage}
+          onChange={(e) =>
+            setSelectedLanguage(e.target.value as "fi" | "en")
+          }
+        >
+          {languages.map((language) => (
+            <option key={language.id} value={language.id}>
+              {selectedLanguage === "fi"
+                ? language.id
+                : language.id}
+            </option>
+          ))}
+        </select>
+*/}
+        {user ? (
+          <>
+            <InfoBox language={selectedLanguage} />
 
-                    :
-                    <div></div>
-                }
-                {user ?
-                    <div>
-                        <h1>Organisaatio</h1>
-                        <select
-                            value={selectedOrganization}
-                            onChange={e => setSelectedOrganization(e.target.value)}
-                        >
-                            {selectedLanguage == 'fi' ?
-                                organizations.map((organization) => {
-                                    if (organization.countryId == selectedCountry) {
-                                        return <option value={organization.id}>{organization.name.fi}</option>
-                                    }
-                                })
-                                :
-                                organizations.map((organization) => {
-                                    if (organization.countryId == selectedCountry) {
-                                        return <option value={organization.id}>{organization.name.en}</option>
-                                    }
-                                })
-                            }
-                        </select>
-                    </div>
-                    :
-                    <div></div>
-                }
-            </div>
+           <Box sx={{ mt: 3 }}></Box>
 
-        </>
-    )
-}
+            <CooperationRiskForm language={selectedLanguage} />
+          </>
+        ) : selectedLanguage === "fi" ? (
+          <p>Kirjaudu sisään nähdäksesi sivun</p>
+        ) : (
+          <p>Log in to view the page</p>
+        )}
+      </div>
+    </>
+  );
+};
 
-export default FormPage
+export default FormPage;
