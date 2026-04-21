@@ -1,5 +1,11 @@
 import json
 
+class WBCountry:
+    def __init__(self, name, corruption, politicalStability, nameFi):
+        self.name = name
+        self.corruption = corruption
+        self.politicalStability = politicalStability
+        self.nameFi = nameFi
 
 class Name:
     def __init__(self, en, fi):
@@ -55,11 +61,29 @@ class Country:
         return {
             "name": self.name.to_dict(),
             "id": self.id,
+            "year": self.year,
             "risk": self.risk.to_dict(),
         }
+    
+def addWB(country):
+    try:
+        wbData = open("WB_DATA.csv", "r")
+        wbLine = wbData.readline()
+        while wbLine != "":
+            wbSplit = wbLine.split(",")
+            if wbSplit[0].lower() == country.name.en.lower():
+                #print("Match found - Corruption: " + wbSplit[1] + ", Political Stability: " + wbSplit[2])
+                country.risk.corruption = wbSplit[1].replace("\n", "")
+                country.risk.politicalStability = wbSplit[2].replace("\n", "")
+                country.name.fi = wbSplit[3].replace("\n", "")
+            wbLine = wbData.readline()
+    except FileNotFoundError:
+        print("World bank data file not found")
+    
+
 
 #V-Dem-CY-Core-v16.csv"
-file = open("test.csv", "r")
+file = open("V-Dem-CY-Core-v16.csv", "r")
 line = ""
 print("Parsing country data")
 
@@ -97,6 +121,7 @@ splitLine = line.split(",")
 
 while line != "":
     if idNum != splitLine[idNumIndex]:
+        addWB(country)
         countries.append(country)
     nameString = splitLine[nameIndex].replace('"', "")
     id = splitLine[idIndex].replace('"', "")
@@ -110,6 +135,7 @@ while line != "":
     splitLine = line.split(",")
 
 print("Countries: " + str(len(countries)))
+countries.sort(key=lambda country: country.name.en)
 
 try:
     open("parsed_countries.json", "x")
@@ -121,6 +147,6 @@ parsedCountries = open("parsed_countries.json", "w")
 
 for country in countries:
     data = country.to_dict()
-    parsedCountries.write(json.dumps(data) + "," + "\n")
+    parsedCountries.write(json.dumps(data, indent=4) + ",\n")
 
 print("Data saved")
