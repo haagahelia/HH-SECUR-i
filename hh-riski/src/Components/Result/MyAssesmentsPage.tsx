@@ -52,9 +52,9 @@ type Assessment = {
 
 
 const getRowColor = (level: number) => {
-    if (level === 1) return "#75da4e";
-    if (level === 2) return "#eef0bf";
-    if (level === 3) return "#f3d0d0";
+    if (level === 1) return "rgb(255, 255, 255)";
+    if (level === 2) return "rgb(255, 255, 255)";
+    if (level === 3) return "rgb(255, 255, 255";
     return "#f3f4f6";
 };
 
