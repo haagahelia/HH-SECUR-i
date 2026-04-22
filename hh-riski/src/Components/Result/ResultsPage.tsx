@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { useCurrentUser } from "../../context/UserContext";
 
 import Navbar from "../Layout/Navbar";
 import { useFormAnswers } from "../../context/FormAnswersContext";
-import { Button } from "@mui/material";
+import { Button, Snackbar, Alert } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
@@ -50,6 +51,7 @@ const consortiumQuestionData: Question = fetchConsortiumType();
 
 const ResultsPage = () => {
     const { user } = useCurrentUser();
+    const [saveMessageOpen, setSaveMessageOpen] = useState(false);
 
     const {
         selectedLanguage,
@@ -83,7 +85,6 @@ const ResultsPage = () => {
         (organization) => organization.id === selectedOrganization
     );
 
-
     const saveAssessment = () => {
         if (!user) return;
 
@@ -102,32 +103,12 @@ const ResultsPage = () => {
 
             const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
 
-
-
             if (avg < 1.67) return 1;
             if (avg < 2.34) return 2;
             return 3;
         };
 
         const riskLevel = getAverageCountryRisk(country);
-
-        // TEMPORARY RISK LEVEL CALCULATION - replace with mock logic
-        /* let riskLevel: 1 | 2 | 3 = 1;
-
-    if (
-        selectedCountry === "ys" ||
-        dualUse === "yes" ||
-        ethics === "5"
-    ) {
-        riskLevel = 3;
-    } else if (
-        selectedCountry === "se" ||
-        funding === "yes" ||
-        personalInformation === "unknown" ||
-        liability === "500.000"
-    ) {
-        riskLevel = 2;
-    } */
 
         const data = {
             id: crypto.randomUUID(),
@@ -166,6 +147,7 @@ const ResultsPage = () => {
         );
 
         console.log("Saved assessment:", data);
+        setSaveMessageOpen(true);
     };
 
     return (
@@ -378,10 +360,26 @@ const ResultsPage = () => {
                                 <p>{projectDescription || "-"}</p>
                             </li>
                         </ul>
-
                     </div>
                 </div>
             )}
+
+            <Snackbar
+                open={saveMessageOpen}
+                autoHideDuration={3000}
+                onClose={() => setSaveMessageOpen(false)}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert
+                    onClose={() => setSaveMessageOpen(false)}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    {selectedLanguage === "fi"
+                        ? "Tallennus onnistui!"
+                        : "Saved successfully!"}
+                </Alert>
+            </Snackbar>
         </>
     );
 };
