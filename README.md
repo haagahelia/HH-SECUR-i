@@ -3,6 +3,20 @@
 # Front end - hh-secur-i
 Front end is a React web app where navigation is handled by react-router.
 
+## Installation & launching(dev)
+
+### Requirements
+
+	- Node.js
+	- NPM
+	
+In HH_Riski/hh-riski
+
+```
+npm install
+npm run dev
+```
+
 ## Contexts
 Contexts are used for sharing data between compoments.
 

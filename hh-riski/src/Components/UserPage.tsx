@@ -4,6 +4,8 @@ import { useCurrentUser } from "../context/UserContext";
 import Navbar from "./Layout/Navbar";
 import { useState } from "react";
 
+// Temporary context for user management before actual authentication is implemented
+
 const UserPage = () => {
     const { user, setUserById, clearUser, testUsers } = useCurrentUser();
     const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
