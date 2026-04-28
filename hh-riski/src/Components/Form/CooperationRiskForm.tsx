@@ -332,16 +332,18 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
 
       <div className={styles.center}>
-        <Button
-          variant="outlined"
-          onClick={() => saveFormUnfilled()}
-        >
-          {language === "fi" ?
-            <a>Temp: tallenna täyttämättä</a>
-            :
-            <a>Temp: save unfilled</a>
-          }
-        </Button>
+        {debug &&
+          <Button
+            variant="outlined"
+            onClick={() => saveFormUnfilled()}
+          >
+            {(language === "fi" ?
+              <a>Temp: tallenna täyttämättä</a>
+              :
+              <a>Temp: save unfilled</a>)
+            }
+          </Button>
+        }
         <Button
           variant="outlined"
           onClick={() => saveForm()}
