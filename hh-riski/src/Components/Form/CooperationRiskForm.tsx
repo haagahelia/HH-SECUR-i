@@ -258,6 +258,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             <textarea
               rows={5}
               cols={120}
+              maxLength={1000}
               placeholder={
                 language === "fi" ?
                   "Tähän kenttään voi esimerkiksi kirjoittaa tärkeitä lisätietoja yhteistyöstä."
@@ -332,16 +333,18 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
 
       <div className={styles.center}>
-        <Button
-          variant="outlined"
-          onClick={() => saveFormUnfilled()}
-        >
-          {language === "fi" ?
-            <a>Temp: tallenna täyttämättä</a>
-            :
-            <a>Temp: save unfilled</a>
-          }
-        </Button>
+        {debug &&
+          <Button
+            variant="outlined"
+            onClick={() => saveFormUnfilled()}
+          >
+            {(language === "fi" ?
+              <a>Temp: tallenna täyttämättä</a>
+              :
+              <a>Temp: save unfilled</a>)
+            }
+          </Button>
+        }
         <Button
           variant="outlined"
           onClick={() => saveForm()}

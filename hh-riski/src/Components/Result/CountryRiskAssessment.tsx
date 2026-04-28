@@ -11,6 +11,7 @@ const CountryRiskAssessment = ({
     language,
 }: CountryRiskAssessmentProps) => {
 
+    // Descriptions for risk ratings
     const results = {
         collaboration: {
             title: {
@@ -327,6 +328,7 @@ const CountryRiskAssessment = ({
         }
     }
 
+    // Coloured circular symbol for country risk ratings
     const riskSymbol = (risk: number) => {
         if (risk === 1) {
             return <span className={styles.riskCircleGreen}><b>1</b></span>

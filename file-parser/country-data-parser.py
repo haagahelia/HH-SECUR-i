@@ -121,7 +121,7 @@ splitLine = line.split(",")
 linesProcessed = 1
 
 while line != "":
-    if idNum != splitLine[idNumIndex]:
+    if idNum != splitLine[idNumIndex] and int(year) >= 2016:
         addWB(country)
         countries.append(country)
     nameString = splitLine[nameIndex].replace('"', "")
