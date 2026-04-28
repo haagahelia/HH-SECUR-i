@@ -27,24 +27,58 @@ Navigation is handled by React Router.
 ### End points
 
 #### /
+
 Risk form page.
 
+**Component:** [FormPage.tsx](src/FormPage.tsx)
+
 #### /results
-Risk assessment page
+
+Risk assessment page.
+
+**Component:** [ResultsPage.tsx](src/Result/ResultsPage.tsx)
 
 #### /my-assessments
+
 Page for managing your assessments.
 
+**Component:** [MyAssesmentsPage.tsx](src/Result/MyAssesmentsPage.tsx)
+
 #### /user
+
 Temporary page for user management.
 
 ## Shared components
 
 ### Navbar
+
 Upper and lower navigation bars.
 
 ## Contexts
 
+Contexts are used to persist data between pages.
+
+### UserContext
+
+[UserContext.tsx](src/context/UserContext.tsx)
+
+Temporary context for tracking and switching current user until real authentication is implemented.
+
+### FormAnswersContext
+
+[FormAnswersContext.tsx](src/context/FormAnswersContext.tsx)
+
+Context for persisting survey form selections between pages.
+
+## Helpers
+
+### [fetchData.ts](src/util/fetchData.ts)
+
+Temporary data source functions until back-end is implemented.
+
+### [utils.ts](src/util/utils.ts)
+
+Helper functions for parsing and sorting data.
 
 
 

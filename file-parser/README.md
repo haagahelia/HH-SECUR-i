@@ -1,6 +1,8 @@
 # file parser
 
-Python script for generating usable country risk data from raw sources
+Python script for generating usable country risk data from raw sources.
+
+Currently combines V-dem Academic Freedom rating with World bank corruption and political stability ratings.
 
 ## Sources
 
