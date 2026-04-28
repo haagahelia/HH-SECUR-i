@@ -47,3 +47,5 @@ Upper and lower navigation bars.
 
 # File Parser
 File parser is a Python script for parsing and combining data sources for Country risk calculation.
+
+Unzip risk_data_raw.zip to file parser directory before running.
