@@ -49,5 +49,5 @@ npm run dev
 
 **Path: ** /user
 
-# [File parser](file parser)
+# [File parser](file-parser/)
 File parser is a Python script for parsing and combining data sources for Country risk calculation.
