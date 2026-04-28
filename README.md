@@ -1,6 +1,10 @@
-# HH_RISKi
+# HH-SECUR-i
 
-# Front end - hh-secur-i
+Risk assessment tool for international collaboration.
+
+It currently consists of a front end React web app and a Python script for parsing raw source data.
+
+# [Front end](hh-riski/)
 Front end is a React web app where navigation is handled by react-router.
 
 ## Installation & launching(dev)
@@ -10,6 +14,8 @@ Front end is a React web app where navigation is handled by react-router.
 	- Node.js
 	- NPM
 	
+### Launching
+
 In HH_Riski/hh-riski
 
 ```
@@ -17,35 +23,31 @@ npm install
 npm run dev
 ```
 
-## Contexts
-Contexts are used for sharing data between compoments.
+## Features
 
-### UserContext
-Context for tracking active user.
+### Risk survey form
 
-### FromAnswersContext
-Context for persisting form answers data between when moving between components.
+*Collaboration risk survey form*
 
-## End points
+**Path: ** /
 
-### /
-Risk form page.
+### Risk survey results
 
-### /results
-Risk assessment page
+*Risk assessment page*
 
-### /my-assessments
-Page for managing your assessments.
+**Path: ** /results
 
-### /user
-Temporary page for user management.
+### Old assesments
 
-## Shared components
+*View, edit and delete your old assessments*
 
-### Navbar
-Upper and lower navigation bars.
+**Path: ** /my-assessments
 
-# File Parser
+### User managament
+
+*Temporary user management page until real authentication is implemented*
+
+**Path: ** /user
+
+# [File parser](file parser)
 File parser is a Python script for parsing and combining data sources for Country risk calculation.
-
-Unzip risk_data_raw.zip to file parser directory before running.
