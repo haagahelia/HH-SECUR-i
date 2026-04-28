@@ -258,6 +258,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             <textarea
               rows={5}
               cols={120}
+              maxLength={1000}
               placeholder={
                 language === "fi" ?
                   "Tähän kenttään voi esimerkiksi kirjoittaa tärkeitä lisätietoja yhteistyöstä."
