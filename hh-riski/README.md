@@ -30,23 +30,25 @@ Navigation is handled by React Router.
 
 Risk form page.
 
-**Component:** [FormPage.tsx](src/FormPage.tsx)
+**Component:** [FormPage.tsx](src/Components/FormPage.tsx)
 
 #### /results
 
 Risk assessment page.
 
-**Component:** [ResultsPage.tsx](src/Result/ResultsPage.tsx)
+**Component:** [ResultsPage.tsx](src/Components/Result/ResultsPage.tsx)
 
 #### /my-assessments
 
 Page for managing your assessments.
 
-**Component:** [MyAssesmentsPage.tsx](src/Result/MyAssesmentsPage.tsx)
+**Component:** [MyAssesmentsPage.tsx](src/Components/Result/MyAssesmentsPage.tsx)
 
 #### /user
 
 Temporary page for user management.
+
+**Component:** [UserPage.tsx](src/Components/UserPage.tsx)
 
 ## Shared components
 
