@@ -65,6 +65,7 @@ class Country:
             "risk": self.risk.to_dict(),
         }
     
+# Add corruption, political stability and finnish country names from WB data file
 def addWB(country):
     try:
         wbData = open("WB_DATA.csv", "r")
@@ -81,6 +82,7 @@ def addWB(country):
         print("World bank data file not found")
     
 
+# Generate country list with ID, data year, english name and academic freedom from v-dem data
 
 #V-Dem-CY-Core-v16.csv"
 file = open("V-Dem-CY-Core-v16.csv", "r")
@@ -94,7 +96,7 @@ nameIndex = splitHeaders.index('"country_name"')
 idIndex = splitHeaders.index('"country_text_id"')
 idNumIndex = splitHeaders.index('"country_id"')
 yearIndex = splitHeaders.index('"year"')
-academIndex = splitHeaders.index('"v2xca_academ_sd"')
+academIndex = splitHeaders.index('"v2xca_academ"')
 
 line = file.readline()
 splitLine = line.split(",")
@@ -150,8 +152,14 @@ except FileExistsError:
 
 parsedCountries = open("parsed_countries.json", "w")
 
-for country in countries:
-    data = country.to_dict()
-    parsedCountries.write(json.dumps(data, indent=4) + ",\n")
+#Write countries as an array in JSON notation
+parsedCountries.write("[\n")
+for i in range(len(countries)):
+    data = countries[i].to_dict()
+    if i == len(countries) - 1:
+        parsedCountries.write(json.dumps(data, indent=4) + "\n")
+    else:
+        parsedCountries.write(json.dumps(data, indent=4) + ",\n")
 
+parsedCountries.write("]\n")
 print("Data saved")
