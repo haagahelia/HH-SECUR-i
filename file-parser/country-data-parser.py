@@ -20,7 +20,6 @@ class Name:
     def to_dict(self):
         return {"en": self.en, "fi": self.fi}
 
-
 class Risk:
     def __init__(
         self,
@@ -54,7 +53,6 @@ class Risk:
             "ruleOfLaw": self.ruleOfLaw,
         }
 
-
 class Country:
     def __init__(self, name, id, dataYear, risk):
         self.name = name
@@ -78,7 +76,7 @@ def addGDPR(country):
         while gdprLine != "":
                 gdprSplit = gdprLine.split(",")
                 if gdprSplit[0].lower() == country.name.fi.lower():
-                    print("Match found - Name: " + country.name.fi + ", GDPR: " + gdprSplit[1])
+                    #print("Match found - Name: " + country.name.fi + ", GDPR: " + gdprSplit[1])
                     country.risk.GDPR = gdprSplit[1].replace("\n", "")
                 gdprLine = gdprData.readline()
         if country.risk.GDPR == "":

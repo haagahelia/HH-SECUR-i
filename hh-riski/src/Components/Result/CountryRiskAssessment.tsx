@@ -181,8 +181,8 @@ const CountryRiskAssessment = ({
                 en: "Placeholder description for rating 1"
             },
             2: {
-                fi: "Väliaikainen kuvausteksti tasolle 2",
-                en: "Placeholder description for rating 2"
+                fi: "Yhteistyö maa on määritelty EU:n toimesta tarpeeksi luotettavaksi henkilödatan käsittelyssä.",
+                en: "Collaborator country is rated for adequate data protection by EU."
             },
             3: {
                 fi: "Henkilötietojen luovuttamista koskee EU:n GDPR-sääntely.",
