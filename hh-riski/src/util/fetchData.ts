@@ -91,10 +91,11 @@ const countriesRaw: CountryRaw[] = [
             academicFreedom: 0.94,
             politicalStability: 73.459717,
             development: 5,
-            GDPR: true,
+            GDPR: 1,
             sanctions: false,
             ruleOfLaw: 0.85
-        }
+        },
+        dataYear: 2025
     },
     {
         id: 'usa',
@@ -108,10 +109,11 @@ const countriesRaw: CountryRaw[] = [
             academicFreedom: 0.684,
             politicalStability: 47.393364,
             development: 17,
-            GDPR: false,
+            GDPR: 2,
             sanctions: false,
             ruleOfLaw: .68
-        }
+        },
+        dataYear: 2025
     },
 
     {
@@ -126,10 +128,11 @@ const countriesRaw: CountryRaw[] = [
             academicFreedom: 0.708,
             politicalStability: 20.379147,
             development: 86,
-            GDPR: false,
+            GDPR: 3,
             sanctions: true,
             ruleOfLaw: 0.53
-        }
+        },
+        dataYear: 2025
     },
 
         {
@@ -144,10 +147,11 @@ const countriesRaw: CountryRaw[] = [
             academicFreedom: 0.067,
             politicalStability: 25.118483,
             development: 78,
-            GDPR: false,
+            GDPR: 3,
             sanctions: true,
             ruleOfLaw: 0.48
-        }
+        },
+        dataYear: 2025
     },
 ]
 

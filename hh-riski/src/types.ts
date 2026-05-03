@@ -35,10 +35,11 @@ export type CountryRaw = {
         academicFreedom: number,
         politicalStability: number, 
         development: number,
-        GDPR: boolean,
+        GDPR: number,
         sanctions: boolean,
         ruleOfLaw: number
-    }
+    },
+    dataYear: number
 }
 
 export type Organization = {

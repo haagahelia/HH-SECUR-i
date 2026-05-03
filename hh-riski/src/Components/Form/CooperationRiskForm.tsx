@@ -3,11 +3,10 @@ import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchC
 import { useState } from "react";
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
-import RiskSummary from "./RiskSummary";
-import { parseCountries, sortElements } from "../../util/utils";
+import {  sortElements } from "../../util/utils";
 import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
 
-import type { Country, CountryRaw, Organization, Question } from "../../types";
+import type { CountryRaw, Organization, Question } from "../../types";
 import styles from "../../styles.module.css";
 
 import FormSection from "./Sections/FormSection";
@@ -22,7 +21,6 @@ type CooperationRiskFormProps = {
 };
 
 const countriesRaw: CountryRaw[] = fetchCountriesRaw();
-const countries: Country[] = parseCountries(countriesRaw);
 const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: Question = fetchHhRole();
 const consortiumQuestionData: Question = fetchConsortiumType();
@@ -50,10 +48,10 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   );
   const sortedOrganizations = sortElements(filteredOrganizations, language);
 
-  const selectedCountryData = countries.find(
-    (country) => country.id === selectedCountry
+  const selectedCountryData = countriesRaw.find(
+    (countryRaw) => countryRaw.id === selectedCountry
   );
-  const sortedCountries = sortElements(countries, language);
+  const sortedCountries = sortElements(countriesRaw, language);
 
   const navigate = useNavigate();
 
@@ -271,66 +269,6 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           </li>
         </ul>
       </FormSection>
-
-      {
-        selectedCountryData && debug && (
-          <FormSection
-            title={language === "fi" ? "Kehitysvaiheen elementti: Maan Riskiyhteenveto" : "Temporary element: Country Risk Summary"}
-          >
-            <RiskSummary country={selectedCountryData} language={language} />
-          </FormSection>
-        )
-      }
-
-      {debug &&
-        (language === "fi" ?
-
-          <div>
-            <h3>Kehitysvaiheen elementti: lomakkeen valinnat</h3>
-            <ul>
-              <li>Maa: {selectedCountry}</li>
-              <li>Organisaatio: {selectedOrganization}</li>
-              <li>Projektin nimi: {projectName}</li>
-              <li>Projektin kuvaus: {projectDescription}</li>
-              <li>Projektin kesto: {duration}</li>
-              <li>HH rooli: {hhRole}</li>
-              <li>Konsortio: {consortium}</li>
-              <li>Historia : {history}</li>
-              <li>Organisaation tyyppi: {organizationType}</li>
-              <li>Sopimus: {contractStatus}</li>
-              <li>Rahoitus: {funding}</li>
-              <li>Vastuu: {liability}</li>
-              <li>Henkilötiedot: {personalInformation}</li>
-              <li>Dual use: {dualUse}</li>
-              <li>Etiikka: {ethics}</li>
-              <li>Yhteistyön tyyppi: {cooperationType}</li>
-            </ul>
-          </div>
-          :
-          <div>
-            <h3>Temporary element: form choices</h3>
-            <ul>
-              <li>Country: {selectedCountry}</li>
-              <li>Organization: {selectedOrganization}</li>
-              <li>Project name: {projectName}</li>
-              <li>Project description: {projectDescription}</li>
-              <li>Project duration: {duration}</li>
-              <li>HH role: {hhRole}</li>
-              <li>Consortium: {consortium}</li>
-              <li>History : {history}</li>
-              <li>Organization type: {organizationType}</li>
-              <li>Agreement: {contractStatus}</li>
-              <li>Funding: {funding}</li>
-              <li>Liability: {liability}</li>
-              <li>Personal information: {personalInformation}</li>
-              <li>Dual use: {dualUse}</li>
-              <li>Ethics: {ethics}</li>
-              <li>Collaboration type: {cooperationType}</li>
-            </ul>
-          </div>
-        )
-      }
-
 
       <div className={styles.center}>
         {debug &&

@@ -2,7 +2,7 @@ import type { Country } from "../../types";
 import styles from "../../styles.module.css";
 
 type CountryRiskAssessmentProps = {
-    country: Country | undefined;
+    country: Country | undefined;  
     language: "fi" | "en";
 };
 

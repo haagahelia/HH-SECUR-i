@@ -17,15 +17,15 @@ export function sortElements(elements: any, language: 'fi' | 'en') {
 }
 
 //Generate 1-3 risk calculation from raw country data
-export function parseCountries(countriesRaw: CountryRaw[]) {
+export function parseCountries(countriesRaw: CountryRaw[], personal: string) {
     const countries = [];
     for (let i = 0; i < countriesRaw.length; i++) {
-        countries.push(parseCountry(countriesRaw[i]))
+        countries.push(parseCountry(countriesRaw[i], personal))
     }
     return countries;
 }
 
-export function parseCountry(countryRaw: CountryRaw) {
+export function parseCountry(countryRaw: CountryRaw, personal: string) {
     let overall: 0 | 1 | 2 | 3 = 0;
     let corruption: 0 | 1 | 2 | 3 = 0;
     if (countryRaw.risk.corruption > 66.666) {
@@ -60,10 +60,12 @@ export function parseCountry(countryRaw: CountryRaw) {
         development = 3;
     }
     let gdpr: 0 | 1 | 2 | 3 = 0; //placeholder
-    if (countryRaw.risk.GDPR) {
+    if (personal === "no" || countryRaw.risk.GDPR === 1) {
         gdpr = 1;
-    } else {
+    } else if (personal !== "no" && countryRaw.risk.GDPR === 2){
         gdpr = 2;
+    } else if (personal !== "no" && countryRaw.risk.GDPR === 3) {
+        gdpr = 3
     }
     let sanctions: 0 | 1 | 2 | 3 = 0;
     if (!countryRaw.risk.sanctions) {

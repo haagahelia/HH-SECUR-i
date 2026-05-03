@@ -30,11 +30,10 @@ import {
 import SingleQuestionSummary from "./SingleQuestionSummary";
 import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
-import { parseCountries } from "../../util/utils";
+import { parseCountries, parseCountry } from "../../util/utils";
 
 //const countries: Country[] = fetchCountries();
 const countriesRaw: CountryRaw[] = fetchCountriesRaw();
-const countries: Country[] = parseCountries(countriesRaw);
 const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: Question = fetchHhRole();
 const historyQuestionData: Question = fetchCooperationHistory();
@@ -75,7 +74,11 @@ const ResultsPage = () => {
         clearAnswers,
     } = useFormAnswers();
 
+    const countries: Country[] = parseCountries(countriesRaw, personalInformation);
+
     const country = countries.find((country) => country.id === selectedCountry);
+    //const countryRaw = countriesRaw.find((country) => country.id === selectedCountry);
+    //const country = parseCountry(countryRaw);
 
     const selectedCountryData = countries.find(
         (country) => country.id === selectedCountry
@@ -156,8 +159,9 @@ const ResultsPage = () => {
                 language={selectedLanguage}
                 setLanguage={setSelectedLanguage}
             />
-
+    <div>{personalInformation}</div>
             <div className={styles.results}>
+                
                 <div className={styles.left}>
                     <Button
                         variant="outlined"
