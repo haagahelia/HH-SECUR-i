@@ -159,7 +159,6 @@ const ResultsPage = () => {
                 language={selectedLanguage}
                 setLanguage={setSelectedLanguage}
             />
-    <div>{personalInformation}</div>
             <div className={styles.results}>
                 
                 <div className={styles.left}>
