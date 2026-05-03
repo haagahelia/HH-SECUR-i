@@ -1,5 +1,10 @@
 import json
 
+class GDPRCountry:
+    def __init__(self, nameFi, gdpr):
+            self.nameFi = nameFi
+            self.gdpr = gdpr
+
 class WBCountry:
     def __init__(self, name, corruption, politicalStability, nameFi):
         self.name = name
@@ -51,19 +56,35 @@ class Risk:
 
 
 class Country:
-    def __init__(self, name, id, year, risk):
+    def __init__(self, name, id, dataYear, risk):
         self.name = name
         self.id = id
-        self.year = year
+        self.dataYear = dataYear
         self.risk = risk
 
     def to_dict(self):
         return {
             "name": self.name.to_dict(),
             "id": self.id,
-            "year": self.year,
+            "dataYear": self.dataYear,
             "risk": self.risk.to_dict(),
         }
+    
+# Add GDPR rating 1 = GDPR country, 2 = adequate protection country, 3 = other countries
+def addGDPR(country):
+    try:
+        gdprData = open("GDPR_DATA.csv", "r")
+        gdprLine = gdprData.readline()
+        while gdprLine != "":
+                gdprSplit = gdprLine.split(",")
+                if gdprSplit[0].lower() == country.name.fi.lower():
+                    print("Match found - Name: " + country.name.fi + ", GDPR: " + gdprSplit[1])
+                    country.risk.GDPR = gdprSplit[1].replace("\n", "")
+                gdprLine = gdprData.readline()
+        if country.risk.GDPR == "":
+            country.risk.GDPR = 3
+    except FileNotFoundError:
+        print("GDPR_DATA.csv not found")
     
 # Add corruption, political stability and finnish country names from WB data file
 def addWB(country):
@@ -79,7 +100,7 @@ def addWB(country):
                 country.name.fi = wbSplit[3].replace("\n", "")
             wbLine = wbData.readline()
     except FileNotFoundError:
-        print("World bank data file not found")
+        print("WB_DATA.csv not found")
     
 
 # Generate country list with ID, data year, english name and academic freedom from v-dem data
@@ -125,6 +146,7 @@ linesProcessed = 1
 while line != "":
     if idNum != splitLine[idNumIndex] and int(year) >= 2016:
         addWB(country)
+        addGDPR(country)
         countries.append(country)
     nameString = splitLine[nameIndex].replace('"', "")
     id = splitLine[idIndex].replace('"', "")
