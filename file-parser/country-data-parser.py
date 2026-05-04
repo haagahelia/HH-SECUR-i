@@ -1,28 +1,5 @@
 import json
 
-class sanctionCountry:
-    def __init__(self, name, sanction, issuer):
-        self.name = name
-        self.sanction = sanction
-        self.issuer = issuer
-
-class HDICountry:
-    def __init__(self, name, hdi):
-        self.name = name
-        self.hdi = hdi
-
-class GDPRCountry:
-    def __init__(self, nameFi, gdpr):
-            self.nameFi = nameFi
-            self.gdpr = gdpr
-
-class WBCountry:
-    def __init__(self, name, corruption, politicalStability, nameFi):
-        self.name = name
-        self.corruption = corruption
-        self.politicalStability = politicalStability
-        self.nameFi = nameFi
-
 class Name:
     def __init__(self, en, fi):
         self.en = en
@@ -79,6 +56,36 @@ class Country:
             "risk": self.risk.to_dict(),
         }
     
+# Adds placeholder security risk rating of 3, remove when real source is added
+def addPlaceholderSecurity(country):
+    country.risk.security = 3
+
+# Add rule of law rating
+def addRuleOfLaw(country):
+    try:
+        ruleOfLawData = open("DATA_rule_of_law.csv", "r")
+        ruleOfLawLine = ruleOfLawData.readline()
+        countryCodeIndex = -1
+        while ruleOfLawLine != "":
+            ruleOfLawSplit = ruleOfLawLine.split(",")
+            #print(ruleOfLawSplit[0])
+            if ruleOfLawSplit[0].lower() == "country code":
+                try:
+                    countryCodeIndex = ruleOfLawSplit.index(country.id.upper())
+                    #print("Country index found for " + country.name.en + ", " + str(countryCodeIndex))
+                except ValueError:
+                    print("Rule of law not found for: " + country.name.en + ", Code: " + country.id)
+            if ruleOfLawSplit[0].lower() == "wjp rule of law index: overall score":
+                if countryCodeIndex != -1:
+                    country.risk.ruleOfLaw = ruleOfLawSplit[countryCodeIndex]
+                    #print("Rule of law rating added for " + country.name.en + ": " + ruleOfLawSplit[countryCodeIndex])
+                    break
+                else:
+                    break
+            ruleOfLawLine = ruleOfLawData.readline()
+    except FileNotFoundError:
+        print("DATA_rule_of_law.csv not found")
+
 # Add sanction to country if active
 def addSanctions(country):
     try:
@@ -187,10 +194,12 @@ try:
 
     while line != "":
         if idNum != splitLine[idNumIndex] and int(year) >= 2016:
+            addPlaceholderSecurity(country)
             addWB(country)
             addGDPR(country)
             addHDI(country)
             addSanctions(country)
+            addRuleOfLaw(country)
             countries.append(country)
         nameString = splitLine[nameIndex].replace('"', "")
         id = splitLine[idIndex].replace('"', "")
@@ -228,7 +237,7 @@ try:
             parsedCountries.write(json.dumps(data, indent=4) + ",\n")
 
     parsedCountries.write("]\n")
-    print("Data saved")
+    print("Data saved to parsed_countries.json")
 
 except FileNotFoundError:
     print("DATA_V-Dem-CY-Core-v16.csv not found")
