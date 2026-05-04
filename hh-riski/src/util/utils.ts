@@ -68,9 +68,9 @@ export function parseCountry(countryRaw: CountryRaw, personal: string) {
         gdpr = 3
     }
     let sanctions: 0 | 1 | 2 | 3 = 0;
-    if (!countryRaw.risk.sanctions) {
+    if (countryRaw.risk.sanctions == 1) {
         sanctions = 1;
-    } else {
+    } else if (countryRaw.risk.sanctions == 3){
         sanctions = 3;
     }
     let law: 0 | 1 | 2 | 3 = 0;

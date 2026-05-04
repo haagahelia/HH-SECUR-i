@@ -36,7 +36,7 @@ export type CountryRaw = {
         politicalStability: number, 
         development: number,
         GDPR: number,
-        sanctions: boolean,
+        sanctions: number,
         ruleOfLaw: number
     },
     dataYear: number
