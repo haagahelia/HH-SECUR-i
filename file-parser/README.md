@@ -2,7 +2,9 @@
 
 Python script for generating usable country risk data from raw sources.
 
-Currently combines V-dem Academic Freedom rating with World bank corruption and political stability ratings.
+Currently combines every risk rating besides security from different sources into a single JSON file.
+
+The script was written to create temporary usable data source for hardcoded countries in front end before back-end or database is implemented.
 
 ## Sources
 
