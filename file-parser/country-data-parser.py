@@ -31,14 +31,14 @@ class Risk:
 
     def to_dict(self):
         return {
-            "corruption": self.corruption,
-            "security": self.security,
-            "academicFreedom": self.academicFreedom,
-            "politicalStability": self.politicalStability,
-            "development": self.development,
-            "GDPR": self.GDPR,
-            "sanctions": self.sanctions,
-            "ruleOfLaw": self.ruleOfLaw,
+            "corruption": float(self.corruption),
+            "security": int(self.security),
+            "academicFreedom": float(self.academicFreedom),
+            "politicalStability": float(self.politicalStability),
+            "development": float(self.development),
+            "GDPR": int(self.GDPR),
+            "sanctions": int(self.sanctions),
+            "ruleOfLaw": float(self.ruleOfLaw),
         }
 
 class Country:
@@ -52,7 +52,7 @@ class Country:
         return {
             "name": self.name.to_dict(),
             "id": self.id,
-            "dataYear": self.dataYear,
+            "dataYear": int(self.dataYear),
             "risk": self.risk.to_dict(),
         }
     
@@ -74,15 +74,17 @@ def addRuleOfLaw(country):
                     countryCodeIndex = ruleOfLawSplit.index(country.id.upper())
                     #print("Country index found for " + country.name.en + ", " + str(countryCodeIndex))
                 except ValueError:
+                    country.risk.ruleOfLaw = -1
                     print("Rule of law not found for: " + country.name.en + ", Code: " + country.id)
             if ruleOfLawSplit[0].lower() == "wjp rule of law index: overall score":
                 if countryCodeIndex != -1:
                     country.risk.ruleOfLaw = ruleOfLawSplit[countryCodeIndex]
                     #print("Rule of law rating added for " + country.name.en + ": " + ruleOfLawSplit[countryCodeIndex])
-                    break
+                    return
                 else:
-                    break
+                    return
             ruleOfLawLine = ruleOfLawData.readline()
+        country.risk.ruleOfLaw = -1
     except FileNotFoundError:
         print("DATA_rule_of_law.csv not found")
 
@@ -95,10 +97,11 @@ def addSanctions(country):
             sanctionSplit = sanctionsLine.split()
             if sanctionSplit[0].lower() == country.name.en.lower():
                 country.risk.sanctions = 3
-                break
+                return
             sanctionsLine = sanctionsData.readline()
         country.risk.sanctions = 1
     except FileNotFoundError:
+        country.risk.sanctions = -1
         print("GDPR_DATA.csv not found")
 
 # Add HDR Humen Development Index rating to country
@@ -110,10 +113,15 @@ def addHDI(country):
             hdiSplit = hdiLine.split(",")
             if hdiSplit[1].lower() == country.name.en.lower():
                 #print("Match found - Name: " + country.name.en + ", GDPR: " + hdiSplit[2])
-                country.risk.development = hdiSplit[2]
-                break
+                try:
+                    country.risk.development = float(hdiSplit[2])
+                except ValueError:
+                    country.risk.development = -1
+                return
             hdiLine = hdiData.readline()
+        country.risk.development = -1
     except FileNotFoundError:
+        country.risk.development = -1
         print("DATA_HDR_HDI.csv not found")
     
 # Add GDPR rating 1 = GDPR country, 2 = adequate protection country, 3 = other countries
@@ -126,11 +134,12 @@ def addGDPR(country):
                 if gdprSplit[0].lower() == country.name.fi.lower():
                     #print("Match found - Name: " + country.name.fi + ", GDPR: " + gdprSplit[1])
                     country.risk.GDPR = gdprSplit[1].replace("\n", "")
-                    break
+                    return
                 gdprLine = gdprData.readline()
         if country.risk.GDPR == "":
             country.risk.GDPR = 3
     except FileNotFoundError:
+        country.risk.GDPR = -1
         print("DATA_GDPR.csv not found")
     
 # Add corruption, political stability and finnish country names from WB data file
@@ -145,9 +154,15 @@ def addWB(country):
                 country.risk.corruption = wbSplit[1].replace("\n", "")
                 country.risk.politicalStability = wbSplit[2].replace("\n", "")
                 country.name.fi = wbSplit[3].replace("\n", "")
-                break
+                return
             wbLine = wbData.readline()
+        country.risk.corruption = -1
+        country.risk.politicalStability = -1
+        country.name.fi = "Lisää nimi"
     except FileNotFoundError:
+        country.risk.corruption = -1
+        country.risk.politicalStability = -1
+        country.name.fi = "Lisää nimi"
         print("DATA_WB.csv not found")
     
 
