@@ -1,5 +1,10 @@
 import json
 
+class HDICountry:
+    def __init__(self, name, hdi):
+        self.name = name
+        self.hdi = hdi
+
 class GDPRCountry:
     def __init__(self, nameFi, gdpr):
             self.nameFi = nameFi
@@ -68,6 +73,21 @@ class Country:
             "risk": self.risk.to_dict(),
         }
     
+# Add HDR Humen Development Index rating to country
+def addHDI(country):
+    try:
+        hdiData = open("HDR_HDI_DATA.csv", "r")
+        hdiLine = hdiData.readline()
+        while hdiLine != "":
+            hdiSplit = hdiLine.split(",")
+            if (hdiSplit[1].lower() == country.name.en.lower()):
+                #print("Match found - Name: " + country.name.en + ", GDPR: " + hdiSplit[2])
+                country.risk.development = hdiSplit[2]
+                break
+            hdiLine = hdiData.readline()
+    except FileNotFoundError:
+        print("GDPR_DATA.csv not found")
+    
 # Add GDPR rating 1 = GDPR country, 2 = adequate protection country, 3 = other countries
 def addGDPR(country):
     try:
@@ -78,6 +98,7 @@ def addGDPR(country):
                 if gdprSplit[0].lower() == country.name.fi.lower():
                     #print("Match found - Name: " + country.name.fi + ", GDPR: " + gdprSplit[1])
                     country.risk.GDPR = gdprSplit[1].replace("\n", "")
+                    break
                 gdprLine = gdprData.readline()
         if country.risk.GDPR == "":
             country.risk.GDPR = 3
@@ -96,6 +117,7 @@ def addWB(country):
                 country.risk.corruption = wbSplit[1].replace("\n", "")
                 country.risk.politicalStability = wbSplit[2].replace("\n", "")
                 country.name.fi = wbSplit[3].replace("\n", "")
+                break
             wbLine = wbData.readline()
     except FileNotFoundError:
         print("WB_DATA.csv not found")
@@ -145,6 +167,7 @@ while line != "":
     if idNum != splitLine[idNumIndex] and int(year) >= 2016:
         addWB(country)
         addGDPR(country)
+        addHDI(country)
         countries.append(country)
     nameString = splitLine[nameIndex].replace('"', "")
     id = splitLine[idIndex].replace('"', "")
