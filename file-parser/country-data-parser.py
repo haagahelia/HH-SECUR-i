@@ -35,7 +35,7 @@ class Risk:
             "security": int(self.security),
             "academicFreedom": float(self.academicFreedom),
             "politicalStability": float(self.politicalStability),
-            "development": float(self.development),
+            "development": int(self.development),
             "GDPR": int(self.GDPR),
             "sanctions": int(self.sanctions),
             "ruleOfLaw": float(self.ruleOfLaw),
@@ -114,7 +114,7 @@ def addHDI(country):
             if hdiSplit[1].lower() == country.name.en.lower():
                 #print("Match found - Name: " + country.name.en + ", GDPR: " + hdiSplit[2])
                 try:
-                    country.risk.development = float(hdiSplit[2])
+                    country.risk.development = float(hdiSplit[0])
                 except ValueError:
                     country.risk.development = -1
                 return
