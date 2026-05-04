@@ -56,7 +56,8 @@ class Country:
             "risk": self.risk.to_dict(),
         }
     
-# Adds placeholder security risk rating of 3, remove when real source is added
+# Adds placeholder security risk rating of 3, remove when actual source is implemented
+# Real source will use ministory of foreign affairs travel warnings and changes often enough that a hard coded source is not really practical
 def addPlaceholderSecurity(country):
     country.risk.security = 3
 
