@@ -1,7 +1,4 @@
 #Parser source and output files
-V-Dem-CY-Core-v16.csv
-WB_DATA.csv
-GDPR_DATA.csv
-HDR_HDI_DATA.csv
 parsed_countries.json
+DATA_*
 risk_data_raw_backup*

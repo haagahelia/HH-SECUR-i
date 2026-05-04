@@ -1,5 +1,11 @@
 import json
 
+class sanctionCountry:
+    def __init__(self, name, sanction, issuer):
+        self.name = name
+        self.sanction = sanction
+        self.issuer = issuer
+
 class HDICountry:
     def __init__(self, name, hdi):
         self.name = name
@@ -73,25 +79,40 @@ class Country:
             "risk": self.risk.to_dict(),
         }
     
+# Add sanction to country if active
+def addSanctions(country):
+    try:
+        sanctionsData = open("DATA_sanctions.csv", "r")
+        sanctionsLine = sanctionsData.readline()
+        while sanctionsLine != "":
+            sanctionSplit = sanctionsLine.split()
+            if sanctionSplit[0].lower() == country.name.en.lower():
+                country.risk.sanctions = 3
+                break
+            sanctionsLine = sanctionsData.readline()
+        country.risk.sanctions = 1
+    except FileNotFoundError:
+        print("GDPR_DATA.csv not found")
+
 # Add HDR Humen Development Index rating to country
 def addHDI(country):
     try:
-        hdiData = open("HDR_HDI_DATA.csv", "r")
+        hdiData = open("DATA_HDR_HDI.csv", "r")
         hdiLine = hdiData.readline()
         while hdiLine != "":
             hdiSplit = hdiLine.split(",")
-            if (hdiSplit[1].lower() == country.name.en.lower()):
+            if hdiSplit[1].lower() == country.name.en.lower():
                 #print("Match found - Name: " + country.name.en + ", GDPR: " + hdiSplit[2])
                 country.risk.development = hdiSplit[2]
                 break
             hdiLine = hdiData.readline()
     except FileNotFoundError:
-        print("GDPR_DATA.csv not found")
+        print("DATA_HDR_HDI.csv not found")
     
 # Add GDPR rating 1 = GDPR country, 2 = adequate protection country, 3 = other countries
 def addGDPR(country):
     try:
-        gdprData = open("GDPR_DATA.csv", "r")
+        gdprData = open("DATA_GDPR.csv", "r")
         gdprLine = gdprData.readline()
         while gdprLine != "":
                 gdprSplit = gdprLine.split(",")
@@ -103,12 +124,12 @@ def addGDPR(country):
         if country.risk.GDPR == "":
             country.risk.GDPR = 3
     except FileNotFoundError:
-        print("GDPR_DATA.csv not found")
+        print("DATA_GDPR.csv not found")
     
 # Add corruption, political stability and finnish country names from WB data file
 def addWB(country):
     try:
-        wbData = open("WB_DATA.csv", "r")
+        wbData = open("DATA_WB.csv", "r")
         wbLine = wbData.readline()
         while wbLine != "":
             wbSplit = wbLine.split(",")
@@ -120,55 +141,38 @@ def addWB(country):
                 break
             wbLine = wbData.readline()
     except FileNotFoundError:
-        print("WB_DATA.csv not found")
+        print("DATA_WB.csv not found")
     
 
 # Generate country list with ID, data year, english name and academic freedom from v-dem data
 
 #V-Dem-CY-Core-v16.csv"
-file = open("V-Dem-CY-Core-v16.csv", "r")
-line = ""
-print("Parsing country data")
+try:
+    file = open("DATA_V-Dem-CY-Core-v16.csv", "r")
+    line = ""
+    print("Parsing country data")
 
-line = file.readline()
-splitHeaders = line.split(",")
+    line = file.readline()
+    splitHeaders = line.split(",")
 
-nameIndex = splitHeaders.index('"country_name"')
-idIndex = splitHeaders.index('"country_text_id"')
-idNumIndex = splitHeaders.index('"country_id"')
-yearIndex = splitHeaders.index('"year"')
-academIndex = splitHeaders.index('"v2xca_academ"')
+    nameIndex = splitHeaders.index('"country_name"')
+    idIndex = splitHeaders.index('"country_text_id"')
+    idNumIndex = splitHeaders.index('"country_id"')
+    yearIndex = splitHeaders.index('"year"')
+    academIndex = splitHeaders.index('"v2xca_academ"')
 
-line = file.readline()
-splitLine = line.split(",")
-nameString = splitLine[nameIndex].replace('"', "")
-id = splitLine[idIndex].replace('"', "")
-idNum = splitLine[idNumIndex]
-year = splitLine[yearIndex].replace('"', "")
-academ = splitLine[academIndex].replace('"', "")
+    line = file.readline()
+    splitLine = line.split(",")
+    nameString = splitLine[nameIndex].replace('"', "")
+    id = splitLine[idIndex].replace('"', "")
+    idNum = splitLine[idNumIndex]
+    year = splitLine[yearIndex].replace('"', "")
+    academ = splitLine[academIndex].replace('"', "")
 
-countries = []
+    countries = []
 
-line = file.readline()
-splitLine = line.split(",")
-nameString = splitLine[nameIndex].replace('"', "")
-id = splitLine[idIndex].replace('"', "")
-idNum = splitLine[idNumIndex]
-year = splitLine[yearIndex].replace('"', "")
-academ = splitLine[academIndex].replace('"', "")
-name = Name(nameString, "")
-risk = Risk("", "", academ, "", "", "", "", "")
-country = Country(name, id, year, risk)
-line = file.readline()
-splitLine = line.split(",")
-linesProcessed = 1
-
-while line != "":
-    if idNum != splitLine[idNumIndex] and int(year) >= 2016:
-        addWB(country)
-        addGDPR(country)
-        addHDI(country)
-        countries.append(country)
+    line = file.readline()
+    splitLine = line.split(",")
     nameString = splitLine[nameIndex].replace('"', "")
     id = splitLine[idIndex].replace('"', "")
     idNum = splitLine[idNumIndex]
@@ -179,30 +183,52 @@ while line != "":
     country = Country(name, id, year, risk)
     line = file.readline()
     splitLine = line.split(",")
-    linesProcessed += 1
-    if linesProcessed % 2000 == 0:
-        print("Lines processed: " + str(linesProcessed))
+    linesProcessed = 1
 
-print("Total lines: " + str(linesProcessed))
-print("Countries: " + str(len(countries)))
-countries.sort(key=lambda country: country.name.en)
+    while line != "":
+        if idNum != splitLine[idNumIndex] and int(year) >= 2016:
+            addWB(country)
+            addGDPR(country)
+            addHDI(country)
+            addSanctions(country)
+            countries.append(country)
+        nameString = splitLine[nameIndex].replace('"', "")
+        id = splitLine[idIndex].replace('"', "")
+        idNum = splitLine[idNumIndex]
+        year = splitLine[yearIndex].replace('"', "")
+        academ = splitLine[academIndex].replace('"', "")
+        name = Name(nameString, "")
+        risk = Risk("", "", academ, "", "", "", "", "")
+        country = Country(name, id, year, risk)
+        line = file.readline()
+        splitLine = line.split(",")
+        linesProcessed += 1
+        if linesProcessed % 2000 == 0:
+            print("Lines processed: " + str(linesProcessed))
 
-try:
-    open("parsed_countries.json", "x")
-    print("Output file created")
-except FileExistsError:
-    print("Output file present")
+    print("Total lines: " + str(linesProcessed))
+    print("Countries: " + str(len(countries)))
+    countries.sort(key=lambda country: country.name.en)
 
-parsedCountries = open("parsed_countries.json", "w")
+    try:
+        open("parsed_countries.json", "x")
+        print("Output file created")
+    except FileExistsError:
+        print("Output file present")
 
-#Write countries as an array in JSON notation
-parsedCountries.write("[\n")
-for i in range(len(countries)):
-    data = countries[i].to_dict()
-    if i == len(countries) - 1:
-        parsedCountries.write(json.dumps(data, indent=4) + "\n")
-    else:
-        parsedCountries.write(json.dumps(data, indent=4) + ",\n")
+    parsedCountries = open("parsed_countries.json", "w")
 
-parsedCountries.write("]\n")
-print("Data saved")
+    #Write countries as an array in JSON notation
+    parsedCountries.write("[\n")
+    for i in range(len(countries)):
+        data = countries[i].to_dict()
+        if i == len(countries) - 1:
+            parsedCountries.write(json.dumps(data, indent=4) + "\n")
+        else:
+            parsedCountries.write(json.dumps(data, indent=4) + ",\n")
+
+    parsedCountries.write("]\n")
+    print("Data saved")
+
+except FileNotFoundError:
+    print("DATA_V-Dem-CY-Core-v16.csv not found")
