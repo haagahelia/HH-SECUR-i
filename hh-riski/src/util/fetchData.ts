@@ -3505,7 +3505,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 47.39,
         development: -1,
         GDPR: 2,
-        sanctions: 3,
+        sanctions: 1,
         ruleOfLaw: 0.67977332
     }
 },
