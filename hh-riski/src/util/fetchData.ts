@@ -463,7 +463,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 1.42,
         development: 181,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.30764429
     }
 },
@@ -679,7 +679,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 18.48,
         development: 65,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.44475383
     }
 },
@@ -769,7 +769,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 31.28,
         development: 74,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.51994863
     }
 },
@@ -859,7 +859,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 4.74,
         development: -1,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.33605104
     }
 },
@@ -877,7 +877,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 12.8,
         development: 187,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 },
@@ -967,7 +967,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 3.32,
         development: 191,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 },
@@ -1021,7 +1021,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 25.12,
         development: 78,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.47709017
     }
 },
@@ -1165,7 +1165,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 5.21,
         development: 171,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.33908811
     }
 },
@@ -1525,7 +1525,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 36.97,
         development: 137,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.43949764
     }
 },
@@ -1561,7 +1561,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 34.12,
         development: 174,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 },
@@ -1597,7 +1597,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 10.43,
         development: 166,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.32376015
     }
 },
@@ -1723,7 +1723,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 8.06,
         development: 75,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.38246528
     }
 },
@@ -1741,7 +1741,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 2.37,
         development: 126,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 },
@@ -2011,7 +2011,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 9.48,
         development: 102,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.44185147
     }
 },
@@ -2065,7 +2065,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 4.27,
         development: 115,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 },
@@ -2191,7 +2191,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 0.47,
         development: 188,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.38519028
     }
 },
@@ -2281,7 +2281,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 20.38,
         development: 86,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.5304462
     }
 },
@@ -2317,7 +2317,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 48.82,
         development: 48,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.57089263
     }
 },
@@ -2443,7 +2443,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 42.18,
         development: 123,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.33124185
     }
 },
@@ -2461,7 +2461,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 8.53,
         development: 188,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.41672597
     }
 },
@@ -2497,7 +2497,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 30.33,
         development: -1,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 },
@@ -2803,7 +2803,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 13.27,
         development: -1,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.40731793
     }
 },
@@ -2893,7 +2893,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 44.55,
         development: 62,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.46606863
     }
 },
@@ -3019,7 +3019,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 2.84,
         development: 192,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 },
@@ -3091,7 +3091,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 3.79,
         development: 193,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 },
@@ -3217,7 +3217,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 0.0,
         development: 162,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 },
@@ -3379,7 +3379,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 22.27,
         development: 105,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.48982978
     }
 },
@@ -3415,7 +3415,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 13.74,
         development: 51,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.40770137
     }
 },
@@ -3451,7 +3451,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 10.9,
         development: 87,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.48365439
     }
 },
@@ -3505,7 +3505,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 47.39,
         development: -1,
         GDPR: 2,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.67977332
     }
 },
@@ -3577,7 +3577,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 12.32,
         development: 121,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: 0.25974105
     }
 },
@@ -3613,7 +3613,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 0.95,
         development: 184,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 },
@@ -3667,7 +3667,7 @@ const countriesRaw: CountryRaw[] = [
         politicalStability: 15.17,
         development: 153,
         GDPR: 3,
-        sanctions: 1,
+        sanctions: 3,
         ruleOfLaw: -1.0
     }
 }
