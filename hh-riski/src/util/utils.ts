@@ -168,3 +168,31 @@ export function calculateEthics(ethics: string): 0 | 1 | 2 | 3 {
 
     return ethicsRisk;
 }
+
+//Calculates financial scope risk
+export function calculateFinancialScope(financial: string): 0 | 1 | 2 | 3 {
+    let scope = 0 as 0 | 1 | 2 | 3;
+    if (financial === "0") {
+        scope = 1;
+    } else if (financial === "20.000") {
+        scope = 2;
+    } else if (financial === "50.000") {
+        scope = 3;
+    }
+    return scope;
+}
+
+//Calculates overall financial risk
+//WIP: currently gives simple average of financial scope and exchange
+export function calculateFinancialOverall(scope: number, exchange: number): 0 | 1 | 2 | 3 {
+
+    let overall = (scope + exchange) / 2;
+    if (overall < 1) {
+        overall = 0;
+    } else if (overall > 3) {
+        overall = 3
+    }
+    const roundedOverall = Math.round(overall) as 0 | 1 | 2 | 3
+
+    return roundedOverall;
+}

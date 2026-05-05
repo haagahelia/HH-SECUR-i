@@ -135,3 +135,18 @@ export type Country = {
     }
 }
 ```
+## TODO
+
+### Error Handling
+
+Error handling and error message message display on all pages.
+
+### Expanded form categories
+
+Add expanded choice dependent selections on form page
+
+### Risk calculation
+
+Finish functions for risk calculation (if sensible before risk calculation is moved to back-end).
+
+Unfinished portions are indicated by WIP, TODO and Placeholder comments in code.

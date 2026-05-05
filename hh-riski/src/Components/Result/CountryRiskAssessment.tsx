@@ -1,7 +1,7 @@
 import type { Country } from "../../types";
 import styles from "../../styles.module.css";
 
-import { calculateCollaborationRisk, calculateDualUse, calculateEthics } from "../../util/utils";
+import { calculateCollaborationRisk, calculateDualUse, calculateEthics, calculateFinancialOverall, calculateFinancialScope } from "../../util/utils";
 import { useFormAnswers } from "../../context/FormAnswersContext";
 
 type CountryRiskAssessmentProps = {
@@ -38,9 +38,9 @@ const CountryRiskAssessment = ({
 
     const collaborationRisk = calculateCollaborationRisk(country, cooperationType);
     const organizationRisk = 1; //Placeholder, implement function to calculate
-    const financialRisk = 1; //Placeholder, implement function to calculate
     const financialExchange = 1; //Placeholder, implement function to calculate
-    const financialScope = 1; //Placeholder, implement function to calculate
+    const financialScope = calculateFinancialScope(liability);
+    const financialRisk = calculateFinancialOverall(financialScope, financialExchange)
     const dualUseRisk = calculateDualUse(dualUse);
     const ethicsRisk = calculateEthics(ethics);
 
@@ -295,8 +295,8 @@ const CountryRiskAssessment = ({
                 en: "Overall Financial Risk Level of the Collaboration"
             },
             title: {
-                fi: "Taloudellinen laajuus",
-                en: "Financial Scope"
+                fi: "Taloudellinen kokonaisriskitaso",
+                en: "Overall Financial Risk Level"
             },
             0: {
                 fi: "Virheellinen tai puuttuva riskiluokitus",
@@ -343,7 +343,7 @@ const CountryRiskAssessment = ({
         economicScope: {
             title: {
                 fi: "Taloudellinen laajuus",
-                en: "Economic scope"
+                en: "Fincancial scope"
             },
             0: {
                 fi: "Virheellinen tai puuttuva riskiluokitus",
@@ -489,7 +489,7 @@ const CountryRiskAssessment = ({
                     </div>
                     <div>
                         <p><b>{results.financial.title[language]}</b></p>
-                        {riskSymbol(financialRisk)}<p><i>{results.financial[financialRisk][language]}</i></p>
+                        {riskSymbol(financialRisk)}<p><i></i></p>
                     </div>
                     <ul>
                         <li>
