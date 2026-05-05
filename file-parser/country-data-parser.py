@@ -95,8 +95,9 @@ def addSanctions(country):
         sanctionsData = open("DATA_sanctions.csv", "r")
         sanctionsLine = sanctionsData.readline()
         while sanctionsLine != "":
-            sanctionSplit = sanctionsLine.split()
+            sanctionSplit = sanctionsLine.split(",")
             if sanctionSplit[0].lower() == country.name.en.lower():
+                print("Sanction Match: " + country.name.en)
                 country.risk.sanctions = 3
                 return
             sanctionsLine = sanctionsData.readline()
