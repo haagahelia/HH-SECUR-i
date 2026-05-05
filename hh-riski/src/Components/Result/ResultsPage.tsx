@@ -76,9 +76,10 @@ const ResultsPage = () => {
 
     const countries: Country[] = parseCountries(countriesRaw, personalInformation);
 
-    const country = countries.find((country) => country.id === selectedCountry);
+    const country= countries.find((country) => country.id === selectedCountry);
     //const countryRaw = countriesRaw.find((country) => country.id === selectedCountry);
     //const country = parseCountry(countryRaw);
+
 
     const selectedCountryData = countries.find(
         (country) => country.id === selectedCountry

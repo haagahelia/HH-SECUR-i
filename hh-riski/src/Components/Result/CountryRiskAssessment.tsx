@@ -1,6 +1,9 @@
 import type { Country } from "../../types";
 import styles from "../../styles.module.css";
 
+import { calculateCollaborationRisk } from "../../util/utils";
+import { useFormAnswers } from "../../context/FormAnswersContext";
+
 type CountryRiskAssessmentProps = {
     country: Country | undefined;
     language: "fi" | "en";
@@ -10,6 +13,36 @@ const CountryRiskAssessment = ({
     country,
     language,
 }: CountryRiskAssessmentProps) => {
+
+    const {
+        selectedLanguage,
+        setSelectedLanguage,
+        selectedCountry,
+        selectedOrganization,
+        projectName,
+        projectDescription,
+        hhRole,
+        consortium,
+        history,
+        organizationType,
+        contractStatus,
+        funding,
+        liability,
+        personalInformation,
+        dualUse,
+        ethics,
+        cooperationType,
+        duration,
+        clearAnswers,
+    } = useFormAnswers();
+
+    const collaborationRisk = calculateCollaborationRisk(country, cooperationType);
+    const organizationRisk = 1; //Placeholder, implement function to calculate
+    const financialRisk = 1; //Placeholder, implement function to calculate
+    const financialExchange = 1; //Placeholder, implement function to calculate
+    const financialScope = 1; //Placeholder, implement function to calculate
+    const dualUseRisk = 1; //Placeholder, implement function to calculate
+    const ethicsRisk = 1; //Placeholder, implement function to calculate
 
     // Descriptions for risk ratings
     // TODO: replace placeholders and add more results with conditional logic to Total economic risk recommendation
@@ -364,7 +397,7 @@ const CountryRiskAssessment = ({
             },
             1: {
                 fi: "Ilmoituksesi perusteella yhteistyössä ei ole erityisiä eettisiä haasteita.",
-                en: "Based on your answers the collaboration does not pose ethical challenges."
+                en: "Based on your response, this collaboration does not pose ethical challenges."
             },
             2: {
                 fi: "Et ole varma yhteistyön eettisistä riskeistä.",
@@ -402,7 +435,7 @@ const CountryRiskAssessment = ({
                             <h3>Collaboration Risks</h3>
                         }
                         <p><b>{results.collaboration.title[language]}</b></p>
-                        {riskSymbol(country.risk.overall)}<p><i>{results.collaboration[country.risk.overall][language]}</i></p>
+                        {riskSymbol(collaborationRisk)}<p><i>{results.collaboration[collaborationRisk][language]}</i></p>
                     </div>
                     <div>
                         {language === "fi" ?
@@ -450,6 +483,31 @@ const CountryRiskAssessment = ({
                             {riskSymbol(country.risk.ruleOfLaw)}<p><i>{results.law[country.risk.ruleOfLaw][language]}</i></p>
                         </li>
                     </ul>
+                    <div>
+                        <p><b>{results.organization.title[language]}</b></p>
+                        {riskSymbol(organizationRisk)}<p><i>{results.organization[organizationRisk][language]}</i></p>
+                    </div>
+                    <div>
+                        <p><b>{results.financial.title[language]}</b></p>
+                        {riskSymbol(financialRisk)}<p><i>{results.financial[financialRisk][language]}</i></p>
+                    </div>
+                    <ul>
+                        <li>
+                            <p>{results.exchangeRate.title[language]}</p>
+                            {riskSymbol(financialExchange)}<p><i>{results.exchangeRate[financialExchange][language]}</i></p>
+                        </li>
+                        <li>
+                            <p>{results.economicScope.title[language]}</p>
+                            {riskSymbol(financialScope)}<p><i>{results.economicScope[financialScope][language]}</i></p>
+                        </li>
+                    </ul>
+
+                    <div>
+                        <p><b>{results.dualUse.title[language]}</b></p>
+                        {riskSymbol(dualUseRisk)}<p><i>{results.dualUse[dualUseRisk][language]}</i></p>
+                    </div>
+                    <p><b>{results.ethics.title[language]}</b></p>
+                    {riskSymbol(ethicsRisk)}<p><i>{results.ethics[ethicsRisk][language]}</i></p>
                 </div>
             }
         </ >
