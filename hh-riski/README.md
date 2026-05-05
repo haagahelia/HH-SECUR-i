@@ -150,3 +150,7 @@ Add expanded choice dependent selections on form page
 Finish functions for risk calculation (if sensible before risk calculation is moved to back-end).
 
 Unfinished portions are indicated by WIP, TODO and Placeholder comments in code.
+
+### Admin view
+
+Add view for deleting or editing assessment made by other people than the current user if the current user has admin role.
