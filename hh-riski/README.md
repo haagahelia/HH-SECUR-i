@@ -154,3 +154,12 @@ Unfinished portions are indicated by WIP, TODO and Placeholder comments in code.
 ### Admin view
 
 Add view for deleting or editing assessment made by other people than the current user if the current user has admin role.
+
+### Super admin view
+
+Add view for managing form content.
+
+### Organization data source
+
+Implement data source for potential partnership organizations.
+

@@ -16,7 +16,7 @@ export function sortElements(elements: any, language: 'fi' | 'en') {
     return sortedElements;
 }
 
-//Generate 1-3 risk calculation from raw country data
+//Parse a list of countries
 export function parseCountries(countriesRaw: CountryRaw[], personal: string) {
     const countries = [];
     for (let i = 0; i < countriesRaw.length; i++) {
@@ -25,6 +25,7 @@ export function parseCountries(countriesRaw: CountryRaw[], personal: string) {
     return countries;
 }
 
+//Generate 1-3 risk calculation from raw country data
 export function parseCountry(countryRaw: CountryRaw, personal: string) {
     let overall: 0 | 1 | 2 | 3 = 0;
     let corruption: 0 | 1 | 2 | 3 = 0;
@@ -59,7 +60,7 @@ export function parseCountry(countryRaw: CountryRaw, personal: string) {
     } else if (countryRaw.risk.development >= 129) {
         development = 3;
     }
-    let gdpr: 0 | 1 | 2 | 3 = 0; //placeholder
+    let gdpr: 0 | 1 | 2 | 3 = 0;
     if (personal === "no" || countryRaw.risk.GDPR === 1) {
         gdpr = 1;
     } else if (personal !== "no" && countryRaw.risk.GDPR === 2) {
