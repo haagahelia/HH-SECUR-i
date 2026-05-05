@@ -82,5 +82,71 @@ Temporary data source functions until back-end is implemented.
 
 Helper functions for parsing and sorting data.
 
+## Type definitions
 
+The basic premise for types used is to have `id` attribute for matching them and have displayed values under `fi` and `en` attributes for localization.
 
+### Countries
+
+Types for describing countries and their risk ratings are split into two; `CountryRaw` for raw values and `Country` for when risk data has been calculated and put into 1-3 scale.
+
+#### CountryRaw
+```
+export type CountryRaw = {
+    id: string
+    name: {
+        fi: string
+        en: string
+    },
+    risk: {
+        corruption: number,
+        security: 1 | 2 | 3,
+        academicFreedom: number,
+        politicalStability: number,
+        development: number,
+        GDPR: number,
+        sanctions: number,
+        ruleOfLaw: number
+    },
+    dataYear: number
+}
+```
+#### Country
+
+Ratings 1-3 are correct values and rating 0 indicates an error in risk calculation.
+
+```
+export type Country = {
+    id: string
+    name: {
+        fi: string
+        en: string
+    },
+    risk: {
+        overall: 0 | 1 | 2 | 3,
+        corruption: 0 | 1 | 2 | 3,
+        security: 0 | 1 | 2 | 3,
+        academicFreedom: 0 | 1 | 2 | 3,
+        politicalStability: 0 | 1 | 2 | 3,
+        development: 0 | 1 | 2 | 3,
+        GDPR: 0 | 1 | 2 | 3,
+        sanctions: 0 | 1 | 2 | 3,
+        ruleOfLaw: 0 | 1 | 2 | 3
+    }
+}
+```
+## TODO
+
+### Error Handling
+
+Error handling and error message message display on all pages.
+
+### Expanded form categories
+
+Add expanded choice dependent selections on form page
+
+### Risk calculation
+
+Finish functions for risk calculation (if sensible before risk calculation is moved to back-end).
+
+Unfinished portions are indicated by WIP, TODO and Placeholder comments in code.
