@@ -30,7 +30,7 @@ import {
 import SingleQuestionSummary from "./SingleQuestionSummary";
 import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
-import { parseCountries, parseCountry } from "../../util/utils";
+import { calculateCollaborationRisk, parseCountries, parseCountry } from "../../util/utils";
 
 //const countries: Country[] = fetchCountries();
 const countriesRaw: CountryRaw[] = fetchCountriesRaw();
@@ -112,7 +112,8 @@ const ResultsPage = () => {
             return 3;
         };
 
-        const riskLevel = getAverageCountryRisk(country);
+        //const riskLevel = getAverageCountryRisk(country);
+        const riskLevel = calculateCollaborationRisk(country, cooperationType)
 
         const data = {
             id: crypto.randomUUID(),
