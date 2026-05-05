@@ -1,7 +1,7 @@
 import type { Country } from "../../types";
 import styles from "../../styles.module.css";
 
-import { calculateCollaborationRisk } from "../../util/utils";
+import { calculateCollaborationRisk, calculateDualUse, calculateEthics } from "../../util/utils";
 import { useFormAnswers } from "../../context/FormAnswersContext";
 
 type CountryRiskAssessmentProps = {
@@ -41,8 +41,8 @@ const CountryRiskAssessment = ({
     const financialRisk = 1; //Placeholder, implement function to calculate
     const financialExchange = 1; //Placeholder, implement function to calculate
     const financialScope = 1; //Placeholder, implement function to calculate
-    const dualUseRisk = 1; //Placeholder, implement function to calculate
-    const ethicsRisk = 1; //Placeholder, implement function to calculate
+    const dualUseRisk = calculateDualUse(dualUse);
+    const ethicsRisk = calculateEthics(ethics);
 
     // Descriptions for risk ratings
     // TODO: replace placeholders and add more results with conditional logic to Total economic risk recommendation

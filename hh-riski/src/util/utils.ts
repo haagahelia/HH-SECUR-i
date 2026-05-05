@@ -139,3 +139,32 @@ export function calculateCollaborationRisk(country: Country | undefined, coopera
 
     return roundedAverage;
 }
+
+//Calcultes risk for dualUse
+export function calculateDualUse(dualUse: string): 0 | 1 | 2 | 3 {
+    let dualUseRisk = 0 as 0 | 1 | 2 | 3
+
+    if (dualUse === "no") {
+        dualUseRisk = 1
+    } else if (dualUse === "unknown") {
+        dualUseRisk = 2
+    } else if (dualUse === "yes") {
+        dualUseRisk = 3
+    }
+
+    return dualUseRisk
+}
+
+//Calculates risk for ethical issues
+export function calculateEthics(ethics: string): 0 | 1 | 2 | 3 {
+    let ethicsRisk = 0 as 0 | 1 | 2 | 3;
+    if (ethics === "1") {
+        ethicsRisk = 1;
+    } else if (ethics === "2" || ethics === "3") {
+        ethicsRisk = 2;
+    } else if (ethics === "4" || ethics === "5") {
+        ethicsRisk = 3;
+    }
+
+    return ethicsRisk;
+}
