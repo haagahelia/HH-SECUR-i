@@ -1214,7 +1214,7 @@ const countriesRaw: CountryRaw[] = [
     dataYear: 2025,
     risk: {
         corruption: 54.25,
-        security: 3,
+        security: 1,
         academicFreedom: 0.071,
         politicalStability: 25.12,
         development: 78,
@@ -1592,7 +1592,7 @@ const countriesRaw: CountryRaw[] = [
     dataYear: 2025,
     risk: {
         corruption: 99.53,
-        security: 3,
+        security: 1,
         academicFreedom: 0.818,
         politicalStability: 71.09,
         development: 12,
@@ -2474,7 +2474,7 @@ const countriesRaw: CountryRaw[] = [
     dataYear: 2025,
     risk: {
         corruption: 46.7,
-        security: 3,
+        security: 2,
         academicFreedom: 0.689,
         politicalStability: 20.38,
         development: 86,
@@ -3374,7 +3374,7 @@ const countriesRaw: CountryRaw[] = [
     dataYear: 2025,
     risk: {
         corruption: 97.64,
-        security: 3,
+        security: 1,
         academicFreedom: 0.934,
         politicalStability: 73.46,
         development: 5,
@@ -3698,7 +3698,7 @@ const countriesRaw: CountryRaw[] = [
     dataYear: 2025,
     risk: {
         corruption: 83.02,
-        security: 3,
+        security: 1,
         academicFreedom: 0.397,
         politicalStability: 47.39,
         development: -1,
