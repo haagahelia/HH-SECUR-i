@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import App from './App'
-import FormPage from './Components/FormPage'
+import FormPage from './Components/Form/FormPage'
 import UserPage from './Components/UserPage'
 import ResultsPage from './Components/Result/ResultsPage'
-import MyAssessmentsPage from './Components/Result/MyAssesmentsPage'
+import MyAssessmentsPage from './Components/Assessments/MyAssesmentsPage'
 
 const router = createBrowserRouter(
     [

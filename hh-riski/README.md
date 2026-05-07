@@ -163,3 +163,15 @@ Add view for managing form content.
 
 Implement data source for potential partnership organizations.
 
+### Bottom toolbar
+
+Reformat or remove bottom toolbar based on customer feedback; it's not the Figma prototype but based on initial feedback it might be a good addition.
+
+### Consider 1-5 scale instead of 1-3 scale for risks
+
+Based no customer feedback 1-5 scale might be a better fit.
+
+It will require reworking CountryRaw -> Country and risk calculation functions, and adding a lot of description text to results page.
+
+Not recommended until customer has hands on experience with the 1-3 scale or confirms definite preference otherwise.
+

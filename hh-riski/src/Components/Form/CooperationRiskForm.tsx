@@ -3,13 +3,12 @@ import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchC
 import { useState } from "react";
 import CountrySelect from "./CountrySelect";
 import OrganizationSelect from "./OrganizationSelect";
-import {  sortElements } from "../../util/utils";
-import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
+import { sortElements } from "../../util/utils";
+import { useNavigate } from "react-router-dom";
 
 import type { CountryRaw, Organization, Question } from "../../types";
 import styles from "../../styles.module.css";
 
-import FormSection from "./Sections/FormSection";
 /* import ProjectInfoSection from "./Sections/ProjectInfoSection"; */
 import SingleChoice from "./SingleChoice";
 import MultiChoice from "./MultiChoice";
@@ -90,26 +89,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
   return (
     <div className={styles.form}>
-      {/* <ProjectInfoSection
-        language={language}
-        projectName={projectName}
-        projectDescription={projectDescription}
-        duration={duration}
-        onProjectNameChange={setProjectName}
-        onProjectDescriptionChange={setProjectDescription}
-        
-      /> */}
 
-      <FormSection
-      /*
-        title={language === "fi" ? "Perustiedot" : "Basic Information"}
-        description={
-          language === "fi"
-            ? "Valitse maa ja organisaatio"
-            : "Select country and organization"
-        }
-            */
-      >
         <ul className={styles.formlist}>
           <li>
             <label>
@@ -268,7 +248,6 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             />
           </li>
         </ul>
-      </FormSection>
 
       <div className={styles.center}>
         {debug &&
