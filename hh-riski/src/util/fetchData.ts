@@ -1,5 +1,4 @@
 
-import { delay } from "./utils";
 import type { CountryRaw, Question } from "../types";
 
 type OrganizationRaw = {

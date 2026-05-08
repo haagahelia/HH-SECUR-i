@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useCurrentUser } from "../context/UserContext";
 
 import Navbar from "./Layout/Navbar";
