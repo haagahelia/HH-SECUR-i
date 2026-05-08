@@ -163,6 +163,10 @@ Add view for managing form content.
 
 Implement data source for potential partnership organizations.
 
+### Downloading reports
+
+Implement downloading assessment results. PDF format was requested by the client.
+
 ### Bottom toolbar
 
 Reformat or remove bottom toolbar based on customer feedback; it's not the Figma prototype but based on initial feedback it might be a good addition.
