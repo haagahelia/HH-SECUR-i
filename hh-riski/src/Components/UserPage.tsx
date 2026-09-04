@@ -1,33 +1,33 @@
-import { useCurrentUser } from "../context/UserContext";
+// import { useCurrentUser } from "../context/UserContext";
 
-import Navbar from "./Layout/Navbar";
-import { useState } from "react";
+// import Navbar from "./Layout/Navbar";
+// import { useState } from "react";
 
-// Temporary context for user management before actual authentication is implemented
+// // Temporary context for user management before actual authentication is implemented
 
-const UserPage = () => {
-    const { user, setUserById, clearUser, testUsers } = useCurrentUser();
-    const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
-    return (
-        <>
-      <Navbar language={selectedLanguage}
-        setLanguage={setSelectedLanguage} />
+// const UserPage = () => {
+//     const { user, setUserById, clearUser, testUsers } = useCurrentUser();
+//     const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
+//     return (
+//         <>
+//       <Navbar language={selectedLanguage}
+//         setLanguage={setSelectedLanguage} />
 
-      <div>
-        <h1>User Page</h1>
-      </div>
-            <div>
-                <select onChange={e => setUserById(e.target.value)}>
-                    <option value="">Select user</option>
-                    {testUsers.map(u => (
-                        <option key={u.id} value={u.id}>
-                            {u.username}
-                        </option>
-                    ))}
-                </select>
-            </div>
-        </>
-    )
-}
+//       <div>
+//         <h1>User Page</h1>
+//       </div>
+//             <div>
+//                 <select onChange={e => setUserById(e.target.value)}>
+//                     <option value="">Select user</option>
+//                     {testUsers.map(u => (
+//                         <option key={u.id} value={u.id}>
+//                             {u.username}
+//                         </option>
+//                     ))}
+//                 </select>
+//             </div>
+//         </>
+//     )
+// }
 
-export default UserPage
+// export default UserPage

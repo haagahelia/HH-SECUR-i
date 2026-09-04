@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useCurrentUser } from "../../context/UserContext";
+import { useCurrentUser } from "../../context/AuthContext";
 
 import Navbar from "../Layout/Navbar";
 import { useFormAnswers } from "../../context/FormAnswersContext";

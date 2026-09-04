@@ -1,7 +1,8 @@
-export type User = {
-    id: string
-    username: string
-    isAdmin: boolean
+export type User = { 
+    id: string, 
+    username: string, 
+    password: string 
+    // isAdmin: boolean
 }
 
 export type Country = {

@@ -1,0 +1,97 @@
+import { useCurrentUser } from "../context/AuthContext";
+import { authenticateUser } from "../services/auth";
+
+import Navbar from "./Layout/Navbar";
+import { useState } from "react";
+
+const LoginPage = () => {
+	const { user, login, clearUser } = useCurrentUser();
+	const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
+	const [inputUser, setInputUser] = useState({
+		id: "",
+		username: "",
+		password: ""
+	});
+
+	// TODO: Display error message in UI
+	const [error, setError] = useState({ message: "" });
+
+	async function handleLogin() {
+		const userData = {
+			username: inputUser.username,
+			password: inputUser.password
+		};
+
+		try {
+			const data = await authenticateUser(userData);
+			console.log(user)
+			login(inputUser);
+			setInputUser({
+				id: "",
+				username: "",
+				password: ""
+			})
+		} catch (error: any) {
+			setError(error)
+			console.error(error)
+		}
+	};
+
+	return (
+		<>
+			<Navbar language={selectedLanguage} setLanguage={setSelectedLanguage} />
+			<div>
+				{selectedLanguage === 'fi' ?
+					<h1>Kirjaudu sisään</h1>
+					:
+					<h1>Sign in</h1>
+				}
+			</div>
+			<div>
+				{selectedLanguage === 'fi' ?
+					<div>
+						<label>
+							Käyttäjänimi:
+							<input
+								value={inputUser.username}
+								onChange={e => setInputUser({ ...inputUser, username: e.target.value })}
+							/>
+						</label>
+						<label>
+							Salasana:
+							<input
+								value={inputUser.password}
+								onChange={e => setInputUser({ ...inputUser, password: e.target.value })}
+							/>
+						</label>
+						<button onClick={handleLogin}>
+							Kirjaudu sisään
+						</button>
+					</div>
+					:
+					<div>
+						<label>
+							Username:
+							<input
+								value={inputUser.username}
+								onChange={e => setInputUser({ ...inputUser, username: e.target.value })}
+							/>
+						</label>
+						<label>
+							Password:
+							<input
+								value={inputUser.password}
+								onChange={e => setInputUser({ ...inputUser, password: e.target.value })}
+							/>
+						</label>
+						<button onClick={handleLogin}>
+							Sign in
+						</button>
+					</div>
+				}
+			</div>
+		</>
+	)
+}
+
+export default LoginPage;

@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import App from './App'
 import FormPage from './Components/Form/FormPage'
-import UserPage from './Components/UserPage'
+import LoginPage from './Components/LoginPage'
 import ResultsPage from './Components/Result/ResultsPage'
 import MyAssessmentsPage from './Components/Assessments/MyAssesmentsPage'
 
@@ -18,7 +18,7 @@ const router = createBrowserRouter(
                 },
                 {
                     path: '/user',
-                    element: <UserPage />
+                    element: <LoginPage />
                 },
                 {
                     path: '/results',

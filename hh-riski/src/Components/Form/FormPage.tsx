@@ -1,4 +1,4 @@
-import { useCurrentUser } from "../../context/UserContext";
+import { useCurrentUser } from "../../context/AuthContext";
 import CooperationRiskForm from "./CooperationRiskForm";
 
 import Navbar from ".././Layout/Navbar";

@@ -2,7 +2,7 @@ import { AppBar, Toolbar, Typography, Button, Box, Slide, useScrollTrigger } fro
 import { Link as RouterLink } from "react-router-dom";
 import LanguageIcon from "@mui/icons-material/Language";
 import logo from "../../assets/logo.png";
-import { useCurrentUser } from "../../context/UserContext";
+import { useCurrentUser } from "../../context/AuthContext";
 
 import styles from "../../styles.module.css";
 
