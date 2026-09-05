@@ -1,5 +1,3 @@
-import type { User } from "../types";
-
 export async function authenticateUser(user: { username: string, password: string }) {
 	// TODO: Place port into an env. file
 	const response = await fetch("http://localhost:3000/login", {

@@ -24,8 +24,7 @@ const LoginPage = () => {
 
 		try {
 			const data = await authenticateUser(userData);
-			console.log(user)
-			login(inputUser);
+			login(data);
 			setInputUser({
 				id: "",
 				username: "",

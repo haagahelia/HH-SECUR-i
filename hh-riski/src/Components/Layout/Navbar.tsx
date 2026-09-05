@@ -23,7 +23,7 @@ function HideOnScroll(props: { children: React.ReactElement }) {
 
 
 const Navbar = ({ language, setLanguage }: NavbarProps) => {
-    const { user, clearUser } = useCurrentUser();
+    const { user, isAuthenticated, clearUser } = useCurrentUser();
     return (
         <>
             {/* YLÄPALKKI */}
@@ -124,10 +124,15 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                         <Button color="inherit" component={RouterLink} to="/">
                             {language === "fi" ? "Riskilomake" : "Risk form"}
                         </Button>
-
+                        {!isAuthenticated ?
+                        <Button color="inherit" component={RouterLink} to="/user">
+                            {language === "fi" ? "Kirjaudu sisään" : "Sign in"}
+                        </Button>
+                        :
                         <Button color="inherit" component={RouterLink} to="/user">
                             {language === "fi" ? "Käyttäjä" : "User"}
                         </Button>
+                        }
                         {user && (
                             <div className={styles.center}>
                                 {language === "fi" ? (
