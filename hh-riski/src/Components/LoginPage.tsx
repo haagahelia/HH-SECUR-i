@@ -1,8 +1,9 @@
 import { useCurrentUser } from "../context/AuthContext";
 import { authenticateUser } from "../services/auth";
-
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Layout/Navbar";
 import { useState } from "react";
+
 
 const LoginPage = () => {
 	const { user, login, clearUser } = useCurrentUser();
@@ -15,6 +16,8 @@ const LoginPage = () => {
 
 	// TODO: Display error message in UI
 	const [error, setError] = useState({ message: "" });
+
+	const navigate = useNavigate();
 
 	async function handleLogin() {
 		const userData = {
@@ -30,6 +33,7 @@ const LoginPage = () => {
 				username: "",
 				password: ""
 			})
+			navigate("/user");
 		} catch (error: any) {
 			setError(error)
 			console.error(error)

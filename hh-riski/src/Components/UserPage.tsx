@@ -1,33 +1,21 @@
-// import { useCurrentUser } from "../context/UserContext";
+import Navbar from "./Layout/Navbar";
+import { useState } from "react";
 
-// import Navbar from "./Layout/Navbar";
-// import { useState } from "react";
+const UserPage = () => {
+	const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
 
-// // Temporary context for user management before actual authentication is implemented
+	return (
+		<>
+			<Navbar language={selectedLanguage} setLanguage={setSelectedLanguage} />
+			<div>
+				{selectedLanguage === 'fi' ?
+					<h1>Käyttäjä</h1>
+					:
+					<h1>User</h1>
+				}
+			</div>
+		</>
+	)
+}
 
-// const UserPage = () => {
-//     const { user, setUserById, clearUser, testUsers } = useCurrentUser();
-//     const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
-//     return (
-//         <>
-//       <Navbar language={selectedLanguage}
-//         setLanguage={setSelectedLanguage} />
-
-//       <div>
-//         <h1>User Page</h1>
-//       </div>
-//             <div>
-//                 <select onChange={e => setUserById(e.target.value)}>
-//                     <option value="">Select user</option>
-//                     {testUsers.map(u => (
-//                         <option key={u.id} value={u.id}>
-//                             {u.username}
-//                         </option>
-//                     ))}
-//                 </select>
-//             </div>
-//         </>
-//     )
-// }
-
-// export default UserPage
+export default UserPage;
