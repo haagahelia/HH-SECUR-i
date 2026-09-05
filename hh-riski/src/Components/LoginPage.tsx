@@ -6,10 +6,9 @@ import { useState } from "react";
 
 
 const LoginPage = () => {
-	const { user, login, clearUser } = useCurrentUser();
+	const { user, login, } = useCurrentUser();
 	const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
 	const [inputUser, setInputUser] = useState({
-		id: "",
 		username: "",
 		password: ""
 	});
@@ -17,19 +16,17 @@ const LoginPage = () => {
 	// TODO: Display error message in UI
 	const [error, setError] = useState({ message: "" });
 
+	// TODO: Display successful login message in UI
+	const [loginMessage, setLoginMessage] = useState({ message: "" });
+
 	const navigate = useNavigate();
 
 	async function handleLogin() {
-		const userData = {
-			username: inputUser.username,
-			password: inputUser.password
-		};
-
 		try {
-			const data = await authenticateUser(userData);
-			login(data);
+			const data = await authenticateUser(inputUser);
+			login(data, data.token);
+			setLoginMessage(data.message)
 			setInputUser({
-				id: "",
 				username: "",
 				password: ""
 			})
