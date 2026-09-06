@@ -140,11 +140,9 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                                 ) : (
                                     <p>Logged in as {user.username}</p>
                                 )}
-                                {language === "fi" ? (
-                                    <button onClick={clearUser}>Kirjaudu ulos</button>
-                                ) : (
-                                    <button onClick={clearUser}>Logout</button>
-                                )}
+                                <Button color="inherit" onClick={clearUser}>
+                                    {language === "fi" ? "Kirjaudu ulos" : "Logout"}
+                                </Button>
                             </div>
                         )}
                     </Box>

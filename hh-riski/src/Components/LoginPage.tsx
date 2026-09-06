@@ -3,6 +3,7 @@ import { authenticateUser } from "../services/auth";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Layout/Navbar";
 import { useState } from "react";
+import { Alert, Box, Button, CircularProgress, Paper, Stack, TextField, Typography } from "@mui/material";
 
 
 const LoginPage = () => {
@@ -45,60 +46,39 @@ const LoginPage = () => {
 	return (
 		<>
 			<Navbar language={selectedLanguage} setLanguage={setSelectedLanguage} />
-			<div>
-				{selectedLanguage === 'fi' ?
-					<h1>Kirjaudu sisään</h1>
-					:
-					<h1>Sign in</h1>
-				}
-			</div>
-			<div>
-				{selectedLanguage === 'fi' ?
-					<div>
-						<label>
-							Käyttäjänimi:
-							<input
+			<Box component="section" aria-labelledby="login-title" sx={{ maxWidth: 480, mx: "auto" }}>
+				<Typography id="login-title" component="h1" variant="h4" sx={{ mb: 3 }}>
+					{selectedLanguage === "fi" ? "Kirjaudu sisään" : "Sign in"}
+				</Typography>
+				<Paper elevation={2} sx={{ p: { xs: 2, sm: 4 } }}>
+					<Box component="form" onSubmit={(event) => { event.preventDefault(); void handleLogin(); }}>
+						<Stack spacing={2.5}>
+							<TextField
+								label={selectedLanguage === "fi" ? "Käyttäjänimi" : "Username"}
 								value={inputUser.username}
+								autoComplete="username"
+								required
 								onChange={e => setInputUser({ ...inputUser, username: e.target.value })}
 							/>
-						</label>
-						<label>
-							Salasana:
-							<input
+							<TextField
+								label={selectedLanguage === "fi" ? "Salasana" : "Password"}
 								type="password"
 								value={inputUser.password}
+								autoComplete="current-password"
+								required
 								onChange={e => setInputUser({ ...inputUser, password: e.target.value })}
 							/>
-						</label>
-						{errorMessage && <p role="alert">{errorMessage}</p>}
-						<button onClick={handleLogin} disabled={isLoading}>
-							{isLoading ? "Kirjaudutaan..." : "Kirjaudu sisään"}
-						</button>
-					</div>
-					:
-					<div>
-						<label>
-							Username:
-							<input
-								value={inputUser.username}
-								onChange={e => setInputUser({ ...inputUser, username: e.target.value })}
-							/>
-						</label>
-						<label>
-							Password:
-							<input
-								type="password"
-								value={inputUser.password}
-								onChange={e => setInputUser({ ...inputUser, password: e.target.value })}
-							/>
-						</label>
-						{errorMessage && <p role="alert">{errorMessage}</p>}
-						<button onClick={handleLogin} disabled={isLoading}>
-							{isLoading ? "Signing in..." : "Sign in"}
-						</button>
-					</div>
-				}
-			</div>
+							{errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+							<Button type="submit" variant="contained" disabled={isLoading}>
+								{isLoading && <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />}
+								{isLoading
+									? selectedLanguage === "fi" ? "Kirjaudutaan..." : "Signing in..."
+									: selectedLanguage === "fi" ? "Kirjaudu sisään" : "Sign in"}
+							</Button>
+						</Stack>
+					</Box>
+				</Paper>
+			</Box>
 		</>
 	)
 }
