@@ -6,34 +6,39 @@ import { useState } from "react";
 
 
 const LoginPage = () => {
-	const { user, login, } = useCurrentUser();
+	const { login } = useCurrentUser();
 	const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
 	const [inputUser, setInputUser] = useState({
 		username: "",
 		password: ""
 	});
-
-	// TODO: Display error message in UI
-	const [error, setError] = useState({ message: "" });
-
-	// TODO: Display successful login message in UI
-	const [loginMessage, setLoginMessage] = useState({ message: "" });
+	const [errorMessage, setErrorMessage] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	const navigate = useNavigate();
 
 	async function handleLogin() {
+		setErrorMessage("");
+		setIsLoading(true);
+
 		try {
 			const data = await authenticateUser(inputUser);
 			login(data, data.token);
-			setLoginMessage(data.message)
 			setInputUser({
 				username: "",
 				password: ""
 			})
 			navigate("/user");
-		} catch (error: any) {
-			setError(error)
-			console.error(error)
+		} catch (error) {
+			setErrorMessage(
+				error instanceof Error
+					? error.message
+					: selectedLanguage === "fi"
+						? "Kirjautuminen epäonnistui."
+						: "Sign in failed."
+			);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -60,12 +65,14 @@ const LoginPage = () => {
 						<label>
 							Salasana:
 							<input
+								type="password"
 								value={inputUser.password}
 								onChange={e => setInputUser({ ...inputUser, password: e.target.value })}
 							/>
 						</label>
-						<button onClick={handleLogin}>
-							Kirjaudu sisään
+						{errorMessage && <p role="alert">{errorMessage}</p>}
+						<button onClick={handleLogin} disabled={isLoading}>
+							{isLoading ? "Kirjaudutaan..." : "Kirjaudu sisään"}
 						</button>
 					</div>
 					:
@@ -80,12 +87,14 @@ const LoginPage = () => {
 						<label>
 							Password:
 							<input
+								type="password"
 								value={inputUser.password}
 								onChange={e => setInputUser({ ...inputUser, password: e.target.value })}
 							/>
 						</label>
-						<button onClick={handleLogin}>
-							Sign in
+						{errorMessage && <p role="alert">{errorMessage}</p>}
+						<button onClick={handleLogin} disabled={isLoading}>
+							{isLoading ? "Signing in..." : "Sign in"}
 						</button>
 					</div>
 				}

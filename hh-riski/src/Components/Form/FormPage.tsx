@@ -9,6 +9,7 @@ import { useFormAnswers } from "../../context/FormAnswersContext";
 // Risk assesment form
 
 const FormPage = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user, clearUser } = useCurrentUser();
   const { selectedLanguage, setSelectedLanguage } = useFormAnswers();
 
