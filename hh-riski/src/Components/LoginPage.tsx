@@ -3,7 +3,8 @@ import { authenticateUser } from "../services/auth";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Layout/Navbar";
 import { useState } from "react";
-import { Alert, Box, Button, CircularProgress, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 type LoginErrorCode = "" | "INVALID_CREDENTIALS" | "LOGIN_SERVICE_UNAVAILABLE" | "UNKNOWN";
 
@@ -16,6 +17,7 @@ const LoginPage = () => {
 	});
 	const [errorCode, setErrorCode] = useState<LoginErrorCode>("");
 	const [isLoading, setIsLoading] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 
 	const navigate = useNavigate();
 	const isFinnish = selectedLanguage === "fi";
@@ -70,6 +72,12 @@ const LoginPage = () => {
 						<Stack spacing={2.5}>
 							<TextField
 								label={selectedLanguage === "fi" ? "Käyttäjänimi" : "Username"}
+								sx={{
+									"& input:-webkit-autofill": {
+										WebkitBoxShadow: "0 0 0 100px #ffffff inset",
+										WebkitTextFillColor: "#17212b"
+									}
+								}}
 								value={inputUser.username}
 								autoComplete="username"
 								required
@@ -80,10 +88,48 @@ const LoginPage = () => {
 							/>
 							<TextField
 								label={selectedLanguage === "fi" ? "Salasana" : "Password"}
-								type="password"
+								type={showPassword ? "text" : "password"}
+								sx={{
+									"& .MuiOutlinedInput-root": {
+										backgroundColor: "transparent"
+									},
+									"& .MuiInputAdornment-root": {
+										backgroundColor: "transparent"
+									},
+									"& .MuiIconButton-root": {
+										backgroundColor: "transparent"
+									},
+									"& input:-webkit-autofill": {
+										WebkitBoxShadow: "0 0 0 100px #ffffff inset",
+										WebkitTextFillColor: "#17212b"
+									}
+								}}
 								value={inputUser.password}
 								autoComplete="current-password"
 								required
+								slotProps={{
+									input: {
+										endAdornment: (
+											<InputAdornment position="end" sx={{ backgroundColor: "transparent" }}>
+												<IconButton
+													aria-label={showPassword ? "Hide password" : "Show password"}
+													size="small"
+													edge="end"
+													onClick={() => setShowPassword((visible) => !visible)}
+													onMouseDown={(event) => event.preventDefault()}
+													sx={{
+														p: 0.5,
+														backgroundColor: "transparent",
+														"&:hover": { backgroundColor: "transparent" },
+														"& .MuiSvgIcon-root": { fontSize: 20 }
+													}}
+												>
+													{showPassword ? <VisibilityOff /> : <Visibility />}
+												</IconButton>
+											</InputAdornment>
+										)
+									}
+								}}
 								onChange={e => {
 									setErrorCode("");
 									setInputUser({ ...inputUser, password: e.target.value });
