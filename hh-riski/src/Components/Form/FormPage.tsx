@@ -14,22 +14,20 @@ const FormPage = () => {
 
   return (
     <>
-      <Navbar language={selectedLanguage}
-        setLanguage={setSelectedLanguage} />
-
+      <Navbar language={selectedLanguage} setLanguage={setSelectedLanguage} />
 
       <div>
-        {selectedLanguage === 'fi' ?
+        {selectedLanguage === "fi" ? (
           <h1>Riskiarviolomake</h1>
-          :
+        ) : (
           <h1>Risk assessment form</h1>
-        }
+        )}
 
         {user ? (
           <>
             <InfoBox language={selectedLanguage} />
 
-           <Box sx={{ mt: 3 }}></Box>
+            <Box sx={{ mt: 3 }}></Box>
 
             <CooperationRiskForm language={selectedLanguage} />
           </>
