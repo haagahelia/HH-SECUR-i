@@ -125,7 +125,7 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                             {language === "fi" ? "Riskilomake" : "Risk form"}
                         </Button>
                         {!isAuthenticated ?
-                        <Button color="inherit" component={RouterLink} to="/user">
+                        <Button color="inherit" component={RouterLink} to="/login">
                             {language === "fi" ? "Kirjaudu sisään" : "Sign in"}
                         </Button>
                         :

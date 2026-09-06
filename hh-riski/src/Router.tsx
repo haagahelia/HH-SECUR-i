@@ -19,10 +19,6 @@ const router = createBrowserRouter(
             element: <App />,
             children: [
                 {
-                    index: true,
-                    element: <FormPage />
-                },
-                {
                     path: '/login',
                     element: <LoginPage />
                 },
@@ -30,18 +26,22 @@ const router = createBrowserRouter(
                     element: <ProtectedRoute />,
                     children: [
                         {
+                            index: true,
+                            element: <FormPage />
+                        },
+                        {
                             path: '/user',
                             element: <UserPage />
                         },
+                        {
+                            path: '/results',
+                            element: <ResultsPage />
+                        },
+                        {
+                            path: '/my-assessments',
+                            element: <MyAssessmentsPage />
+                        }
                     ]
-                },
-                {
-                    path: '/results',
-                    element: <ResultsPage />
-                },
-                {
-                    path: '/my-assessments',
-                    element: <MyAssessmentsPage />
                 }
             ]
         }
