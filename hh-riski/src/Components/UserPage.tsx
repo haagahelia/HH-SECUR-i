@@ -28,10 +28,12 @@ const UserPage = () => {
 							{user?.username?.charAt(0).toUpperCase()}
 						</Avatar>
 						<Box sx={{ flex: 1 }}>
-							<Typography variant="overline" color="text.secondary">
+							<Typography variant="overline" color="text.secondary" sx={{ display: "block", lineHeight: 1.1 }}>
 								{isFinnish ? "Kirjautunut käyttäjä" : "Signed-in user"}
 							</Typography>
-							<Typography variant="h6">{user?.username}</Typography>
+							<Typography variant="h6" sx={{ lineHeight: 1.2, mt: 0.5 }}>
+								{user?.username}
+							</Typography>
 						</Box>
 						<Button variant="outlined" color="error" onClick={handleLogout}>
 							{isFinnish ? "Kirjaudu ulos" : "Log out"}

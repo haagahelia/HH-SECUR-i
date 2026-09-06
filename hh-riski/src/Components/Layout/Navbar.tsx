@@ -4,8 +4,6 @@ import LanguageIcon from "@mui/icons-material/Language";
 import logo from "../../assets/logo.png";
 import { useCurrentUser } from "../../context/AuthContext";
 
-import styles from "../../styles.module.css";
-
 type NavbarProps = {
     language: "fi" | "en";
     setLanguage: (lang: "fi" | "en") => void;
@@ -46,12 +44,32 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                         }}
                     >
 
-                        <Box sx={{ display: "flex", alignItems: "center", zIndex: 1 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 2, zIndex: 1 }}>
                             <img
                                 src={logo}
                                 alt="HH-SECUR-i"
                                 style={{ height: "50px" }}
                             />
+                            {user && (
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 2.5, ml: 1 }}>
+                                    <Box>
+                                        <Typography variant="caption" display="block" color="text.secondary" lineHeight={1.1}>
+                                            {language === "fi" ? "Kirjautuneena" : "Logged in as"}
+                                        </Typography>
+                                        <Typography variant="body2" fontWeight={600} lineHeight={1.2}>
+                                            {user.username}
+                                        </Typography>
+                                    </Box>
+                                    <Button
+                                        color="inherit"
+                                        size="small"
+                                        onClick={clearUser}
+                                        sx={{ px: 1.5, py: 0.75, minWidth: "auto" }}
+                                    >
+                                        {language === "fi" ? "Kirjaudu ulos" : "Logout"}
+                                    </Button>
+                                </Box>
+                            )}
                         </Box>
 
 
@@ -133,18 +151,6 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                             {language === "fi" ? "Käyttäjä" : "User"}
                         </Button>
                         }
-                        {user && (
-                            <div className={styles.center}>
-                                {language === "fi" ? (
-                                    <p>Kirjautuneena {user.username}</p>
-                                ) : (
-                                    <p>Logged in as {user.username}</p>
-                                )}
-                                <Button color="inherit" onClick={clearUser}>
-                                    {language === "fi" ? "Kirjaudu ulos" : "Logout"}
-                                </Button>
-                            </div>
-                        )}
                     </Box>
                 </Toolbar>
             </AppBar>
