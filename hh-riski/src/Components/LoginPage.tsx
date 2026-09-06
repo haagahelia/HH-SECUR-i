@@ -5,6 +5,7 @@ import Navbar from "./Layout/Navbar";
 import { useState } from "react";
 import { Alert, Box, Button, CircularProgress, Paper, Stack, TextField, Typography } from "@mui/material";
 
+type LoginErrorCode = "" | "INVALID_CREDENTIALS" | "LOGIN_SERVICE_UNAVAILABLE" | "UNKNOWN";
 
 const LoginPage = () => {
 	const { login } = useCurrentUser();
@@ -13,13 +14,26 @@ const LoginPage = () => {
 		username: "",
 		password: ""
 	});
-	const [errorMessage, setErrorMessage] = useState("");
+	const [errorCode, setErrorCode] = useState<LoginErrorCode>("");
 	const [isLoading, setIsLoading] = useState(false);
 
 	const navigate = useNavigate();
+	const isFinnish = selectedLanguage === "fi";
+
+	const getErrorMessage = () => {
+		if (errorCode === "INVALID_CREDENTIALS") {
+			return isFinnish ? "Virheellinen käyttäjänimi tai salasana." : "Incorrect username or password.";
+		}
+		if (errorCode === "LOGIN_SERVICE_UNAVAILABLE") {
+			return isFinnish
+				? "Kirjautumispalvelu ei ole käytettävissä. Yritä myöhemmin uudelleen."
+				: "The login service is unavailable. Please try again later.";
+		}
+		return isFinnish ? "Kirjautuminen epäonnistui." : "Sign in failed.";
+	};
 
 	async function handleLogin() {
-		setErrorMessage("");
+		setErrorCode("");
 		setIsLoading(true);
 
 		try {
@@ -31,12 +45,13 @@ const LoginPage = () => {
 			})
 			navigate("/user");
 		} catch (error) {
-			setErrorMessage(
-				error instanceof Error
-					? error.message
-					: selectedLanguage === "fi"
-						? "Kirjautuminen epäonnistui."
-						: "Sign in failed."
+			const backendErrorCode = error instanceof Error ? error.message : "";
+			setErrorCode(
+				backendErrorCode === "INVALID_CREDENTIALS"
+					? "INVALID_CREDENTIALS"
+					: backendErrorCode === "LOGIN_SERVICE_UNAVAILABLE"
+						? "LOGIN_SERVICE_UNAVAILABLE"
+						: "UNKNOWN"
 			);
 		} finally {
 			setIsLoading(false);
@@ -58,7 +73,10 @@ const LoginPage = () => {
 								value={inputUser.username}
 								autoComplete="username"
 								required
-								onChange={e => setInputUser({ ...inputUser, username: e.target.value })}
+								onChange={e => {
+									setErrorCode("");
+									setInputUser({ ...inputUser, username: e.target.value });
+								}}
 							/>
 							<TextField
 								label={selectedLanguage === "fi" ? "Salasana" : "Password"}
@@ -66,9 +84,12 @@ const LoginPage = () => {
 								value={inputUser.password}
 								autoComplete="current-password"
 								required
-								onChange={e => setInputUser({ ...inputUser, password: e.target.value })}
+								onChange={e => {
+									setErrorCode("");
+									setInputUser({ ...inputUser, password: e.target.value });
+								}}
 							/>
-							{errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+							{errorCode && <Alert severity="error">{getErrorMessage()}</Alert>}
 							<Button type="submit" variant="contained" disabled={isLoading}>
 								{isLoading && <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />}
 								{isLoading
