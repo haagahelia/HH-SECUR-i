@@ -3,15 +3,15 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 
 import Router from './Router'
-import { UserProvider } from './context/UserContext'
 import { FormAnswersProvider } from './context/FormAnswersContext'
+import { AuthProvider } from './context/AuthContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <UserProvider>
+    <AuthProvider>
       <FormAnswersProvider>
         <Router />
       </FormAnswersProvider>
-    </UserProvider>
+    </AuthProvider>
   </StrictMode>,
 )

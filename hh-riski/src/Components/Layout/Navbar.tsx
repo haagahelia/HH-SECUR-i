@@ -2,9 +2,7 @@ import { AppBar, Toolbar, Typography, Button, Box, Slide, useScrollTrigger } fro
 import { Link as RouterLink } from "react-router-dom";
 import LanguageIcon from "@mui/icons-material/Language";
 import logo from "../../assets/logo.png";
-import { useCurrentUser } from "../../context/UserContext";
-
-import styles from "../../styles.module.css";
+import { useCurrentUser } from "../../context/AuthContext";
 
 type NavbarProps = {
     language: "fi" | "en";
@@ -23,7 +21,7 @@ function HideOnScroll(props: { children: React.ReactElement }) {
 
 
 const Navbar = ({ language, setLanguage }: NavbarProps) => {
-    const { user, clearUser } = useCurrentUser();
+    const { user, isAuthenticated, clearUser } = useCurrentUser();
     return (
         <>
             {/* YLÄPALKKI */}
@@ -46,12 +44,32 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                         }}
                     >
 
-                        <Box sx={{ display: "flex", alignItems: "center", zIndex: 1 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 2, zIndex: 1 }}>
                             <img
                                 src={logo}
                                 alt="HH-SECUR-i"
                                 style={{ height: "50px" }}
                             />
+                            {user && (
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 2.5, ml: 1 }}>
+                                    <Box>
+                                        <Typography variant="caption" display="block" color="text.secondary" lineHeight={1.1}>
+                                            {language === "fi" ? "Kirjautuneena" : "Logged in as"}
+                                        </Typography>
+                                        <Typography variant="body2" fontWeight={600} lineHeight={1.2}>
+                                            {user.username}
+                                        </Typography>
+                                    </Box>
+                                    <Button
+                                        color="inherit"
+                                        size="small"
+                                        onClick={clearUser}
+                                        sx={{ px: 1.5, py: 0.75, minWidth: "auto" }}
+                                    >
+                                        {language === "fi" ? "Kirjaudu ulos" : "Logout"}
+                                    </Button>
+                                </Box>
+                            )}
                         </Box>
 
 
@@ -124,24 +142,15 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                         <Button color="inherit" component={RouterLink} to="/">
                             {language === "fi" ? "Riskilomake" : "Risk form"}
                         </Button>
-
+                        {!isAuthenticated ?
+                        <Button color="inherit" component={RouterLink} to="/login">
+                            {language === "fi" ? "Kirjaudu sisään" : "Sign in"}
+                        </Button>
+                        :
                         <Button color="inherit" component={RouterLink} to="/user">
                             {language === "fi" ? "Käyttäjä" : "User"}
                         </Button>
-                        {user && (
-                            <div className={styles.center}>
-                                {language === "fi" ? (
-                                    <p>Kirjautuneena {user.username}</p>
-                                ) : (
-                                    <p>Logged in as {user.username}</p>
-                                )}
-                                {language === "fi" ? (
-                                    <button onClick={clearUser}>Kirjaudu ulos</button>
-                                ) : (
-                                    <button onClick={clearUser}>Logout</button>
-                                )}
-                            </div>
-                        )}
+                        }
                     </Box>
                 </Toolbar>
             </AppBar>

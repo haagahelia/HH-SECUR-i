@@ -10,7 +10,7 @@ import styles from "../../styles.module.css";
 import SingleChoice from "./SingleChoice";
 import MultiChoice from "./MultiChoice";
 import SingleSelect from "./SingleSelect";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { useFormAnswers } from "../../context/FormAnswersContext";
 
 type CooperationRiskFormProps = {
@@ -45,9 +45,6 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   );
   const sortedOrganizations = sortElements(filteredOrganizations, language);
 
-  const selectedCountryData = countriesRaw.find(
-    (countryRaw) => countryRaw.id === selectedCountry
-  );
   const sortedCountries = sortElements(countriesRaw, language);
 
   const navigate = useNavigate();
@@ -79,11 +76,10 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
       <ul className={styles.formlist}>
         <li>
-          <label>
-            {language === "fi" ? "Projektin nimi" : "Project name"}
-          </label>
-          <input
-            type="text"
+          <TextField
+            label={language === "fi" ? "Projektin nimi" : "Project name"}
+            fullWidth
+            size="small"
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
           />
@@ -222,14 +218,13 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             }} />
         </li>
         <li>
-          <label>
-            {language === "fi" ? "Lisätietoja" : "Additional Information"}
-          </label>
-          <textarea
-            rows={5}
-            cols={120}
-            maxLength={1000}
-            placeholder={
+          <TextField
+            label={language === "fi" ? "Lisätietoja" : "Additional Information"}
+            multiline
+            minRows={5}
+            fullWidth
+            slotProps={{ htmlInput: { maxLength: 1000 } }}
+            helperText={
               language === "fi" ?
                 "Tähän kenttään voi esimerkiksi kirjoittaa tärkeitä lisätietoja yhteistyöstä."
                 :
@@ -246,21 +241,13 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           variant="outlined"
           onClick={() => saveForm()}
         >
-          {language === "fi" ?
-            <a>Tallenna</a>
-            :
-            <a>Save</a>
-          }
+          {language === "fi" ? "Tallenna" : "Save"}
         </Button>
         <Button
           variant="outlined"
           onClick={() => clearAnswers()}
         >
-          {language === "fi" ?
-            <a>Aloita alusta</a>
-            :
-            <a>Start Over</a>
-          }
+          {language === "fi" ? "Aloita alusta" : "Start Over"}
         </Button>
       </div>
     </div >
