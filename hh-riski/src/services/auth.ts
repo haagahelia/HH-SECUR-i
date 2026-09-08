@@ -5,11 +5,13 @@ type AuthenticationResponse = {
 	message?: string;
 };
 
+const url = import.meta.env.VITE_BACKEND_URL 
+
 export async function authenticateUser(user: { username: string, password: string }): Promise<AuthenticationResponse> {
 	// TODO: Place port into an env. file
 	let response: Response;
 	try {
-		response = await fetch("http://localhost:3000/login", {
+		response = await fetch(`${url}/login`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
