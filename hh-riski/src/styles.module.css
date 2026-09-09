@@ -25,6 +25,14 @@
     align-items: center;
 }
 
+.fieldError {
+    display: block;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    color: #d32f2f;
+    font-size: 0.875rem;
+}
+
 .left {
     gap: 20px;
     display: flex;
@@ -33,6 +41,10 @@
 }
 
 .formlist {
+    li {
+        margin-bottom: 20px;
+    }
+
     li::marker {
         color: red;
         content: "* ";
