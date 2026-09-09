@@ -150,14 +150,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <div role="alert">
           <strong>
             {language === "fi"
-              ? "Korjaa seuraavat kohdat:"
-              : "Please fix the following:"}
+              ? `${errors.length} kenttää vaatii korjausta.`
+              : `${errors.length} field${errors.length === 1 ? "" : "s"} need${errors.length === 1 ? "s" : ""} attention.`}
           </strong>
-          <ul>
-            {errors.map((error) => (
-              <li key={error}>{error}</li>
-            ))}
-          </ul>
         </div>
       )}
       <ul className={styles.formlist}>
