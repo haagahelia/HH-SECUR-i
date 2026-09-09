@@ -25,6 +25,13 @@
     align-items: center;
 }
 
+.fieldError {
+    display: block;
+    margin-top: 4px;
+    color: #d32f2f;
+    font-size: 0.875rem;
+}
+
 .left {
     gap: 20px;
     display: flex;

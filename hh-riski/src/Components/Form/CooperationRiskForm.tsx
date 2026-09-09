@@ -19,6 +19,11 @@ import { useState } from "react";
 
 import { sortElements } from "../../util/utils";
 import { useNavigate } from "react-router-dom";
+import {
+  validateCooperationRiskForm,
+  type CooperationRiskFormValues,
+  type ValidationField,
+} from "../../util/validation";
 
 import type { CountryRaw, Organization, Question } from "../../types";
 import styles from "../../styles.module.css";
@@ -97,11 +102,30 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
   const [validationAttempted, setValidationAttempted] = useState(false);
 
+  const formValues: CooperationRiskFormValues = {
+    projectName,
+    selectedCountry,
+    selectedOrganization,
+    hhRole,
+    consortium,
+    history,
+    organizationType,
+    contractStatus,
+    cooperationType,
+    funding,
+    liability,
+    personalInformation,
+    dualUse,
+    ethics,
+    duration,
+    projectDescription,
+  };
+
   const saveForm = () => {
-    const validationErrors = validateForm();
+    const validationErrors = validateCooperationRiskForm(formValues, language);
     setValidationAttempted(true);
 
-    if (validationErrors.length > 0) {
+    if (Object.keys(validationErrors).length > 0) {
       window.scrollTo(0, 0);
       return;
     }
@@ -109,111 +133,16 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     navigate("/results");
   };
 
-  const validateForm = (): string[] => {
-    const validationErrors: string[] = [];
-    const isFinnish = language === "fi";
-
-    if (!projectName.trim()) {
-      validationErrors.push(
-        isFinnish ? "Projektin nimi on pakollinen" : "Project name is required",
-      );
-    } else if (projectName.trim().length < 3) {
-      validationErrors.push(
-        isFinnish
-          ? "Projektin nimessä on oltava vähintään 3 merkkiä"
-          : "Project name must be at least 3 characters",
-      );
-    }
-
-    if (!selectedCountry) {
-      validationErrors.push(
-        isFinnish ? "Maa on pakollinen" : "Country is required",
-      );
-    }
-
-    if (!selectedOrganization) {
-      validationErrors.push(
-        isFinnish ? "Organisaatio on pakollinen" : "Organization is required",
-      );
-    }
-
-    if (!hhRole) {
-      validationErrors.push(
-        isFinnish ? "Haaga-Helian rooli on pakollinen" : "HH role is required",
-      );
-    }
-
-    if (cooperationType.length === 0) {
-      validationErrors.push(
-        isFinnish
-          ? "Valitse vähintään yksi yhteistyön tyyppi"
-          : "Select at least one cooperation type",
-      );
-    }
-
-    const requiredFields = isFinnish
-      ? [
-          ["Konsortio", consortium],
-          ["Yhteistyöhistoria", history],
-          ["Organisaatiotyyppi", organizationType],
-          ["Sopimustiedot", contractStatus],
-          ["Rahoitus", funding],
-          ["Vastuut", liability],
-          ["Henkilötiedot", personalInformation],
-          ["Kaksikäyttöisyys", dualUse],
-          ["Eettinen arviointi", ethics],
-          ["Kesto", duration],
-        ]
-      : [
-          ["Consortium", consortium],
-          ["History", history],
-          ["Organization type", organizationType],
-          ["Contract status", contractStatus],
-          ["Funding", funding],
-          ["Liability", liability],
-          ["Personal information", personalInformation],
-          ["Dual use", dualUse],
-          ["Ethics", ethics],
-          ["Duration", duration],
-        ];
-
-    requiredFields.forEach(([label, value]) => {
-      if (!value.trim()) {
-        validationErrors.push(
-          isFinnish ? `${label} on pakollinen` : `${label} is required`,
-        );
-      }
-    });
-
-    if (projectName.length > 100) {
-      validationErrors.push(
-        isFinnish
-          ? "Projektin nimessä saa olla enintään 100 merkkiä"
-          : "Project name must be 100 characters or less",
-      );
-    }
-
-    if (projectDescription.length > 1000) {
-      validationErrors.push(
-        isFinnish
-          ? "Lisätiedoissa saa olla enintään 1000 merkkiä"
-          : "Additional information must be 1000 characters or less",
-      );
-    } else if (
-      projectDescription.trim().length > 0 &&
-      projectDescription.trim().length < 10
-    ) {
-      validationErrors.push(
-        isFinnish
-          ? "Lisätiedoissa on oltava vähintään 10 merkkiä"
-          : "Additional information must be at least 10 characters",
-      );
-    }
-
-    return validationErrors;
-  };
-
-  const errors = validationAttempted ? validateForm() : [];
+  const fieldErrors = validationAttempted
+    ? validateCooperationRiskForm(formValues, language)
+    : {};
+  const errors = Object.values(fieldErrors);
+  const renderFieldError = (field: ValidationField) =>
+    fieldErrors[field] ? (
+      <span className={styles.fieldError} role="alert">
+        {fieldErrors[field]}
+      </span>
+    ) : null;
 
   return (
     <div className={styles.form}>
@@ -233,16 +162,19 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
       )}
       <ul className={styles.formlist}>
         <li>
+          {renderFieldError("projectName")}
           <TextField
             label={language === "fi" ? "Projektin nimi" : "Project name"}
             fullWidth
             size="small"
             slotProps={{ htmlInput: { maxLength: 100 } }}
+            error={Boolean(fieldErrors.projectName)}
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
           />
         </li>
         <li>
+          {renderFieldError("hhRole")}
           <SingleChoice
             question={hhRoleQuestionData.question}
             answers={hhRoleQuestionData.answers}
@@ -254,6 +186,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("consortium")}
           <SingleChoice
             question={consortiumQuestionData.question}
             answers={consortiumQuestionData.answers}
@@ -265,6 +198,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("selectedCountry")}
           <SingleSelect
             question={{
               fi: "Yhteistyökumppanin sijaintimaa",
@@ -281,6 +215,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         </li>
 
         <li>
+          {renderFieldError("history")}
           <SingleChoice
             question={historyQuestionData.question}
             answers={historyQuestionData.answers}
@@ -293,6 +228,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         </li>
 
         <li>
+          {renderFieldError("organizationType")}
           <SingleChoice
             question={organizationTypeData.question}
             answers={organizationTypeData.answers}
@@ -304,6 +240,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("selectedOrganization")}
           <SingleSelect
             question={{ fi: "Organisaatio", en: "Organization" }}
             answers={sortedOrganizations}
@@ -319,6 +256,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("contractStatus")}
           <SingleChoice
             question={contractInfoData.question}
             answers={contractInfoData.answers}
@@ -330,6 +268,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("cooperationType")}
           <MultiChoice
             question={cooperationTypeData.question}
             answers={cooperationTypeData.answers}
@@ -339,6 +278,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("funding")}
           <SingleChoice
             question={fundingData.question}
             answers={fundingData.answers}
@@ -350,6 +290,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("liability")}
           <SingleChoice
             question={liabilityData.question}
             answers={liabilityData.answers}
@@ -361,6 +302,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("personalInformation")}
           <SingleChoice
             question={personalData.question}
             answers={personalData.answers}
@@ -372,6 +314,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("dualUse")}
           <SingleChoice
             question={dualUseData.question}
             answers={dualUseData.answers}
@@ -383,6 +326,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("ethics")}
           <SingleChoice
             question={ethicsData.question}
             answers={ethicsData.answers}
@@ -394,6 +338,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("duration")}
           <SingleChoice
             question={durationData.question}
             answers={durationData.answers}
@@ -405,12 +350,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("projectDescription")}
           <TextField
             label={language === "fi" ? "Lisätietoja" : "Additional Information"}
             multiline
             minRows={5}
             fullWidth
             slotProps={{ htmlInput: { maxLength: 1000 } }}
+            error={Boolean(fieldErrors.projectDescription)}
             helperText={
               language === "fi"
                 ? "Tähän kenttään voi esimerkiksi kirjoittaa tärkeitä lisätietoja yhteistyöstä."
