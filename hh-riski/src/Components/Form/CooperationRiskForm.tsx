@@ -117,6 +117,12 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
       validationErrors.push(
         isFinnish ? "Projektin nimi on pakollinen" : "Project name is required",
       );
+    } else if (projectName.trim().length < 3) {
+      validationErrors.push(
+        isFinnish
+          ? "Projektin nimessä on oltava vähintään 3 merkkiä"
+          : "Project name must be at least 3 characters",
+      );
     }
 
     if (!selectedCountry) {
@@ -193,6 +199,15 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           ? "Lisätiedoissa saa olla enintään 1000 merkkiä"
           : "Additional information must be 1000 characters or less",
       );
+    } else if (
+      projectDescription.trim().length > 0 &&
+      projectDescription.trim().length < 10
+    ) {
+      validationErrors.push(
+        isFinnish
+          ? "Lisätiedoissa on oltava vähintään 10 merkkiä"
+          : "Additional information must be at least 10 characters",
+      );
     }
 
     return validationErrors;
@@ -222,6 +237,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             label={language === "fi" ? "Projektin nimi" : "Project name"}
             fullWidth
             size="small"
+            slotProps={{ htmlInput: { maxLength: 100 } }}
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
           />
