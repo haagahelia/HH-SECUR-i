@@ -1,4 +1,21 @@
-import { fetchConsortiumType, fetchContractInfo, fetchCooperationHistory, fetchCooperationType, fetchCountriesRaw, fetchDualUse, fetchDuration, fetchEthicsAssessment, fetchFunding, fetchHhRole, fetchLiability, fetchOrganizations, fetchOrganizationType, fetchPersonalInformation } from "../../util/fetchData";
+import {
+  fetchConsortiumType,
+  fetchContractInfo,
+  fetchCooperationHistory,
+  fetchCooperationType,
+  fetchCountriesRaw,
+  fetchDualUse,
+  fetchDuration,
+  fetchEthicsAssessment,
+  fetchFunding,
+  fetchHhRole,
+  fetchLiability,
+  fetchOrganizations,
+  fetchOrganizationType,
+  fetchPersonalInformation,
+} from "../../util/fetchData";
+
+import { useState } from "react";
 
 import { sortElements } from "../../util/utils";
 import { useNavigate } from "react-router-dom";
@@ -32,16 +49,45 @@ const ethicsData: Question = fetchEthicsAssessment();
 const durationData: Question = fetchDuration();
 const cooperationTypeData: Question = fetchCooperationType();
 
-
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
-
-  const { selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, projectName, setProjectName,
-    projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType,
-    contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
-    cooperationType, setCooperationType, clearAnswers } = useFormAnswers();
+  const {
+    selectedCountry,
+    setSelectedCountry,
+    selectedOrganization,
+    setSelectedOrganization,
+    projectName,
+    setProjectName,
+    projectDescription,
+    setProjectDescription,
+    duration,
+    setDuration,
+    hhRole,
+    setHhRole,
+    consortium,
+    setConsortium,
+    history,
+    setHistory,
+    organizationType,
+    setOrganizationType,
+    contractStatus,
+    setContractStatus,
+    funding,
+    setFunding,
+    liability,
+    setLiability,
+    personalInformation,
+    setPersonalInformation,
+    dualUse,
+    setDualUse,
+    ethics,
+    setEthics,
+    cooperationType,
+    setCooperationType,
+    clearAnswers,
+  } = useFormAnswers();
 
   const filteredOrganizations = organizations.filter(
-    (organization) => organization.countryId === selectedCountry
+    (organization) => organization.countryId === selectedCountry,
   );
   const sortedOrganizations = sortElements(filteredOrganizations, language);
 
@@ -49,31 +95,127 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
   const navigate = useNavigate();
 
-  const saveForm = () => {
-    if (formFilled()) {
-      window.scrollTo(0, 0);
-      navigate("/results");
-    } else {
-      window.scrollTo(0, 0);
-    }
-  }
+  const [validationAttempted, setValidationAttempted] = useState(false);
 
-  const formFilled = () => {
-    const values = [projectName, selectedCountry, selectedOrganization, duration, hhRole, consortium, history, organizationType, contractStatus, funding, liability, personalInformation, dualUse, ethics]
-    for (let i = 0; i < values.length; i++) {
-      if (values[i].trim() === "") {
-        return false;
+  const saveForm = () => {
+    const validationErrors = validateForm();
+    setValidationAttempted(true);
+
+    if (validationErrors.length > 0) {
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    navigate("/results");
+  };
+
+  const validateForm = (): string[] => {
+    const validationErrors: string[] = [];
+    const isFinnish = language === "fi";
+
+    if (!projectName.trim()) {
+      validationErrors.push(
+        isFinnish ? "Projektin nimi on pakollinen" : "Project name is required",
+      );
+    }
+
+    if (!selectedCountry) {
+      validationErrors.push(
+        isFinnish ? "Maa on pakollinen" : "Country is required",
+      );
+    }
+
+    if (!selectedOrganization) {
+      validationErrors.push(
+        isFinnish ? "Organisaatio on pakollinen" : "Organization is required",
+      );
+    }
+
+    if (!hhRole) {
+      validationErrors.push(
+        isFinnish ? "Haaga-Helian rooli on pakollinen" : "HH role is required",
+      );
+    }
+
+    if (cooperationType.length === 0) {
+      validationErrors.push(
+        isFinnish
+          ? "Valitse vähintään yksi yhteistyön tyyppi"
+          : "Select at least one cooperation type",
+      );
+    }
+
+    const requiredFields = isFinnish
+      ? [
+          ["Konsortio", consortium],
+          ["Yhteistyöhistoria", history],
+          ["Organisaatiotyyppi", organizationType],
+          ["Sopimustiedot", contractStatus],
+          ["Rahoitus", funding],
+          ["Vastuut", liability],
+          ["Henkilötiedot", personalInformation],
+          ["Kaksikäyttöisyys", dualUse],
+          ["Eettinen arviointi", ethics],
+          ["Kesto", duration],
+        ]
+      : [
+          ["Consortium", consortium],
+          ["History", history],
+          ["Organization type", organizationType],
+          ["Contract status", contractStatus],
+          ["Funding", funding],
+          ["Liability", liability],
+          ["Personal information", personalInformation],
+          ["Dual use", dualUse],
+          ["Ethics", ethics],
+          ["Duration", duration],
+        ];
+
+    requiredFields.forEach(([label, value]) => {
+      if (!value.trim()) {
+        validationErrors.push(
+          isFinnish ? `${label} on pakollinen` : `${label} is required`,
+        );
       }
+    });
+
+    if (projectName.length > 100) {
+      validationErrors.push(
+        isFinnish
+          ? "Projektin nimessä saa olla enintään 100 merkkiä"
+          : "Project name must be 100 characters or less",
+      );
     }
-    if (cooperationType.length < 1) {
-      return false;
+
+    if (projectDescription.length > 1000) {
+      validationErrors.push(
+        isFinnish
+          ? "Lisätiedoissa saa olla enintään 1000 merkkiä"
+          : "Additional information must be 1000 characters or less",
+      );
     }
-    return true;
-  }
+
+    return validationErrors;
+  };
+
+  const errors = validationAttempted ? validateForm() : [];
 
   return (
     <div className={styles.form}>
-
+      {errors.length > 0 && (
+        <div role="alert">
+          <strong>
+            {language === "fi"
+              ? "Korjaa seuraavat kohdat:"
+              : "Please fix the following:"}
+          </strong>
+          <ul>
+            {errors.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <ul className={styles.formlist}>
         <li>
           <TextField
@@ -85,26 +227,33 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
-          <SingleChoice question={hhRoleQuestionData.question}
+          <SingleChoice
+            question={hhRoleQuestionData.question}
             answers={hhRoleQuestionData.answers}
             language={language}
             value={hhRole}
             onChange={(value) => {
               setHhRole(value);
-            }} />
+            }}
+          />
         </li>
         <li>
-          <SingleChoice question={consortiumQuestionData.question}
+          <SingleChoice
+            question={consortiumQuestionData.question}
             answers={consortiumQuestionData.answers}
             language={language}
             value={consortium}
             onChange={(value) => {
               setConsortium(value);
-            }} />
+            }}
+          />
         </li>
         <li>
           <SingleSelect
-            question={{ fi: "Yhteistyökumppanin sijaintimaa", en: "Collaborator's country of origin" }}
+            question={{
+              fi: "Yhteistyökumppanin sijaintimaa",
+              en: "Collaborator's country of origin",
+            }}
             answers={sortedCountries}
             placeholder={{ fi: "Valitse sijaintimaa", en: "Select country" }}
             language={language}
@@ -116,29 +265,36 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         </li>
 
         <li>
-          <SingleChoice question={historyQuestionData.question}
+          <SingleChoice
+            question={historyQuestionData.question}
             answers={historyQuestionData.answers}
             language={language}
             value={history}
             onChange={(value) => {
               setHistory(value);
-            }} />
+            }}
+          />
         </li>
 
         <li>
-          <SingleChoice question={organizationTypeData.question}
+          <SingleChoice
+            question={organizationTypeData.question}
             answers={organizationTypeData.answers}
             language={language}
             value={organizationType}
             onChange={(value) => {
               setOrganizationType(value);
-            }} />
+            }}
+          />
         </li>
         <li>
           <SingleSelect
             question={{ fi: "Organisaatio", en: "Organization" }}
             answers={sortedOrganizations}
-            placeholder={{ fi: "Valitse organisaatio", en: "Select organization" }}
+            placeholder={{
+              fi: "Valitse organisaatio",
+              en: "Select organization",
+            }}
             language={language}
             value={selectedOrganization}
             onChange={(value) => {
@@ -147,16 +303,19 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
-          <SingleChoice question={contractInfoData.question}
+          <SingleChoice
+            question={contractInfoData.question}
             answers={contractInfoData.answers}
             language={language}
             value={contractStatus}
             onChange={(value) => {
               setContractStatus(value);
-            }} />
+            }}
+          />
         </li>
         <li>
-          <MultiChoice question={cooperationTypeData.question}
+          <MultiChoice
+            question={cooperationTypeData.question}
             answers={cooperationTypeData.answers}
             language={language}
             value={cooperationType}
@@ -164,58 +323,70 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
-          <SingleChoice question={fundingData.question}
+          <SingleChoice
+            question={fundingData.question}
             answers={fundingData.answers}
             language={language}
             value={funding}
             onChange={(value) => {
               setFunding(value);
-            }} />
+            }}
+          />
         </li>
         <li>
-          <SingleChoice question={liabilityData.question}
+          <SingleChoice
+            question={liabilityData.question}
             answers={liabilityData.answers}
             language={language}
             value={liability}
             onChange={(value) => {
               setLiability(value);
-            }} />
+            }}
+          />
         </li>
         <li>
-          <SingleChoice question={personalData.question}
+          <SingleChoice
+            question={personalData.question}
             answers={personalData.answers}
             language={language}
             value={personalInformation}
             onChange={(value) => {
               setPersonalInformation(value);
-            }} />
+            }}
+          />
         </li>
         <li>
-          <SingleChoice question={dualUseData.question}
+          <SingleChoice
+            question={dualUseData.question}
             answers={dualUseData.answers}
             language={language}
             value={dualUse}
             onChange={(value) => {
               setDualUse(value);
-            }} />
+            }}
+          />
         </li>
         <li>
-          <SingleChoice question={ethicsData.question}
+          <SingleChoice
+            question={ethicsData.question}
             answers={ethicsData.answers}
             language={language}
             value={ethics}
             onChange={(value) => {
               setEthics(value);
-            }} />
+            }}
+          />
         </li>
         <li>
-          <SingleChoice question={durationData.question}
+          <SingleChoice
+            question={durationData.question}
             answers={durationData.answers}
             language={language}
             value={duration}
             onChange={(value) => {
               setDuration(value);
-            }} />
+            }}
+          />
         </li>
         <li>
           <TextField
@@ -225,10 +396,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             fullWidth
             slotProps={{ htmlInput: { maxLength: 1000 } }}
             helperText={
-              language === "fi" ?
-                "Tähän kenttään voi esimerkiksi kirjoittaa tärkeitä lisätietoja yhteistyöstä."
-                :
-                "In this field, you can enter important additional information about the collaboration."
+              language === "fi"
+                ? "Tähän kenttään voi esimerkiksi kirjoittaa tärkeitä lisätietoja yhteistyöstä."
+                : "In this field, you can enter important additional information about the collaboration."
             }
             value={projectDescription}
             onChange={(e) => setProjectDescription(e.target.value)}
@@ -237,20 +407,20 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
       </ul>
 
       <div className={styles.center}>
-        <Button
-          variant="outlined"
-          onClick={() => saveForm()}
-        >
+        <Button variant="outlined" onClick={() => saveForm()}>
           {language === "fi" ? "Tallenna" : "Save"}
         </Button>
         <Button
           variant="outlined"
-          onClick={() => clearAnswers()}
+          onClick={() => {
+            setValidationAttempted(false);
+            clearAnswers();
+          }}
         >
           {language === "fi" ? "Aloita alusta" : "Start Over"}
         </Button>
       </div>
-    </div >
+    </div>
   );
 };
 
