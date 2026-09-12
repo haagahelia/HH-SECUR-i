@@ -34,6 +34,7 @@ import MultiChoice from "./MultiChoice";
 import SingleSelect from "./SingleSelect";
 import { Button, TextField } from "@mui/material";
 import { useFormAnswers } from "../../context/FormAnswersContext";
+import { i18n } from "../../util/translations";
 
 type CooperationRiskFormProps = {
   language: "fi" | "en";
@@ -102,6 +103,8 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
   const [validationAttempted, setValidationAttempted] = useState(false);
 
+  const t = i18n[language].formValidation
+
   const formValues: CooperationRiskFormValues = {
     projectName,
     selectedCountry,
@@ -149,9 +152,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
       {errors.length > 0 && (
         <div role="alert">
           <strong>
-            {language === "fi"
-              ? `${errors.length} kenttää vaatii korjausta.`
-              : `${errors.length} field${errors.length === 1 ? "" : "s"} need${errors.length === 1 ? "s" : ""} attention.`}
+            {t.fields.needsAttention(errors.length)}
           </strong>
         </div>
       )}

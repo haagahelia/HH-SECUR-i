@@ -5,6 +5,7 @@ import Navbar from "./Layout/Navbar";
 import { useState } from "react";
 import { Alert, Box, Button, CircularProgress, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { i18n } from "../util/translations";
 
 type LoginErrorCode = "" | "INVALID_CREDENTIALS" | "LOGIN_SERVICE_UNAVAILABLE" | "UNKNOWN";
 
@@ -20,18 +21,16 @@ const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
 
 	const navigate = useNavigate();
-	const isFinnish = selectedLanguage === "fi";
+	const t = i18n[selectedLanguage].login
 
 	const getErrorMessage = () => {
 		if (errorCode === "INVALID_CREDENTIALS") {
-			return isFinnish ? "Virheellinen käyttäjänimi tai salasana." : "Incorrect username or password.";
+			return t.incorrectError;
 		}
 		if (errorCode === "LOGIN_SERVICE_UNAVAILABLE") {
-			return isFinnish
-				? "Kirjautumispalvelu ei ole käytettävissä. Yritä myöhemmin uudelleen."
-				: "The login service is unavailable. Please try again later.";
+			return t.serviceError;
 		}
-		return isFinnish ? "Kirjautuminen epäonnistui." : "Sign in failed.";
+		return t.loginFail;
 	};
 
 	async function handleLogin() {
