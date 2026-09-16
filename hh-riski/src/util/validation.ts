@@ -5,11 +5,14 @@ export type ValidationField =
   | "selectedCountry"
   | "selectedOrganization"
   | "hhRole"
+  | "hhRoleOther"
   | "consortium"
   | "history"
   | "organizationType"
+  | "organizationTypeOther"
   | "contractStatus"
   | "cooperationType"
+  | "cooperationTypeOther"
   | "funding"
   | "liability"
   | "personalInformation"
@@ -25,11 +28,14 @@ export type CooperationRiskFormValues = {
   selectedCountry: string;
   selectedOrganization: string;
   hhRole: string;
+  hhRoleOther: string;
   consortium: string;
   history: string;
   organizationType: string;
+  organizationTypeOther: string;
   contractStatus: string;
   cooperationType: string[];
+  cooperationTypeOther: string;
   funding: string;
   liability: string;
   personalInformation: string;
@@ -59,6 +65,19 @@ export const validateCooperationRiskForm = (
   } else if (values.projectName.length > 100) {
     errors.projectName = requiredMessage(
       t.projectName.orLess
+    );
+  }
+
+  if (values.hhRole === "other" && !values.hhRoleOther.trim()) {
+    errors.hhRoleOther = requiredMessage(t.hhRoleOther.required);
+  }
+
+  if (
+    values.organizationType === "other" &&
+    !values.organizationTypeOther.trim()
+  ) {
+    errors.organizationTypeOther = requiredMessage(
+      t.organizationTypeOther.required,
     );
   }
 
@@ -107,6 +126,15 @@ export const validateCooperationRiskForm = (
   if (values.cooperationType.length === 0) {
     errors.cooperationType = requiredMessage(
       t.cooperationType.required,
+    );
+  }
+
+  if (
+    values.cooperationType.includes("option7") &&
+    !values.cooperationTypeOther.trim()
+  ) {
+    errors.cooperationTypeOther = requiredMessage(
+      t.cooperationTypeOther.required,
     );
   }
 

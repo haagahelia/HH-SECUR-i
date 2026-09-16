@@ -102,6 +102,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const navigate = useNavigate();
 
   const [validationAttempted, setValidationAttempted] = useState(false);
+  const [hhRoleOther, setHhRoleOther] = useState("");
+  const [organizationTypeOther, setOrganizationTypeOther] = useState("");
+  const [cooperationTypeOther, setCooperationTypeOther] = useState("");
 
   const t = i18n[language].formValidation
 
@@ -110,11 +113,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     selectedCountry,
     selectedOrganization,
     hhRole,
+    hhRoleOther,
     consortium,
     history,
     organizationType,
+    organizationTypeOther,
     contractStatus,
     cooperationType,
+    cooperationTypeOther,
     funding,
     liability,
     personalInformation,
@@ -143,7 +149,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const renderFieldError = (field: ValidationField) =>
     fieldErrors[field] ? (
       <span className={styles.fieldError} role="alert">
-        {fieldErrors[field]}
+       {fieldErrors[field]}
       </span>
     ) : null;
 
@@ -180,6 +186,19 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
               setHhRole(value);
             }}
           />
+          {hhRole === "other" && (
+            <>
+              {renderFieldError("hhRoleOther")}
+              <TextField
+                label={language === "fi" ? "Tarkenna" : "Please specify"}
+                fullWidth
+                size="small"
+                error={Boolean(fieldErrors.hhRoleOther)}
+                value={hhRoleOther}
+                onChange={(event) => setHhRoleOther(event.target.value)}
+              />
+            </>
+          )}
         </li>
         <li>
           {renderFieldError("consortium")}
@@ -234,6 +253,19 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
               setOrganizationType(value);
             }}
           />
+          {organizationType === "other" && (
+            <>
+              {renderFieldError("organizationTypeOther")}
+              <TextField
+                label={language === "fi" ? "Tarkenna" : "Please specify"}
+                fullWidth
+                size="small"
+                error={Boolean(fieldErrors.organizationTypeOther)}
+                value={organizationTypeOther}
+                onChange={(event) => setOrganizationTypeOther(event.target.value)}
+              />
+            </>
+          )}
         </li>
         <li>
           {renderFieldError("selectedOrganization")}
@@ -272,6 +304,19 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={cooperationType}
             onChange={setCooperationType}
           />
+          {cooperationType.includes("option7") && (
+            <>
+              {renderFieldError("cooperationTypeOther")}
+              <TextField
+                label={language === "fi" ? "Tarkenna" : "Please specify"}
+                fullWidth
+                size="small"
+                error={Boolean(fieldErrors.cooperationTypeOther)}
+                value={cooperationTypeOther}
+                onChange={(event) => setCooperationTypeOther(event.target.value)}
+              />
+            </>
+          )}
         </li>
         <li>
           {renderFieldError("funding")}
