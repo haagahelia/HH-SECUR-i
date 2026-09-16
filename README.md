@@ -4,6 +4,8 @@ Risk assessment tool for international collaboration.
 
 It currently consists of a front end React web app and a Python script for parsing raw source data.
 
+URL to deployment: https://hh-riski-hh-secur-i-frontend.2.rahtiapp.fi/
+
 # [Front end](hh-riski/)
 Front end is a React web app where navigation is handled by react-router.
 
