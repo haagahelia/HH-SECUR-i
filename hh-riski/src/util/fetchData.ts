@@ -101,11 +101,11 @@ export const fetchHhRole = (): Question => {
             {
                 id: "coordinator",
                 fi: "Yhteistyön koordinaattori",
-                en: "Collaboration Coordnator"
+                en: "Collaboration Coordinator"
             },
             {
                 id: "partner",
-                fi: "Kumppani tai tasaveroinen partner",
+                fi: "Kumppani tai tasaveroinen partneri",
                 en: "Partner"
             },
             {
@@ -123,7 +123,7 @@ export const fetchConsortiumType = (): Question => {
         question: {
             id: "cooperationType",
             fi: "Yhteistyökonsortion koostumus",
-            en: "Composition of the Collaobration Consortium"
+            en: "Composition of the Collaboration Consortium"
         },
         answers: [
             {
@@ -146,7 +146,7 @@ export const fetchCooperationHistory = (): Question => {
         question: {
             id: "history",
             fi: "Onko yhteistyöorganisaation kanssa tehty onnistunutta yhteistyötä aiemmin?",
-            en: "Has there been previous successfull cooperation with the organization?"
+            en: "Has there been previous successful cooperation with the organization?"
         },
         answers: [
             {
@@ -280,7 +280,7 @@ export const fetchPersonalInformation = (): Question => {
     return {
         question: {
             id: "personal",
-            fi: "Onko mahdollista, että yhteistyössä siirretään henkilötietoja yhtiestyökumppaneille?",
+            fi: "Onko mahdollista, että yhteistyössä siirretään henkilötietoja yhteistyökumppaneille?",
             en: "Is it possible that personal data will be transferred to the partner organization during the collaboration?"
         },
         answers: [
@@ -409,7 +409,7 @@ export const fetchCooperationType = (): Question => {
             {
                 id: "option1",
                 fi: "TKI-yhteistyö",
-                en: "Research collaboration"
+                en: "Research Collaboration"
             },
             {
                 id: "option2",

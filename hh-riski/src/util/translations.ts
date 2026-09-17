@@ -21,6 +21,9 @@ export const i18n = {
             hhRole: {
                 required: "Haaga-Helian rooli on pakollinen"
             },
+            hhRoleOther: {
+                required: "Tarkenna Haaga-Helian rooli"
+            },
             consortium: {
                 required: "Konsortio on pakollinen"
             },
@@ -29,6 +32,9 @@ export const i18n = {
             },
             organizationType: {
                 required: "Organisaatiotyyppi on pakollinen"
+            },
+            organizationTypeOther: {
+                required: "Tarkenna organisaatiotyyppi"
             },
             contractStatus: {
                 required: "Sopimustiedot on pakolliset"
@@ -53,6 +59,9 @@ export const i18n = {
             },
             cooperationType: {
                 required: "Valitse vähintään yksi yhteistyön tyyppi"
+            },
+            cooperationTypeOther: {
+                required: "Tarkenna muu yhteistyön muoto"
             },
             projectDescription: {
                 atLeast: "Lisätiedoissa on oltava vähintään 10 merkkiä",
@@ -86,6 +95,9 @@ export const i18n = {
             hhRole: {
                 required: "HH role is required"
             },
+            hhRoleOther: {
+                required: "Please specify the HH role"
+            },
             consortium: {
                 required: "Consortium is required"
             },
@@ -94,6 +106,9 @@ export const i18n = {
             },
             organizationType: {
                 required: "Organization type is required"
+            },
+            organizationTypeOther: {
+                required: "Please specify the organization type"
             },
             contractStatus: {
                 required: "Contract status is required"
@@ -118,6 +133,9 @@ export const i18n = {
             },
             cooperationType: {
                 required: "Select at least one cooperation type"
+            },
+            cooperationTypeOther: {
+                required: "Please specify the other cooperation type"
             },
             projectDescription: {
                 atLeast: "Additional information must be at least 10 characters",

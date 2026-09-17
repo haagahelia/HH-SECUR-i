@@ -69,12 +69,16 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     setDuration,
     hhRole,
     setHhRole,
+    hhRoleOther,
+    setHhRoleOther,
     consortium,
     setConsortium,
     history,
     setHistory,
     organizationType,
     setOrganizationType,
+    organizationTypeOther,
+    setOrganizationTypeOther,
     contractStatus,
     setContractStatus,
     funding,
@@ -89,6 +93,8 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     setEthics,
     cooperationType,
     setCooperationType,
+    cooperationTypeOther,
+    setCooperationTypeOther,
     clearAnswers,
   } = useFormAnswers();
 
@@ -110,11 +116,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     selectedCountry,
     selectedOrganization,
     hhRole,
+    hhRoleOther,
     consortium,
     history,
     organizationType,
+    organizationTypeOther,
     contractStatus,
     cooperationType,
+    cooperationTypeOther,
     funding,
     liability,
     personalInformation,
@@ -143,7 +152,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const renderFieldError = (field: ValidationField) =>
     fieldErrors[field] ? (
       <span className={styles.fieldError} role="alert">
-        {fieldErrors[field]}
+       {fieldErrors[field]}
       </span>
     ) : null;
 
@@ -178,8 +187,25 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={hhRole}
             onChange={(value) => {
               setHhRole(value);
+              if (value !== "other") {
+                setHhRoleOther("");
+              }
             }}
           />
+          {hhRole === "other" && (
+            <>
+              {renderFieldError("hhRoleOther")}
+              <TextField
+                label={language === "fi" ? "Tarkenna" : "Please specify"}
+                fullWidth
+                size="small"
+                slotProps={{ htmlInput: { maxLength: 100 } }}
+                error={Boolean(fieldErrors.hhRoleOther)}
+                value={hhRoleOther}
+                onChange={(event) => setHhRoleOther(event.target.value)}
+              />
+            </>
+          )}
         </li>
         <li>
           {renderFieldError("consortium")}
@@ -232,8 +258,25 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={organizationType}
             onChange={(value) => {
               setOrganizationType(value);
+              if (value !== "other") {
+                setOrganizationTypeOther("");
+              }
             }}
           />
+          {organizationType === "other" && (
+            <>
+              {renderFieldError("organizationTypeOther")}
+              <TextField
+                label={language === "fi" ? "Tarkenna" : "Please specify"}
+                fullWidth
+                size="small"
+                slotProps={{ htmlInput: { maxLength: 100 } }}
+                error={Boolean(fieldErrors.organizationTypeOther)}
+                value={organizationTypeOther}
+                onChange={(event) => setOrganizationTypeOther(event.target.value)}
+              />
+            </>
+          )}
         </li>
         <li>
           {renderFieldError("selectedOrganization")}
@@ -270,8 +313,27 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             answers={cooperationTypeData.answers}
             language={language}
             value={cooperationType}
-            onChange={setCooperationType}
+            onChange={(value) => {
+              setCooperationType(value);
+              if (!value.includes("option7")) {
+                setCooperationTypeOther("");
+              }
+            }}
           />
+          {cooperationType.includes("option7") && (
+            <>
+              {renderFieldError("cooperationTypeOther")}
+              <TextField
+                label={language === "fi" ? "Tarkenna" : "Please specify"}
+                fullWidth
+                size="small"
+                slotProps={{ htmlInput: { maxLength: 100 } }}
+                error={Boolean(fieldErrors.cooperationTypeOther)}
+                value={cooperationTypeOther}
+                onChange={(event) => setCooperationTypeOther(event.target.value)}
+              />
+            </>
+          )}
         </li>
         <li>
           {renderFieldError("funding")}

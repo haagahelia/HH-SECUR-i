@@ -60,9 +60,11 @@ const ResultsPage = () => {
         projectName,
         projectDescription,
         hhRole,
+        hhRoleOther,
         consortium,
         history,
         organizationType,
+        organizationTypeOther,
         contractStatus,
         funding,
         liability,
@@ -70,6 +72,7 @@ const ResultsPage = () => {
         dualUse,
         ethics,
         cooperationType,
+        cooperationTypeOther,
         duration,
         clearAnswers,
     } = useFormAnswers();
@@ -126,9 +129,11 @@ const ResultsPage = () => {
             selectedOrganization,
             duration,
             hhRole,
+            hhRoleOther,
             consortium,
             history,
             organizationType,
+            organizationTypeOther,
             contractStatus,
             funding,
             liability,
@@ -136,6 +141,7 @@ const ResultsPage = () => {
             dualUse,
             ethics,
             cooperationType,
+            cooperationTypeOther,
             selectedLanguage,
 
             savedBy: {
@@ -245,6 +251,9 @@ const ResultsPage = () => {
                                     language={selectedLanguage}
                                     value={hhRole}
                                 />
+                                {hhRoleOther.trim() && (
+                                    <p><b>{selectedLanguage === "fi" ? "Tarkennus" : "Details"}</b>: {hhRoleOther}</p>
+                                )}
                             </li>
 
                             <li>
@@ -254,6 +263,9 @@ const ResultsPage = () => {
                                     language={selectedLanguage}
                                     values={cooperationType}
                                 />
+                                {cooperationTypeOther.trim() && (
+                                    <p><b>{selectedLanguage === "fi" ? "Tarkennus" : "Details"}</b>: {cooperationTypeOther}</p>
+                                )}
                             </li>
 
                             <li>
@@ -286,6 +298,9 @@ const ResultsPage = () => {
                                     language={selectedLanguage}
                                     value={organizationType}
                                 />
+                                {organizationTypeOther.trim() && (
+                                    <p><b>{selectedLanguage === "fi" ? "Tarkennus" : "Details"}</b>: {organizationTypeOther}</p>
+                                )}
                             </li>
 
                             <li>
