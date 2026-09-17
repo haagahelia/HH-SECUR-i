@@ -31,9 +31,11 @@ type Assessment = {
     selectedOrganization: string;
     duration: string;
     hhRole: string;
+    hhRoleOther?: string;
     consortium: string;
     history: string;
     organizationType: string;
+    organizationTypeOther?: string;
     contractStatus: string;
     funding: string;
     liability: string;
@@ -41,6 +43,7 @@ type Assessment = {
     dualUse: string;
     ethics: string;
     cooperationType: string[];
+    cooperationTypeOther?: string;
     selectedLanguage: "fi" | "en";
 
     savedBy?: {
@@ -89,9 +92,11 @@ const MyAssessmentsPage = () => {
         setProjectDescription,
         setDuration,
         setHhRole,
+        setHhRoleOther,
         setConsortium,
         setHistory,
         setOrganizationType,
+        setOrganizationTypeOther,
         setContractStatus,
         setFunding,
         setLiability,
@@ -99,6 +104,7 @@ const MyAssessmentsPage = () => {
         setDualUse,
         setEthics,
         setCooperationType,
+        setCooperationTypeOther,
     } = useFormAnswers();
 
     const [orderBy, setOrderBy] = useState<"projectName" | "createdAt" | "riskLevel">("createdAt");
@@ -131,9 +137,11 @@ const MyAssessmentsPage = () => {
         setProjectDescription(assessment.projectDescription);
         setDuration(assessment.duration);
         setHhRole(assessment.hhRole);
+        setHhRoleOther(assessment.hhRoleOther ?? "");
         setConsortium(assessment.consortium);
         setHistory(assessment.history);
         setOrganizationType(assessment.organizationType);
+        setOrganizationTypeOther(assessment.organizationTypeOther ?? "");
         setContractStatus(assessment.contractStatus);
         setFunding(assessment.funding);
         setLiability(assessment.liability);
@@ -141,6 +149,7 @@ const MyAssessmentsPage = () => {
         setDualUse(assessment.dualUse);
         setEthics(assessment.ethics);
         setCooperationType(assessment.cooperationType);
+        setCooperationTypeOther(assessment.cooperationTypeOther ?? "");
     };
 
     const openAssessmentResults = (assessment: Assessment) => {

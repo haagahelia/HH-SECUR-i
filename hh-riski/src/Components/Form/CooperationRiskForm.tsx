@@ -69,12 +69,16 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     setDuration,
     hhRole,
     setHhRole,
+    hhRoleOther,
+    setHhRoleOther,
     consortium,
     setConsortium,
     history,
     setHistory,
     organizationType,
     setOrganizationType,
+    organizationTypeOther,
+    setOrganizationTypeOther,
     contractStatus,
     setContractStatus,
     funding,
@@ -89,6 +93,8 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     setEthics,
     cooperationType,
     setCooperationType,
+    cooperationTypeOther,
+    setCooperationTypeOther,
     clearAnswers,
   } = useFormAnswers();
 
@@ -102,9 +108,6 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const navigate = useNavigate();
 
   const [validationAttempted, setValidationAttempted] = useState(false);
-  const [hhRoleOther, setHhRoleOther] = useState("");
-  const [organizationTypeOther, setOrganizationTypeOther] = useState("");
-  const [cooperationTypeOther, setCooperationTypeOther] = useState("");
 
   const t = i18n[language].formValidation
 
@@ -184,6 +187,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={hhRole}
             onChange={(value) => {
               setHhRole(value);
+              if (value !== "other") {
+                setHhRoleOther("");
+              }
             }}
           />
           {hhRole === "other" && (
@@ -193,6 +199,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
                 label={language === "fi" ? "Tarkenna" : "Please specify"}
                 fullWidth
                 size="small"
+                slotProps={{ htmlInput: { maxLength: 100 } }}
                 error={Boolean(fieldErrors.hhRoleOther)}
                 value={hhRoleOther}
                 onChange={(event) => setHhRoleOther(event.target.value)}
@@ -251,6 +258,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={organizationType}
             onChange={(value) => {
               setOrganizationType(value);
+              if (value !== "other") {
+                setOrganizationTypeOther("");
+              }
             }}
           />
           {organizationType === "other" && (
@@ -260,6 +270,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
                 label={language === "fi" ? "Tarkenna" : "Please specify"}
                 fullWidth
                 size="small"
+                slotProps={{ htmlInput: { maxLength: 100 } }}
                 error={Boolean(fieldErrors.organizationTypeOther)}
                 value={organizationTypeOther}
                 onChange={(event) => setOrganizationTypeOther(event.target.value)}
@@ -302,7 +313,12 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             answers={cooperationTypeData.answers}
             language={language}
             value={cooperationType}
-            onChange={setCooperationType}
+            onChange={(value) => {
+              setCooperationType(value);
+              if (!value.includes("option7")) {
+                setCooperationTypeOther("");
+              }
+            }}
           />
           {cooperationType.includes("option7") && (
             <>
@@ -311,6 +327,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
                 label={language === "fi" ? "Tarkenna" : "Please specify"}
                 fullWidth
                 size="small"
+                slotProps={{ htmlInput: { maxLength: 100 } }}
                 error={Boolean(fieldErrors.cooperationTypeOther)}
                 value={cooperationTypeOther}
                 onChange={(event) => setCooperationTypeOther(event.target.value)}

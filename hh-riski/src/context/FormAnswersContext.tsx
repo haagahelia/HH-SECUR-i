@@ -15,12 +15,16 @@ type FormAnswersContextValues = {
     setDuration: React.Dispatch<React.SetStateAction<string>>;
     hhRole: string;
     setHhRole: React.Dispatch<React.SetStateAction<string>>;
+    hhRoleOther: string;
+    setHhRoleOther: React.Dispatch<React.SetStateAction<string>>;
     consortium: string;
     setConsortium: React.Dispatch<React.SetStateAction<string>>;
     history: string;
     setHistory: React.Dispatch<React.SetStateAction<string>>;
     organizationType: string;
     setOrganizationType: React.Dispatch<React.SetStateAction<string>>;
+    organizationTypeOther: string;
+    setOrganizationTypeOther: React.Dispatch<React.SetStateAction<string>>;
     contractStatus: string;
     setContractStatus: React.Dispatch<React.SetStateAction<string>>;
     funding: string;
@@ -35,6 +39,8 @@ type FormAnswersContextValues = {
     setEthics: React.Dispatch<React.SetStateAction<string>>;
     cooperationType: string[];
     setCooperationType: React.Dispatch<React.SetStateAction<string[]>>;
+    cooperationTypeOther: string;
+    setCooperationTypeOther: React.Dispatch<React.SetStateAction<string>>;
     clearAnswers: () => void;
 
 }
@@ -48,9 +54,11 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const [projectDescription, setProjectDescription] = useState("");
     const [duration, setDuration] = useState("");
     const [hhRole, setHhRole] = useState("");
+    const [hhRoleOther, setHhRoleOther] = useState("");
     const [consortium, setConsortium] = useState("");
     const [history, setHistory] = useState("");
     const [organizationType, setOrganizationType] = useState("");
+    const [organizationTypeOther, setOrganizationTypeOther] = useState("");
     const [contractStatus, setContractStatus] = useState("");
     const [funding, setFunding] = useState("");
     const [liability, setLiability] = useState("");
@@ -58,6 +66,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const [dualUse, setDualUse] = useState("");
     const [ethics, setEthics] = useState("");
     const [cooperationType, setCooperationType] = useState<string[]>([]);
+    const [cooperationTypeOther, setCooperationTypeOther] = useState("");
     const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
 
     const clearAnswers = () => {
@@ -67,9 +76,11 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setProjectDescription("");
         setDuration("");
         setHhRole("");
+        setHhRoleOther("");
         setConsortium("");
         setHistory("");
         setOrganizationType("");
+        setOrganizationTypeOther("");
         setContractStatus("");
         setFunding("");
         setLiability("");
@@ -77,15 +88,16 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setDualUse("");
         setEthics("");
         setCooperationType([]);
+        setCooperationTypeOther("");
         window.scrollTo(0, 0);
     }
 
     return (
         <FormAnswersContext.Provider value={{
             selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, projectName, setProjectName,
-            projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType,
+            projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, hhRoleOther, setHhRoleOther, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType, organizationTypeOther, setOrganizationTypeOther,
             contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
-            cooperationType, setCooperationType, clearAnswers
+            cooperationType, setCooperationType, cooperationTypeOther, setCooperationTypeOther, clearAnswers
         }}>
             {children}
         </FormAnswersContext.Provider>
