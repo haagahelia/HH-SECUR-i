@@ -1,4 +1,4 @@
-import { useCurrentUser } from "../../context/UserContext";
+import { useCurrentUser } from "../../context/AuthContext";
 import CooperationRiskForm from "./CooperationRiskForm";
 
 import Navbar from ".././Layout/Navbar";
@@ -9,27 +9,26 @@ import { useFormAnswers } from "../../context/FormAnswersContext";
 // Risk assesment form
 
 const FormPage = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user, clearUser } = useCurrentUser();
   const { selectedLanguage, setSelectedLanguage } = useFormAnswers();
 
   return (
     <>
-      <Navbar language={selectedLanguage}
-        setLanguage={setSelectedLanguage} />
-
+      <Navbar language={selectedLanguage} setLanguage={setSelectedLanguage} />
 
       <div>
-        {selectedLanguage === 'fi' ?
+        {selectedLanguage === "fi" ? (
           <h1>Riskiarviolomake</h1>
-          :
+        ) : (
           <h1>Risk assessment form</h1>
-        }
+        )}
 
         {user ? (
           <>
             <InfoBox language={selectedLanguage} />
 
-           <Box sx={{ mt: 3 }}></Box>
+            <Box sx={{ mt: 3 }}></Box>
 
             <CooperationRiskForm language={selectedLanguage} />
           </>

@@ -1,11 +1,13 @@
 type SingleSelectProps = {
-    question: any;
-    placeholder: any;
-    answers: any[];
+    question: { fi: string; en: string };
+    placeholder: { fi: string; en: string };
+    answers: { id: string; name: { fi: string; en: string } }[];
     language: "fi" | "en";
     value: string;
     onChange: (value: string) => void;
 };
+
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const SingleSelect = ({
     question,
@@ -15,23 +17,26 @@ const SingleSelect = ({
     value,
     onChange,
 }: SingleSelectProps) => {
+    const label = question[language];
+
     return (
-        <>
-            <p>{question[language]}</p>
-            <select
+        <FormControl fullWidth size="small">
+            <InputLabel>{label}</InputLabel>
+            <Select
+                label={label}
                 value={value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={(event) => onChange(event.target.value)}
             >
-                <option value="">{placeholder[language]}</option>
+                <MenuItem value="">{placeholder[language]}</MenuItem>
 
                 {answers.map((answer) => (
-                    <option key={answer.id} value={answer.id}>
+                    <MenuItem key={answer.id} value={answer.id}>
                         {answer.name[language]}
-                    </option>
+                    </MenuItem>
                 ))}
 
-            </select>
-        </>
+            </Select>
+        </FormControl>
     );
 };
 
