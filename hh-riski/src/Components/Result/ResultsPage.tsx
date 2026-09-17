@@ -251,6 +251,9 @@ const ResultsPage = () => {
                                     language={selectedLanguage}
                                     value={hhRole}
                                 />
+                                {hhRoleOther.trim() && (
+                                    <p><b>{selectedLanguage === "fi" ? "Tarkennus" : "Details"}</b>: {hhRoleOther}</p>
+                                )}
                             </li>
 
                             <li>
@@ -260,6 +263,9 @@ const ResultsPage = () => {
                                     language={selectedLanguage}
                                     values={cooperationType}
                                 />
+                                {cooperationTypeOther.trim() && (
+                                    <p><b>{selectedLanguage === "fi" ? "Tarkennus" : "Details"}</b>: {cooperationTypeOther}</p>
+                                )}
                             </li>
 
                             <li>
@@ -292,6 +298,9 @@ const ResultsPage = () => {
                                     language={selectedLanguage}
                                     value={organizationType}
                                 />
+                                {organizationTypeOther.trim() && (
+                                    <p><b>{selectedLanguage === "fi" ? "Tarkennus" : "Details"}</b>: {organizationTypeOther}</p>
+                                )}
                             </li>
 
                             <li>

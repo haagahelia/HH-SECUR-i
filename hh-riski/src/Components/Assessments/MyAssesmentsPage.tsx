@@ -105,6 +105,7 @@ const MyAssessmentsPage = () => {
         setEthics,
         setCooperationType,
         setCooperationTypeOther,
+        clearAnswers,
     } = useFormAnswers();
 
     const [orderBy, setOrderBy] = useState<"projectName" | "createdAt" | "riskLevel">("createdAt");
@@ -210,6 +211,7 @@ const MyAssessmentsPage = () => {
                     <Button
                         component={RouterLink}
                         to="/"
+                        onClick={clearAnswers}
                         startIcon={<West />}
                         variant="outlined"
                         sx={{
