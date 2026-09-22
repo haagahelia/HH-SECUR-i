@@ -1,91 +1,32 @@
 
-import type { CountryRaw, Question } from "../types";
+import type { CountryRaw, Organization, Question } from "../types";
 
-type OrganizationRaw = {
-    id: string;
-    countryId: string;
-    name: {
-        fi: string;
-        en: string;
-    };
-    type?: string;
-};
-
-
-const organizations: OrganizationRaw[] = [
-    {
-        id: "halmstad",
-        countryId: "SWE",
-        name: {
-            fi: "Halmstadin yliopisto",
-            en: "Halmstad University",
-        },
-        type: "university",
-    },
-    {
-        id: "stockholm",
-        countryId: "SWE",
-        name: {
-            fi: "Tukholman yliopisto",
-            en: "Stockholm University",
-        },
-        type: "university",
-    },
-    {
-        id: "harvard",
-        countryId: "USA",
-        name: {
-            fi: "Harvardin yliopisto",
-            en: "Harvard University",
-        },
-        type: "university",
-    },
-    {
-        id: "mit",
-        countryId: "USA",
-        name: {
-            fi: "MIT",
-            en: "MIT",
-        },
-        type: "university",
-    },
-    {
-        id: "moldova-state",
-        countryId: "MDA",
-        name: {
-            fi: "Moldovan valtionyliopisto",
-            en: "Moldova State University",
-        },
-        type: "university",
-    },
-    {
-        id: "peking",
-        countryId: "CHN",
-        name: {
-            fi: "Pekingin yliopisto",
-            en: "Peking University",
-        },
-        type: "university",
-    },
-    {
-        id: "tsinghua",
-        countryId: "CHN",
-        name: {
-            fi: "Tsinghuan yliopisto",
-            en: "Tsinghua University",
-        },
-        type: "university",
-    },
-];
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const fetchCountriesRaw = () => {
     return countriesRaw;
 }
 
-//Change to async with simulated delay once FormPage lists have been updated to support that
-export const fetchOrganizations = () => {
-    //delay(Math.floor((Math.random() * 1750) + 250));
-    return organizations;
+export const fetchOrganizations = async (token: string): Promise<Organization[]> => {
+    let validToken = token;
+
+    try {
+        validToken = JSON.parse(token);
+    } catch {
+        // The token is already a plain string.
+    }
+
+    const response = await fetch(`${backendUrl}/organizations`, {
+        headers: {
+            Authorization: `Bearer ${validToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`ORGANIZATIONS_REQUEST_FAILED_${response.status}`);
+    }
+
+    const data: { organizations?: Organization[] } = await response.json();
+    return data.organizations ?? [];
 }
 
 

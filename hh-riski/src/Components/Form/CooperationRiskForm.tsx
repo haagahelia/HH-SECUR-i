@@ -15,7 +15,8 @@ import {
   fetchPersonalInformation,
 } from "../../util/fetchData";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCurrentUser } from "../../context/AuthContext";
 
 import { sortElements } from "../../util/utils";
 import { useNavigate } from "react-router-dom";
@@ -41,7 +42,6 @@ type CooperationRiskFormProps = {
 };
 
 const countriesRaw: CountryRaw[] = fetchCountriesRaw();
-const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: Question = fetchHhRole();
 const consortiumQuestionData: Question = fetchConsortiumType();
 const historyQuestionData: Question = fetchCooperationHistory();
@@ -56,11 +56,20 @@ const durationData: Question = fetchDuration();
 const cooperationTypeData: Question = fetchCooperationType();
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
+  const { token } = useCurrentUser();
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    fetchOrganizations(token).then(setOrganizations).catch(() => setOrganizations([]));
+  }, [token]);
+
   const {
-    selectedCountry,
-    setSelectedCountry,
     selectedOrganization,
     setSelectedOrganization,
+    selectedCountry,
+    setSelectedCountry,
     projectName,
     setProjectName,
     projectDescription,
@@ -114,7 +123,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const formValues: CooperationRiskFormValues = {
     projectName,
     selectedCountry,
-    selectedOrganization,
+    selectedOrganization: selectedOrganization?.id ?? "",
     hhRole,
     hhRoleOther,
     consortium,
@@ -288,9 +297,11 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
               en: "Select organization",
             }}
             language={language}
-            value={selectedOrganization}
+            value={selectedOrganization?.id ?? ""}
             onChange={(value) => {
-              setSelectedOrganization(value);
+              setSelectedOrganization(
+                organizations.find((organization) => organization.id === value) ?? null,
+              );
             }}
           />
         </li>

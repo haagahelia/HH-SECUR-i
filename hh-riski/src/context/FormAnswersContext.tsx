@@ -1,12 +1,13 @@
 import { useState, createContext, useContext } from "react";
+import type { Organization } from "../types";
 
 type FormAnswersContextValues = {
     selectedLanguage: "fi" | "en";
     setSelectedLanguage: React.Dispatch<React.SetStateAction<"fi" | "en">>;
     selectedCountry: string
     setSelectedCountry: React.Dispatch<React.SetStateAction<string>>;
-    selectedOrganization: string;
-    setSelectedOrganization: React.Dispatch<React.SetStateAction<string>>;
+    selectedOrganization: Organization | null;
+    setSelectedOrganization: React.Dispatch<React.SetStateAction<Organization | null>>;
     projectName: string;
     setProjectName: React.Dispatch<React.SetStateAction<string>>;
     projectDescription: string;
@@ -49,7 +50,7 @@ const FormAnswersContext = createContext<FormAnswersContextValues | undefined>(u
 
 export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [selectedCountry, setSelectedCountry] = useState("");
-    const [selectedOrganization, setSelectedOrganization] = useState("");
+    const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
     const [duration, setDuration] = useState("");
@@ -71,7 +72,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     const clearAnswers = () => {
         setSelectedCountry("");
-        setSelectedOrganization("");
+        setSelectedOrganization(null);
         setProjectName("");
         setProjectDescription("");
         setDuration("");

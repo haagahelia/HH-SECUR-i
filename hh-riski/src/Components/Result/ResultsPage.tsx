@@ -8,7 +8,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
 import styles from "../../styles.module.css";
-import type { Country, CountryRaw, Organization, Question } from "../../types";
+import type { Country, CountryRaw, Question } from "../../types";
 
 import {
     fetchConsortiumType,
@@ -22,7 +22,6 @@ import {
     fetchFunding,
     fetchHhRole,
     fetchLiability,
-    fetchOrganizations,
     fetchOrganizationType,
     fetchPersonalInformation,
 } from "../../util/fetchData";
@@ -34,7 +33,6 @@ import { calculateCollaborationRisk, parseCountries, parseCountry } from "../../
 
 //const countries: Country[] = fetchCountries();
 const countriesRaw: CountryRaw[] = fetchCountriesRaw();
-const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: Question = fetchHhRole();
 const historyQuestionData: Question = fetchCooperationHistory();
 const organizationTypeData: Question = fetchOrganizationType();
@@ -88,10 +86,6 @@ const ResultsPage = () => {
         (country) => country.id === selectedCountry
     );
 
-    const selectedOrganizationData = organizations.find(
-        (organization) => organization.id === selectedOrganization
-    );
-
     const saveAssessment = () => {
         if (!user) return;
 
@@ -126,7 +120,7 @@ const ResultsPage = () => {
             projectName,
             projectDescription,
             selectedCountry,
-            selectedOrganization,
+            selectedOrganization: selectedOrganization?.name ?? null,
             duration,
             hhRole,
             hhRoleOther,
@@ -306,8 +300,8 @@ const ResultsPage = () => {
                             <li>
                                 <p><b>{selectedLanguage === "fi" ? "Organisaatio" : "Organization"}</b></p>
                                 <p>
-                                    {selectedOrganizationData
-                                        ? selectedOrganizationData.name[selectedLanguage]
+                                    {selectedOrganization
+                                        ? selectedOrganization.name[selectedLanguage]
                                         : "-"}
                                 </p>
                             </li>
