@@ -64,25 +64,26 @@ test('successful login displays user page', async ({ page }) => {
     'https://hh-riski-main-hh-secur-i-frontend.2.rahtiapp.fi/'
   );
 
-  await page.getByRole('textbox', { name: 'Käyttäjänimi' }).fill('username');
-  await page.getByRole('textbox', { name: 'Salasana' }).fill('password');
+  await page.getByRole('textbox', { name: 'Käyttäjänimi' }).fill('pekka13');
 
-  await page.getByRole('button', { name: 'Kirjaudu sisään' }).click();
+  await page.getByRole('textbox', { name: 'Salasana' }).fill('Aamukahv!');
+
+  await page.getByRole('button', { name: 'Kirjaudu' }).click();
 
   await expect(
     page.getByRole('heading', { name: 'Käyttäjä' })
   ).toBeVisible();
 
   await expect(
-    page.getByRole('heading', { name: 'username' })
+    page.getByRole('heading', { name: 'pekka13' })
   ).toBeVisible();
 
   await expect(
-    page.getByRole('region', { name: 'Käyttäjä' })
+    page
+      .getByRole('region', { name: 'Käyttäjä' })
       .getByRole('button', { name: 'Kirjaudu ulos' })
   ).toBeVisible();
 });
-
 
 
 test('user can show and hide password', async ({ page }) => {
@@ -172,6 +173,8 @@ test('user can change the language', async ({ page }) => {
     page.getByRole('textbox', { name: 'Salasana' })
   ).toBeVisible();
 });
+
+// Testaa, että sovellus näyttää virheilmoituksen, kun login-palvelu ei ole käytettävissä
 
 test('shows error when login service is unavailable', async ({ page }) => {
   await page.route(
