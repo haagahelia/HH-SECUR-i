@@ -28,6 +28,11 @@ type Assessment = {
     projectDescription: string;
     selectedCountry: string;
     selectedOrganization: { fi: string; en: string } | null;
+    selectedProjectOwner?: {
+        id?: string | number;
+        username: string;
+        name?: string;
+    } | null;
     duration: string;
     hhRole: string;
     hhRoleOther?: string;
@@ -87,6 +92,7 @@ const MyAssessmentsPage = () => {
         setSelectedLanguage,
         setSelectedCountry,
         setSelectedOrganization,
+        setSelectedProjectOwner,
         setProjectName,
         setProjectDescription,
         setDuration,
@@ -141,6 +147,7 @@ const MyAssessmentsPage = () => {
                 }
                 : null,
         );
+        setSelectedProjectOwner(assessment.selectedProjectOwner ?? null);
         setProjectName(assessment.projectName);
         setProjectDescription(assessment.projectDescription);
         setDuration(assessment.duration);

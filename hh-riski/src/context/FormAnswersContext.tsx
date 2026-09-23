@@ -1,5 +1,5 @@
 import { useState, createContext, useContext } from "react";
-import type { Organization } from "../types";
+import type { Organization, User } from "../types";
 
 type FormAnswersContextValues = {
     selectedLanguage: "fi" | "en";
@@ -8,6 +8,8 @@ type FormAnswersContextValues = {
     setSelectedCountry: React.Dispatch<React.SetStateAction<string>>;
     selectedOrganization: Organization | null;
     setSelectedOrganization: React.Dispatch<React.SetStateAction<Organization | null>>;
+    selectedProjectOwner: User | null;
+    setSelectedProjectOwner: React.Dispatch<React.SetStateAction<User | null>>;
     projectName: string;
     setProjectName: React.Dispatch<React.SetStateAction<string>>;
     projectDescription: string;
@@ -51,6 +53,7 @@ const FormAnswersContext = createContext<FormAnswersContextValues | undefined>(u
 export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [selectedCountry, setSelectedCountry] = useState("");
     const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
+    const [selectedProjectOwner, setSelectedProjectOwner] = useState<User | null>(null);
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
     const [duration, setDuration] = useState("");
@@ -73,6 +76,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const clearAnswers = () => {
         setSelectedCountry("");
         setSelectedOrganization(null);
+        setSelectedProjectOwner(null);
         setProjectName("");
         setProjectDescription("");
         setDuration("");
@@ -95,7 +99,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     return (
         <FormAnswersContext.Provider value={{
-            selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, projectName, setProjectName,
+            selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, selectedProjectOwner, setSelectedProjectOwner, projectName, setProjectName,
             projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, hhRoleOther, setHhRoleOther, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType, organizationTypeOther, setOrganizationTypeOther,
             contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
             cooperationType, setCooperationType, cooperationTypeOther, setCooperationTypeOther, clearAnswers
