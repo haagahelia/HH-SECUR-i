@@ -11,6 +11,7 @@ import {
   fetchHhRole,
   fetchLiability,
   fetchOrganizations,
+  fetchUsers,
   fetchOrganizationType,
   fetchPersonalInformation,
 } from "../../util/fetchData";
@@ -26,7 +27,7 @@ import {
   type ValidationField,
 } from "../../util/validation";
 
-import type { CountryRaw, Organization, Question } from "../../types";
+import type { CountryRaw, Organization, Question, User } from "../../types";
 import styles from "../../styles.module.css";
 
 /* import ProjectInfoSection from "./Sections/ProjectInfoSection"; */
@@ -58,16 +59,20 @@ const cooperationTypeData: Question = fetchCooperationType();
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const { token } = useCurrentUser();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     if (!token) return;
 
     fetchOrganizations(token).then(setOrganizations).catch(() => setOrganizations([]));
+    fetchUsers(token).then(setUsers).catch(() => setUsers([]));
   }, [token]);
 
   const {
     selectedOrganization,
     setSelectedOrganization,
+    selectedProjectOwner,
+    setSelectedProjectOwner,
     selectedCountry,
     setSelectedCountry,
     projectName,
@@ -185,6 +190,23 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             error={Boolean(fieldErrors.projectName)}
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
+          />
+        </li>
+        <li>
+          <SingleSelect
+            question={{ fi: "Projektin omistaja", en: "Project owner" }}
+            answers={users.map((user) => ({
+              id: String(user.id ?? user.username),
+              name: { fi: user.name ?? user.username, en: user.name ?? user.username },
+            }))}
+            placeholder={{ fi: "Valitse projektin omistaja", en: "Select project owner" }}
+            language={language}
+            value={selectedProjectOwner ? String(selectedProjectOwner.id ?? selectedProjectOwner.username) : ""}
+            onChange={(value) => {
+              setSelectedProjectOwner(
+                users.find((user) => String(user.id ?? user.username) === value) ?? null,
+              );
+            }}
           />
         </li>
         <li>

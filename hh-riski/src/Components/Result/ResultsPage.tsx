@@ -55,6 +55,7 @@ const ResultsPage = () => {
         setSelectedLanguage,
         selectedCountry,
         selectedOrganization,
+        selectedProjectOwner,
         projectName,
         projectDescription,
         hhRole,
@@ -121,6 +122,7 @@ const ResultsPage = () => {
             projectDescription,
             selectedCountry,
             selectedOrganization: selectedOrganization?.name ?? null,
+            selectedProjectOwner,
             duration,
             hhRole,
             hhRoleOther,
@@ -225,7 +227,7 @@ const ResultsPage = () => {
                         <ul className={styles.summaryList}>
                             <li>
                                 <p><b>{selectedLanguage === "fi" ? "Lomakkeen täyttäjä" : "Form Respondent"}</b></p>
-                                <p>{user.username}</p>
+                                <p>{selectedProjectOwner?.name ?? selectedProjectOwner?.username ?? "-"}</p>
                             </li>
 
                             <li>
