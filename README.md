@@ -54,3 +54,25 @@ npm run dev
 # [File parser](file-parser/)
 
 File parser is a Python script for parsing and combining data sources for Country risk calculation.
+
+# HH-Riski Frontend
+
+This project contains the frontend for the HH-SECUR-i risk assessment system.
+
+## End-to-End Testing
+
+The frontend uses **Playwright** for end-to-end (E2E) testing.
+
+The Playwright tests focus on the login page and test the main login functionality and different error situations.
+
+### Installing Playwright
+
+Install the project dependencies:
+
+```bash
+npm install
+````
+### Install the Playwright browsers:
+```bash
+npx playwright install
+````
