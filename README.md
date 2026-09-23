@@ -76,3 +76,43 @@ npm install
 ```bash
 npx playwright install
 ````
+## Running the tests
+### Run all Playwright tests with:
+
+```bash
+npm run test:e2e
+````
+### The tests are located in:
+
+```bash
+tests/login.spec.ts
+````
+### Tests
+
+There are currently **9 Playwright tests** covering:
+
+- Login page fields
+- Entering username and password
+- User login
+- Successful login and navigation to the user page
+- Showing and hiding the password
+- Empty login form validation
+- Invalid login credentials
+- Changing the language
+- Backend error handling
+
+The backend error test simulates a **500 Internal Server Error** and verifies that the frontend displays an error message.
+
+### Test Result
+
+All **9 Playwright tests** pass successfully.
+
+```text
+9 passed
+````
+### Playwright Test Script
+
+The following script is available in `package.json`:
+
+```json
+"test:e2e": "playwright test tests"
