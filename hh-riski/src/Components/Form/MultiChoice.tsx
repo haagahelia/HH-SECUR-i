@@ -35,7 +35,7 @@ const MultiChoice = ({
 
             {answers.map((option) => (
                 <FormControlLabel
-                    key={option.id}
+                    key={`${question.id ?? question[language]}-${option.id}`}
                     control={
                         <Checkbox
                             checked={value.includes(option.id)}

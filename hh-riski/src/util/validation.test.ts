@@ -88,6 +88,30 @@ describe("validateCooperationRiskForm", () => {
     );
   });
 
+  it("accepts numeric organization ids from the backend", () => {
+    const errors = validateCooperationRiskForm(
+      {
+        ...validValues,
+        selectedOrganization: "7",
+      },
+      "en",
+    );
+
+    expect(errors.selectedOrganization).toBeUndefined();
+  });
+
+  it("returns required-field errors instead of crashing on missing string values", () => {
+    const errors = validateCooperationRiskForm(
+      {
+        ...validValues,
+        selectedCountry: undefined as unknown as string,
+      },
+      "en",
+    );
+
+    expect(errors.selectedCountry).toBe("Country is required");
+  });
+
   it("returns no errors for valid values", () => {
     expect(validateCooperationRiskForm(validValues, "en")).toEqual({});
   });

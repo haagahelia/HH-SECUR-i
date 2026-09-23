@@ -128,7 +128,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const formValues: CooperationRiskFormValues = {
     projectName,
     selectedCountry,
-    selectedOrganization: selectedOrganization?.id ?? "",
+    selectedOrganization: String(selectedOrganization?.id ?? ""),
     hhRole,
     hhRoleOther,
     consortium,
