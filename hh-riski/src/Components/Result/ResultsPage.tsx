@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCurrentUser } from "../../context/AuthContext";
 
 import Navbar from "../Layout/Navbar";
@@ -8,7 +8,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
 import styles from "../../styles.module.css";
-import type { Country, CountryRaw, Question } from "../../types";
+import type { Country, CountryRaw, RiskCalculationRequest, Question, RiskCalculationResponse } from "../../types";
 
 import {
     fetchConsortiumType,
@@ -30,6 +30,7 @@ import SingleQuestionSummary from "./SingleQuestionSummary";
 import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
 import { calculateCollaborationRisk, parseCountries, parseCountry } from "../../util/utils";
+import { calculateRisk } from "../../services/riskCalculation";
 
 //const countries: Country[] = fetchCountries();
 const countriesRaw: CountryRaw[] = fetchCountriesRaw();
@@ -47,7 +48,7 @@ const cooperationTypeData: Question = fetchCooperationType();
 const consortiumQuestionData: Question = fetchConsortiumType();
 
 const ResultsPage = () => {
-    const { user } = useCurrentUser();
+    const { user, token } = useCurrentUser();
     const [saveMessageOpen, setSaveMessageOpen] = useState(false);
 
     const {
@@ -121,7 +122,7 @@ const ResultsPage = () => {
             projectName,
             projectDescription,
             selectedCountry,
-            selectedOrganization: selectedOrganization?.name ?? null,
+            selectedOrganization,
             selectedProjectOwner,
             duration,
             hhRole,
@@ -157,6 +158,43 @@ const ResultsPage = () => {
         setSaveMessageOpen(true);
     };
 
+    const [results, setResults] = useState<RiskCalculationResponse>();
+
+    const answers: RiskCalculationRequest = {
+        hhrole: hhRole,
+        collaborationtype: cooperationType,
+        country: selectedCountry,
+        organization: selectedOrganization?.id ?? "",
+        organizationtype: organizationType,
+        history: history,
+        contract: contractStatus,
+        funding: funding,
+        exchange: "option1",
+        liability: liability,
+        personalinformation: personalInformation,
+        dualuse: dualUse,
+        ethics: ethics,
+        duration: duration,
+        organizationother: organizationTypeOther,
+        collaborationtypeother: cooperationTypeOther,
+        additionalinformation: projectDescription
+    };
+
+    useEffect(() => {
+        if (!token) return;
+
+        handleCalculateRisk(token)
+    }, [token]);
+
+    async function handleCalculateRisk(token: string) {
+        try {
+            const data = await calculateRisk(answers, token);
+            setResults(data);
+        } catch (error) {
+            console.error("Failed to calculate risk");
+        }
+    };
+    
     return (
         <>
             <Navbar
@@ -204,7 +242,7 @@ const ResultsPage = () => {
                 <div className={styles.resultsCountry}>
                     <CountryRiskAssessment
                         language={selectedLanguage}
-                        country={country}
+                        results={results}
                     />
                 </div>
             ) : (
