@@ -31,6 +31,7 @@ import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
 import { calculateCollaborationRisk, parseCountries, parseCountry } from "../../util/utils";
 import { calculateRisk } from "../../services/riskCalculation";
+import { i18n } from "../../util/translations";
 
 //const countries: Country[] = fetchCountries();
 const countriesRaw: CountryRaw[] = fetchCountriesRaw();
@@ -50,6 +51,7 @@ const consortiumQuestionData: Question = fetchConsortiumType();
 const ResultsPage = () => {
     const { user, token } = useCurrentUser();
     const [saveMessageOpen, setSaveMessageOpen] = useState(false);
+    const [errorCode, setErrorCode] = useState("");
 
     const {
         selectedLanguage,
@@ -77,9 +79,16 @@ const ResultsPage = () => {
         clearAnswers,
     } = useFormAnswers();
 
+    const t = i18n[selectedLanguage].riskAssessment
+
+    const errorMessage = {
+        "AUTHENTICATION_ERROR": t.authFail,
+        "INVALID_REQUEST_BODY": t.fetchFail
+    }[errorCode] || ""
+
     const countries: Country[] = parseCountries(countriesRaw, personalInformation);
 
-    const country= countries.find((country) => country.id === selectedCountry);
+    const country = countries.find((country) => country.id === selectedCountry);
     //const countryRaw = countriesRaw.find((country) => country.id === selectedCountry);
     //const country = parseCountry(countryRaw);
 
@@ -190,19 +199,28 @@ const ResultsPage = () => {
         try {
             const data = await calculateRisk(answers, token);
             setResults(data);
-        } catch (error) {
+        } catch (e) {
+            const error = e instanceof Error ? e.message : "";
+            setErrorCode(
+                error === "AUTHENTICATION_ERROR" ? "AUTHENTICATION_ERROR"
+                    : error === "INVALID_REQUEST_BODY" ? "INVALID_REQUEST_BODY"
+                        : "UNKOWN_ERROR"
+            )
             console.error("Failed to calculate risk");
         }
     };
-    
+
     return (
         <>
             <Navbar
                 language={selectedLanguage}
                 setLanguage={setSelectedLanguage}
             />
+
+            {errorCode && <Alert severity="error">{errorMessage}</Alert>}
+
             <div className={styles.results}>
-                
+
                 <div className={styles.left}>
                     <Button
                         variant="outlined"

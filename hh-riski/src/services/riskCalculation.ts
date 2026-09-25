@@ -18,10 +18,10 @@ export async function calculateRisk(answers: RiskCalculationRequest, token: stri
 
     if (!response.ok) {
         if (response.status === 401) {
-            throw new Error("Authentication error");
+            throw new Error("AUTHENTICATION_ERROR");
         }
         if (response.status === 422) {
-            throw new Error("Missing fields from request body");
+            throw new Error("INVALID_REQUEST_BODY");
         }
     }
 

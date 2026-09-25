@@ -71,7 +71,12 @@ export const i18n = {
                 needsAttention: (amount: number) => `${amount} kenttä${amount === 1 ? "" : "ä"} vaatii korjausta.`
             }
 
-        }
+        },
+
+        riskAssessment: {
+            authFail: "Käyttäjän todentaminen epäonnistui. Kirjaudu uudelleen sisään.",
+            fetchFail: "Valitsemasi riskiarvion hakeminen epäonnistui."
+        },
     },
     en: {
         login: {
@@ -144,7 +149,12 @@ export const i18n = {
             fields: {
                 needsAttention: (amount: number) => `${amount} field${amount === 1 ? "" : "s"} need${amount === 1 ? "s" : ""} attention.`
             }
-        }
+        },
+
+        riskAssessment: {
+            authFail: "Failed to authenticate user. Please sign in again.",
+            fetchFail: "Failed to fetch the selected risk assessment."
+        },
     },
 }
 
