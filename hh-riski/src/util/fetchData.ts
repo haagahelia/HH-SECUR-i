@@ -63,17 +63,17 @@ export const fetchHhRole = (): Question => {
         },
         answers: [
             {
-                id: "coordinator",
+                id: "option1",
                 fi: "Yhteistyön koordinaattori",
                 en: "Collaboration Coordinator"
             },
             {
-                id: "partner",
+                id: "option2",
                 fi: "Kumppani tai tasaveroinen partneri",
                 en: "Partner"
             },
             {
-                id: "other",
+                id: "option3",
                 fi: "Muu",
                 en: "Other"
             }
@@ -114,12 +114,12 @@ export const fetchCooperationHistory = (): Question => {
         },
         answers: [
             {
-                id: "yes",
+                id: "option1",
                 fi: "Kyllä",
                 en: "Yes"
             },
             {
-                id: "no",
+                id: "option2",
                 fi: "Ei",
                 en: "No"
             }
@@ -137,27 +137,27 @@ export const fetchOrganizationType = (): Question => {
         },
         answers: [
             {
-                id: "university",
+                id: "option1",
                 fi: "Yliopisto",
                 en: "University"
             },
             {
-                id: "otherResearch",
+                id: "option2",
                 fi: "Muu tutkimuslaitos",
                 en: "Other Research Institute"
             },
             {
-                id: "business",
+                id: "option3",
                 fi: "Yritys",
                 en: "Company"
             },
             {
-                id: "ngo",
+                id: "option4",
                 fi: "Kansalaisjärjestö",
                 en: "Non-Governmental Organization"
             },
             {
-                id: "other",
+                id: "option5",
                 fi: "Muu",
                 en: "Other"
             }
@@ -175,12 +175,12 @@ export const fetchContractInfo = (): Question => {
         },
         answers: [
             {
-                id: "yes",
+                id: "option1",
                 fi: "Kyllä",
                 en: "Yes"
             },
             {
-                id: "no",
+                id: "option2",
                 fi: "Ei",
                 en: "No"
             }
@@ -198,12 +198,12 @@ export const fetchFunding = (): Question => {
         },
         answers: [
             {
-                id: "yes",
+                id: "option1",
                 fi: "Kyllä",
                 en: "Yes"
             },
             {
-                id: "no",
+                id: "option2",
                 fi: "Ei",
                 en: "No"
             }
@@ -221,17 +221,17 @@ export const fetchLiability = (): Question => {
         },
         answers: [
             {
-                id: "0",
+                id: "option1",
                 fi: "0-20.000",
                 en: "0-20.000"
             },
             {
-                id: "20.000",
+                id: "option2",
                 fi: "20.000-50.000",
                 en: "20.000-50.000"
             },
             {
-                id: "50.000",
+                id: "option3",
                 fi: "Yli 50.000",
                 en: "Over 50.000"
             },
@@ -249,12 +249,12 @@ export const fetchPersonalInformation = (): Question => {
         },
         answers: [
             {
-                id: "yes",
+                id: "option1",
                 fi: "Kyllä",
                 en: "Yes"
             },
             {
-                id: "no",
+                id: "option2",
                 fi: "Ei",
                 en: "No"
             },
@@ -277,17 +277,17 @@ export const fetchDualUse = (): Question => {
         },
         answers: [
             {
-                id: "yes",
+                id: "option1",
                 fi: "Kyllä",
                 en: "Yes"
             },
             {
-                id: "no",
+                id: "option2",
                 fi: "Ei",
                 en: "No"
             },
             {
-                id: "unknown",
+                id: "option3",
                 fi: "Ei tiedossa",
                 en: "Unknown"
             }
@@ -305,27 +305,27 @@ export const fetchEthicsAssessment = (): Question => {
         },
         answers: [
             {
-                id: "1",
+                id: "option1",
                 fi: "Ei missään tapauksessa",
                 en: "Absolutely not"
             },
             {
-                id: "2",
+                id: "option2",
                 fi: "Melko varmasti ei",
                 en: "Most likely not"
             },
             {
-                id: "3",
+                id: "option3",
                 fi: "Ehkä",
                 en: "Possibly"
             },
             {
-                id: "4",
+                id: "option4",
                 fi: "Melko varmasti",
                 en: "Very likely"
             },
             {
-                id: "5",
+                id: "option5",
                 fi: "Varmasti",
                 en: "Definitely"
             }
@@ -343,17 +343,17 @@ export const fetchDuration = (): Question => {
         },
         answers: [
             {
-                id: "1",
+                id: "option1",
                 fi: "0-24 kk",
                 en: "0-24 months"
             },
             {
-                id: "2",
+                id: "option2",
                 fi: "24-60 kk",
                 en: "24-60 months"
             },
             {
-                id: "3",
+                id: "option3",
                 fi: "yli 60 kk",
                 en: "Over 60 months"
             },

@@ -19,6 +19,8 @@ import {
 } from "@mui/material";
 import { DeleteOutline, Search, West } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import type { Organization } from "../../types";
+
 type Assessment = {
     id: string;
     createdAt: string;
@@ -27,7 +29,7 @@ type Assessment = {
     projectName: string;
     projectDescription: string;
     selectedCountry: string;
-    selectedOrganization: { fi: string; en: string } | null;
+    selectedOrganization: Organization | null;
     selectedProjectOwner?: {
         id?: string | number;
         username: string;
@@ -141,9 +143,9 @@ const MyAssessmentsPage = () => {
         setSelectedOrganization(
             assessment.selectedOrganization
                 ? {
-                    id: "",
-                    countryId: assessment.selectedCountry,
-                    name: assessment.selectedOrganization,
+                    id: assessment.selectedOrganization.id,
+                    countryId: assessment.selectedOrganization.countryId,
+                    name: assessment.selectedOrganization.name,
                 }
                 : null,
         );
