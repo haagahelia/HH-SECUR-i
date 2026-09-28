@@ -218,12 +218,12 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={hhRole}
             onChange={(value) => {
               setHhRole(value);
-              if (value !== "other") {
+              if (value !== "option3") {
                 setHhRoleOther("");
               }
             }}
           />
-          {hhRole === "other" && (
+          {hhRole === "option3" && (
             <>
               {renderFieldError("hhRoleOther")}
               <TextField
@@ -294,7 +294,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
               }
             }}
           />
-          {organizationType === "other" && (
+          {organizationType === "option5" && (
             <>
               {renderFieldError("organizationTypeOther")}
               <TextField
