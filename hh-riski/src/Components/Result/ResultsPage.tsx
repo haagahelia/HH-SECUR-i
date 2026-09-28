@@ -84,7 +84,7 @@ const ResultsPage = () => {
     const errorMessage = {
         "AUTHENTICATION_ERROR": t.authFail,
         "INVALID_REQUEST_BODY": t.fetchFail
-    }[errorCode] || ""
+    }[errorCode] || t.unknown
 
     const countries: Country[] = parseCountries(countriesRaw, personalInformation);
 
@@ -204,7 +204,7 @@ const ResultsPage = () => {
             setErrorCode(
                 error === "AUTHENTICATION_ERROR" ? "AUTHENTICATION_ERROR"
                     : error === "INVALID_REQUEST_BODY" ? "INVALID_REQUEST_BODY"
-                        : "UNKOWN_ERROR"
+                        : "UNKNOWN_ERROR"
             )
             console.error("Failed to calculate risk");
         }

@@ -75,7 +75,8 @@ export const i18n = {
 
         riskAssessment: {
             authFail: "Käyttäjän todentaminen epäonnistui. Kirjaudu uudelleen sisään.",
-            fetchFail: "Valitsemasi riskiarvion hakeminen epäonnistui."
+            fetchFail: "Valitsemasi riskiarvion hakeminen epäonnistui.",
+            unknown: "Tapahtui tuntematon virhe."
         },
     },
     en: {
@@ -153,7 +154,8 @@ export const i18n = {
 
         riskAssessment: {
             authFail: "Failed to authenticate user. Please sign in again.",
-            fetchFail: "Failed to fetch the selected risk assessment."
+            fetchFail: "Failed to fetch the selected risk assessment.",
+            unknown: "An unknown error has occured."
         },
     },
 }
