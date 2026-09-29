@@ -7,17 +7,9 @@ export const fetchCountriesRaw = () => {
 }
 
 export const fetchOrganizations = async (token: string): Promise<Organization[]> => {
-    let validToken = token;
-
-    try {
-        validToken = JSON.parse(token);
-    } catch {
-        // The token is already a plain string.
-    }
-
     const response = await fetch(`${backendUrl}/organizations`, {
         headers: {
-            Authorization: `Bearer ${validToken}`,
+            Authorization: `Bearer ${token}`,
         },
     });
 
@@ -30,17 +22,9 @@ export const fetchOrganizations = async (token: string): Promise<Organization[]>
 }
 
 export const fetchUsers = async (token: string): Promise<User[]> => {
-    let validToken = token;
-
-    try {
-        validToken = JSON.parse(token);
-    } catch {
-        // The token is already a plain string.
-    }
-
     const response = await fetch(`${backendUrl}/users`, {
         headers: {
-            Authorization: `Bearer ${validToken}`,
+            Authorization: `Bearer ${token}`,
         },
     });
 
