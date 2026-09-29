@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import { DeleteOutline, Search, West } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import type { Organization } from "../../types";
 
 type Assessment = {
     id: string;
@@ -28,7 +29,12 @@ type Assessment = {
     projectName: string;
     projectDescription: string;
     selectedCountry: string;
-    selectedOrganization: string;
+    selectedOrganization: Organization | null;
+    selectedProjectOwner?: {
+        id?: string | number;
+        username: string;
+        name?: string;
+    } | null;
     duration: string;
     hhRole: string;
     hhRoleOther?: string;
@@ -88,6 +94,7 @@ const MyAssessmentsPage = () => {
         setSelectedLanguage,
         setSelectedCountry,
         setSelectedOrganization,
+        setSelectedProjectOwner,
         setProjectName,
         setProjectDescription,
         setDuration,
@@ -133,7 +140,16 @@ const MyAssessmentsPage = () => {
     const applyAssessmentToContext = (assessment: Assessment) => {
         setSelectedLanguage(assessment.selectedLanguage);
         setSelectedCountry(assessment.selectedCountry);
-        setSelectedOrganization(assessment.selectedOrganization);
+        setSelectedOrganization(
+            assessment.selectedOrganization
+                ? {
+                    id: assessment.selectedOrganization.id,
+                    countryId: assessment.selectedOrganization.countryId,
+                    name: assessment.selectedOrganization.name,
+                }
+                : null,
+        );
+        setSelectedProjectOwner(assessment.selectedProjectOwner ?? null);
         setProjectName(assessment.projectName);
         setProjectDescription(assessment.projectDescription);
         setDuration(assessment.duration);

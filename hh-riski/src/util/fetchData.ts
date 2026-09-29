@@ -1,91 +1,55 @@
 
-import type { CountryRaw, Question } from "../types";
+import type { CountryRaw, Organization, Question, User } from "../types";
 
-type OrganizationRaw = {
-    id: string;
-    countryId: string;
-    name: {
-        fi: string;
-        en: string;
-    };
-    type?: string;
-};
-
-
-const organizations: OrganizationRaw[] = [
-    {
-        id: "halmstad",
-        countryId: "SWE",
-        name: {
-            fi: "Halmstadin yliopisto",
-            en: "Halmstad University",
-        },
-        type: "university",
-    },
-    {
-        id: "stockholm",
-        countryId: "SWE",
-        name: {
-            fi: "Tukholman yliopisto",
-            en: "Stockholm University",
-        },
-        type: "university",
-    },
-    {
-        id: "harvard",
-        countryId: "USA",
-        name: {
-            fi: "Harvardin yliopisto",
-            en: "Harvard University",
-        },
-        type: "university",
-    },
-    {
-        id: "mit",
-        countryId: "USA",
-        name: {
-            fi: "MIT",
-            en: "MIT",
-        },
-        type: "university",
-    },
-    {
-        id: "moldova-state",
-        countryId: "MDA",
-        name: {
-            fi: "Moldovan valtionyliopisto",
-            en: "Moldova State University",
-        },
-        type: "university",
-    },
-    {
-        id: "peking",
-        countryId: "CHN",
-        name: {
-            fi: "Pekingin yliopisto",
-            en: "Peking University",
-        },
-        type: "university",
-    },
-    {
-        id: "tsinghua",
-        countryId: "CHN",
-        name: {
-            fi: "Tsinghuan yliopisto",
-            en: "Tsinghua University",
-        },
-        type: "university",
-    },
-];
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const fetchCountriesRaw = () => {
     return countriesRaw;
 }
 
-//Change to async with simulated delay once FormPage lists have been updated to support that
-export const fetchOrganizations = () => {
-    //delay(Math.floor((Math.random() * 1750) + 250));
-    return organizations;
+export const fetchOrganizations = async (token: string): Promise<Organization[]> => {
+    let validToken = token;
+
+    try {
+        validToken = JSON.parse(token);
+    } catch {
+        // The token is already a plain string.
+    }
+
+    const response = await fetch(`${backendUrl}/organizations`, {
+        headers: {
+            Authorization: `Bearer ${validToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`ORGANIZATIONS_REQUEST_FAILED_${response.status}`);
+    }
+
+    const data: { organizations?: Organization[] } = await response.json();
+    return data.organizations ?? [];
+}
+
+export const fetchUsers = async (token: string): Promise<User[]> => {
+    let validToken = token;
+
+    try {
+        validToken = JSON.parse(token);
+    } catch {
+        // The token is already a plain string.
+    }
+
+    const response = await fetch(`${backendUrl}/users`, {
+        headers: {
+            Authorization: `Bearer ${validToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`USERS_REQUEST_FAILED_${response.status}`);
+    }
+
+    const data: { users?: User[] } = await response.json();
+    return data.users ?? [];
 }
 
 
@@ -99,17 +63,17 @@ export const fetchHhRole = (): Question => {
         },
         answers: [
             {
-                id: "coordinator",
+                id: "option1",
                 fi: "Yhteistyön koordinaattori",
                 en: "Collaboration Coordinator"
             },
             {
-                id: "partner",
+                id: "option2",
                 fi: "Kumppani tai tasaveroinen partneri",
                 en: "Partner"
             },
             {
-                id: "other",
+                id: "option3",
                 fi: "Muu",
                 en: "Other"
             }
@@ -150,12 +114,12 @@ export const fetchCooperationHistory = (): Question => {
         },
         answers: [
             {
-                id: "yes",
+                id: "option1",
                 fi: "Kyllä",
                 en: "Yes"
             },
             {
-                id: "no",
+                id: "option2",
                 fi: "Ei",
                 en: "No"
             }
@@ -173,27 +137,27 @@ export const fetchOrganizationType = (): Question => {
         },
         answers: [
             {
-                id: "university",
+                id: "option1",
                 fi: "Yliopisto",
                 en: "University"
             },
             {
-                id: "otherResearch",
+                id: "option2",
                 fi: "Muu tutkimuslaitos",
                 en: "Other Research Institute"
             },
             {
-                id: "business",
+                id: "option3",
                 fi: "Yritys",
                 en: "Company"
             },
             {
-                id: "ngo",
+                id: "option4",
                 fi: "Kansalaisjärjestö",
                 en: "Non-Governmental Organization"
             },
             {
-                id: "other",
+                id: "option5",
                 fi: "Muu",
                 en: "Other"
             }
@@ -211,12 +175,12 @@ export const fetchContractInfo = (): Question => {
         },
         answers: [
             {
-                id: "yes",
+                id: "option1",
                 fi: "Kyllä",
                 en: "Yes"
             },
             {
-                id: "no",
+                id: "option2",
                 fi: "Ei",
                 en: "No"
             }
@@ -234,12 +198,12 @@ export const fetchFunding = (): Question => {
         },
         answers: [
             {
-                id: "yes",
+                id: "option1",
                 fi: "Kyllä",
                 en: "Yes"
             },
             {
-                id: "no",
+                id: "option2",
                 fi: "Ei",
                 en: "No"
             }
@@ -257,17 +221,17 @@ export const fetchLiability = (): Question => {
         },
         answers: [
             {
-                id: "0",
+                id: "option1",
                 fi: "0-20.000",
                 en: "0-20.000"
             },
             {
-                id: "20.000",
+                id: "option2",
                 fi: "20.000-50.000",
                 en: "20.000-50.000"
             },
             {
-                id: "50.000",
+                id: "option3",
                 fi: "Yli 50.000",
                 en: "Over 50.000"
             },
@@ -285,12 +249,12 @@ export const fetchPersonalInformation = (): Question => {
         },
         answers: [
             {
-                id: "yes",
+                id: "option1",
                 fi: "Kyllä",
                 en: "Yes"
             },
             {
-                id: "no",
+                id: "option2",
                 fi: "Ei",
                 en: "No"
             },
@@ -313,17 +277,17 @@ export const fetchDualUse = (): Question => {
         },
         answers: [
             {
-                id: "yes",
+                id: "option1",
                 fi: "Kyllä",
                 en: "Yes"
             },
             {
-                id: "no",
+                id: "option2",
                 fi: "Ei",
                 en: "No"
             },
             {
-                id: "unknown",
+                id: "option3",
                 fi: "Ei tiedossa",
                 en: "Unknown"
             }
@@ -341,27 +305,27 @@ export const fetchEthicsAssessment = (): Question => {
         },
         answers: [
             {
-                id: "1",
+                id: "option1",
                 fi: "Ei missään tapauksessa",
                 en: "Absolutely not"
             },
             {
-                id: "2",
+                id: "option2",
                 fi: "Melko varmasti ei",
                 en: "Most likely not"
             },
             {
-                id: "3",
+                id: "option3",
                 fi: "Ehkä",
                 en: "Possibly"
             },
             {
-                id: "4",
+                id: "option4",
                 fi: "Melko varmasti",
                 en: "Very likely"
             },
             {
-                id: "5",
+                id: "option5",
                 fi: "Varmasti",
                 en: "Definitely"
             }
@@ -379,17 +343,17 @@ export const fetchDuration = (): Question => {
         },
         answers: [
             {
-                id: "1",
+                id: "option1",
                 fi: "0-24 kk",
                 en: "0-24 months"
             },
             {
-                id: "2",
+                id: "option2",
                 fi: "24-60 kk",
                 en: "24-60 months"
             },
             {
-                id: "3",
+                id: "option3",
                 fi: "yli 60 kk",
                 en: "Over 60 months"
             },

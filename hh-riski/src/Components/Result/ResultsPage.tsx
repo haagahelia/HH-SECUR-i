@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCurrentUser } from "../../context/AuthContext";
 
 import Navbar from "../Layout/Navbar";
@@ -8,7 +8,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
 import styles from "../../styles.module.css";
-import type { Country, CountryRaw, Organization, Question } from "../../types";
+import type { Country, CountryRaw, RiskCalculationRequest, Question, RiskCalculationResponse } from "../../types";
 
 import {
     fetchConsortiumType,
@@ -22,7 +22,6 @@ import {
     fetchFunding,
     fetchHhRole,
     fetchLiability,
-    fetchOrganizations,
     fetchOrganizationType,
     fetchPersonalInformation,
 } from "../../util/fetchData";
@@ -31,10 +30,11 @@ import SingleQuestionSummary from "./SingleQuestionSummary";
 import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
 import { calculateCollaborationRisk, parseCountries, parseCountry } from "../../util/utils";
+import { calculateRisk } from "../../services/riskCalculation";
+import { i18n } from "../../util/translations";
 
 //const countries: Country[] = fetchCountries();
 const countriesRaw: CountryRaw[] = fetchCountriesRaw();
-const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: Question = fetchHhRole();
 const historyQuestionData: Question = fetchCooperationHistory();
 const organizationTypeData: Question = fetchOrganizationType();
@@ -49,14 +49,16 @@ const cooperationTypeData: Question = fetchCooperationType();
 const consortiumQuestionData: Question = fetchConsortiumType();
 
 const ResultsPage = () => {
-    const { user } = useCurrentUser();
+    const { user, token } = useCurrentUser();
     const [saveMessageOpen, setSaveMessageOpen] = useState(false);
+    const [errorCode, setErrorCode] = useState("");
 
     const {
         selectedLanguage,
         setSelectedLanguage,
         selectedCountry,
         selectedOrganization,
+        selectedProjectOwner,
         projectName,
         projectDescription,
         hhRole,
@@ -77,19 +79,22 @@ const ResultsPage = () => {
         clearAnswers,
     } = useFormAnswers();
 
+    const t = i18n[selectedLanguage].riskAssessment
+
+    const errorMessage = {
+        "AUTHENTICATION_ERROR": t.authFail,
+        "INVALID_REQUEST_BODY": t.fetchFail
+    }[errorCode] || t.unknown
+
     const countries: Country[] = parseCountries(countriesRaw, personalInformation);
 
-    const country= countries.find((country) => country.id === selectedCountry);
+    const country = countries.find((country) => country.id === selectedCountry);
     //const countryRaw = countriesRaw.find((country) => country.id === selectedCountry);
     //const country = parseCountry(countryRaw);
 
 
     const selectedCountryData = countries.find(
         (country) => country.id === selectedCountry
-    );
-
-    const selectedOrganizationData = organizations.find(
-        (organization) => organization.id === selectedOrganization
     );
 
     const saveAssessment = () => {
@@ -127,6 +132,7 @@ const ResultsPage = () => {
             projectDescription,
             selectedCountry,
             selectedOrganization,
+            selectedProjectOwner,
             duration,
             hhRole,
             hhRoleOther,
@@ -161,14 +167,60 @@ const ResultsPage = () => {
         setSaveMessageOpen(true);
     };
 
+    const [results, setResults] = useState<RiskCalculationResponse>();
+
+    const answers: RiskCalculationRequest = {
+        hhrole: hhRole,
+        collaborationtype: cooperationType,
+        country: selectedCountry,
+        organization: selectedOrganization?.id ?? "",
+        organizationtype: organizationType,
+        history: history,
+        contract: contractStatus,
+        funding: funding,
+        exchange: "option1",
+        liability: liability,
+        personalinformation: personalInformation,
+        dualuse: dualUse,
+        ethics: ethics,
+        duration: duration,
+        organizationother: organizationTypeOther,
+        collaborationtypeother: cooperationTypeOther,
+        additionalinformation: projectDescription
+    };
+
+    useEffect(() => {
+        if (!token) return;
+
+        handleCalculateRisk(token)
+    }, [token]);
+
+    async function handleCalculateRisk(token: string) {
+        try {
+            const data = await calculateRisk(answers, token);
+            setResults(data);
+        } catch (e) {
+            const error = e instanceof Error ? e.message : "";
+            setErrorCode(
+                error === "AUTHENTICATION_ERROR" ? "AUTHENTICATION_ERROR"
+                    : error === "INVALID_REQUEST_BODY" ? "INVALID_REQUEST_BODY"
+                        : "UNKNOWN_ERROR"
+            )
+            console.error("Failed to calculate risk");
+        }
+    };
+
     return (
         <>
             <Navbar
                 language={selectedLanguage}
                 setLanguage={setSelectedLanguage}
             />
+
+            {errorCode && <Alert severity="error">{errorMessage}</Alert>}
+
             <div className={styles.results}>
-                
+
                 <div className={styles.left}>
                     <Button
                         variant="outlined"
@@ -208,7 +260,7 @@ const ResultsPage = () => {
                 <div className={styles.resultsCountry}>
                     <CountryRiskAssessment
                         language={selectedLanguage}
-                        country={country}
+                        results={results}
                     />
                 </div>
             ) : (
@@ -231,7 +283,7 @@ const ResultsPage = () => {
                         <ul className={styles.summaryList}>
                             <li>
                                 <p><b>{selectedLanguage === "fi" ? "Lomakkeen täyttäjä" : "Form Respondent"}</b></p>
-                                <p>{user.username}</p>
+                                <p>{selectedProjectOwner?.name ?? selectedProjectOwner?.username ?? "-"}</p>
                             </li>
 
                             <li>
@@ -306,8 +358,8 @@ const ResultsPage = () => {
                             <li>
                                 <p><b>{selectedLanguage === "fi" ? "Organisaatio" : "Organization"}</b></p>
                                 <p>
-                                    {selectedOrganizationData
-                                        ? selectedOrganizationData.name[selectedLanguage]
+                                    {selectedOrganization
+                                        ? selectedOrganization.name[selectedLanguage]
                                         : "-"}
                                 </p>
                             </li>

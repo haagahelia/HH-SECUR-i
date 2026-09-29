@@ -11,11 +11,13 @@ import {
   fetchHhRole,
   fetchLiability,
   fetchOrganizations,
+  fetchUsers,
   fetchOrganizationType,
   fetchPersonalInformation,
 } from "../../util/fetchData";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCurrentUser } from "../../context/AuthContext";
 
 import { sortElements } from "../../util/utils";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +27,7 @@ import {
   type ValidationField,
 } from "../../util/validation";
 
-import type { CountryRaw, Organization, Question } from "../../types";
+import type { CountryRaw, Organization, Question, User } from "../../types";
 import styles from "../../styles.module.css";
 
 /* import ProjectInfoSection from "./Sections/ProjectInfoSection"; */
@@ -41,7 +43,6 @@ type CooperationRiskFormProps = {
 };
 
 const countriesRaw: CountryRaw[] = fetchCountriesRaw();
-const organizations: Organization[] = fetchOrganizations();
 const hhRoleQuestionData: Question = fetchHhRole();
 const consortiumQuestionData: Question = fetchConsortiumType();
 const historyQuestionData: Question = fetchCooperationHistory();
@@ -56,11 +57,24 @@ const durationData: Question = fetchDuration();
 const cooperationTypeData: Question = fetchCooperationType();
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
+  const { token } = useCurrentUser();
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    fetchOrganizations(token).then(setOrganizations).catch(() => setOrganizations([]));
+    fetchUsers(token).then(setUsers).catch(() => setUsers([]));
+  }, [token]);
+
   const {
-    selectedCountry,
-    setSelectedCountry,
     selectedOrganization,
     setSelectedOrganization,
+    selectedProjectOwner,
+    setSelectedProjectOwner,
+    selectedCountry,
+    setSelectedCountry,
     projectName,
     setProjectName,
     projectDescription,
@@ -114,7 +128,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const formValues: CooperationRiskFormValues = {
     projectName,
     selectedCountry,
-    selectedOrganization,
+    selectedOrganization: String(selectedOrganization?.id ?? ""),
     hhRole,
     hhRoleOther,
     consortium,
@@ -179,6 +193,23 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          <SingleSelect
+            question={{ fi: "Projektin omistaja", en: "Project owner" }}
+            answers={users.map((user) => ({
+              id: String(user.id ?? user.username),
+              name: { fi: user.name ?? user.username, en: user.name ?? user.username },
+            }))}
+            placeholder={{ fi: "Valitse projektin omistaja", en: "Select project owner" }}
+            language={language}
+            value={selectedProjectOwner ? String(selectedProjectOwner.id ?? selectedProjectOwner.username) : ""}
+            onChange={(value) => {
+              setSelectedProjectOwner(
+                users.find((user) => String(user.id ?? user.username) === value) ?? null,
+              );
+            }}
+          />
+        </li>
+        <li>
           {renderFieldError("hhRole")}
           <SingleChoice
             question={hhRoleQuestionData.question}
@@ -187,12 +218,12 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={hhRole}
             onChange={(value) => {
               setHhRole(value);
-              if (value !== "other") {
+              if (value !== "option3") {
                 setHhRoleOther("");
               }
             }}
           />
-          {hhRole === "other" && (
+          {hhRole === "option3" && (
             <>
               {renderFieldError("hhRoleOther")}
               <TextField
@@ -263,7 +294,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
               }
             }}
           />
-          {organizationType === "other" && (
+          {organizationType === "option5" && (
             <>
               {renderFieldError("organizationTypeOther")}
               <TextField
@@ -288,9 +319,11 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
               en: "Select organization",
             }}
             language={language}
-            value={selectedOrganization}
+            value={selectedOrganization?.id ?? ""}
             onChange={(value) => {
-              setSelectedOrganization(value);
+              setSelectedOrganization(
+                organizations.find((organization) => organization.id === value) ?? null,
+              );
             }}
           />
         </li>

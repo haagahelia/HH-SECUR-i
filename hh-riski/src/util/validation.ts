@@ -53,28 +53,30 @@ export const validateCooperationRiskForm = (
   const t = i18n[language].formValidation
 
   const requiredMessage = (message: string) => message;
+  const toString = (value: unknown): string =>
+    value == null ? "" : String(value);
 
-  if (!values.projectName.trim()) {
+  if (!toString(values.projectName).trim()) {
     errors.projectName = requiredMessage(
       t.projectName.required
     );
-  } else if (values.projectName.trim().length < 3) {
+  } else if (toString(values.projectName).trim().length < 3) {
     errors.projectName = requiredMessage(
       t.projectName.atLeast
     );
-  } else if (values.projectName.length > 100) {
+  } else if (toString(values.projectName).length > 100) {
     errors.projectName = requiredMessage(
       t.projectName.orLess
     );
   }
 
-  if (values.hhRole === "other" && !values.hhRoleOther.trim()) {
+  if (values.hhRole === "other" && !toString(values.hhRoleOther).trim()) {
     errors.hhRoleOther = requiredMessage(t.hhRoleOther.required);
   }
 
   if (
     values.organizationType === "other" &&
-    !values.organizationTypeOther.trim()
+    !toString(values.organizationTypeOther).trim()
   ) {
     errors.organizationTypeOther = requiredMessage(
       t.organizationTypeOther.required,
@@ -118,28 +120,31 @@ export const validateCooperationRiskForm = (
   ];
 
   requiredFields.forEach(([field, , , message]) => {
-    if (!values[field].trim()) {
+    const fieldValue = toString(values[field]);
+    if (!fieldValue.trim()) {
       errors[field] = requiredMessage(message);
     }
   });
 
-  if (values.cooperationType.length === 0) {
+  if (!Array.isArray(values.cooperationType) || values.cooperationType.length === 0) {
     errors.cooperationType = requiredMessage(
       t.cooperationType.required,
     );
   }
 
   if (
+    Array.isArray(values.cooperationType) &&
     values.cooperationType.includes("option7") &&
-    !values.cooperationTypeOther.trim()
+    !toString(values.cooperationTypeOther).trim()
   ) {
     errors.cooperationTypeOther = requiredMessage(
       t.cooperationTypeOther.required,
     );
   }
 
-  const descriptionLength = values.projectDescription.trim().length;
-  if (values.projectDescription.length > 1000) {
+  const projectDescription = toString(values.projectDescription);
+  const descriptionLength = projectDescription.trim().length;
+  if (projectDescription.length > 1000) {
     errors.projectDescription = requiredMessage(
       t.projectDescription.orLess,
     );

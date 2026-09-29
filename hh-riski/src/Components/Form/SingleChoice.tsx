@@ -30,6 +30,7 @@ const SingleChoice = ({
                 >
                     {answers.map((singleOption: any) => (
                         <FormControlLabel
+                            key={`${question.id ?? question[language]}-${singleOption.id}`}
                             value={singleOption.id}
                             control={<Radio />}
                             label={singleOption[language]}
