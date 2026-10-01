@@ -14,9 +14,15 @@ const AuthContext = createContext<UserContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [token, setToken] = useState<string | null>(() => {
 		const t = localStorage.getItem("token");
-		return t ? JSON.parse(t) : null;
+		try {
+			return t ? t : null;
+			//return t ? JSON.parse(testToken) : null;
+		} catch (error) {
+			console.log(`Error parsing token ${t}`)
+			return null;
+		}
 	});
-	
+
 	const [user, setUser] = useState<User | null>(() => {
 		const currentUser = localStorage.getItem("user");
 		return currentUser ? JSON.parse(currentUser) : null
