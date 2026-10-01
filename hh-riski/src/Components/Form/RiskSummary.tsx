@@ -1,7 +1,7 @@
-import type { Country } from "../../types";
+import type { LegacyProcessedCountry } from "../../types";
 
 type RiskSummaryProps = {
-  country: Country;
+  country: LegacyProcessedCountry;
   language: "fi" | "en";
 };
 

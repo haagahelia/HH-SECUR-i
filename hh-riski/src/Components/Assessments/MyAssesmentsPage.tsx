@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { DeleteOutline, Search, West } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import type { Organization } from "../../types";
+import type { Organization, Country } from "../../types";
 
 type Assessment = {
     id: string;
@@ -28,7 +28,7 @@ type Assessment = {
 
     projectName: string;
     projectDescription: string;
-    selectedCountry: string;
+    selectedCountry: Country | null;
     selectedOrganization: Organization | null;
     selectedProjectOwner?: {
         id?: string | number;
