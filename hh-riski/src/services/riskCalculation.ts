@@ -23,5 +23,5 @@ export async function calculateRisk(answers: RiskCalculationRequest, token: stri
         }
     }
 
-    return data as RiskCalculationResponse;
+    return data.report as RiskCalculationResponse;
 };
