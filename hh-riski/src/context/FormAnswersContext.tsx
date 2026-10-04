@@ -8,6 +8,8 @@ type FormAnswersContextValues = {
     setSelectedCountry: React.Dispatch<React.SetStateAction<Country | null>>;
     selectedOrganization: Organization | null;
     setSelectedOrganization: React.Dispatch<React.SetStateAction<Organization | null>>;
+    organizationName: string;
+    setOrganizationName: React.Dispatch<React.SetStateAction<string>>;
     selectedProjectOwner: User | null;
     setSelectedProjectOwner: React.Dispatch<React.SetStateAction<User | null>>;
     projectName: string;
@@ -32,6 +34,12 @@ type FormAnswersContextValues = {
     setContractStatus: React.Dispatch<React.SetStateAction<string>>;
     funding: string;
     setFunding: React.Dispatch<React.SetStateAction<string>>;
+    exchange: string;
+    setExchange: React.Dispatch<React.SetStateAction<string>>;
+    fundingSource: string;
+    setFundingSource: React.Dispatch<React.SetStateAction<string>>;
+    fundingHistory: string;
+    setFundingHistory: React.Dispatch<React.SetStateAction<string>>;
     liability: string;
     setLiability: React.Dispatch<React.SetStateAction<string>>;
     personalInformation: string;
@@ -53,6 +61,7 @@ const FormAnswersContext = createContext<FormAnswersContextValues | undefined>(u
 export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
     const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
+    const [organizationName, setOrganizationName] = useState("");
     const [selectedProjectOwner, setSelectedProjectOwner] = useState<User | null>(null);
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
@@ -65,6 +74,9 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const [organizationTypeOther, setOrganizationTypeOther] = useState("");
     const [contractStatus, setContractStatus] = useState("");
     const [funding, setFunding] = useState("");
+    const [exchange, setExchange] = useState("");
+    const [fundingSource, setFundingSource] = useState("");
+    const [fundingHistory, setFundingHistory] = useState("");
     const [liability, setLiability] = useState("");
     const [personalInformation, setPersonalInformation] = useState("");
     const [dualUse, setDualUse] = useState("");
@@ -76,6 +88,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const clearAnswers = () => {
         setSelectedCountry(null);
         setSelectedOrganization(null);
+        setOrganizationName("");
         setSelectedProjectOwner(null);
         setProjectName("");
         setProjectDescription("");
@@ -88,6 +101,9 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setOrganizationTypeOther("");
         setContractStatus("");
         setFunding("");
+        setExchange("");
+        setFundingSource("");
+        setFundingHistory("");
         setLiability("");
         setPersonalInformation("");
         setDualUse("");
@@ -99,9 +115,9 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     return (
         <FormAnswersContext.Provider value={{
-            selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, selectedProjectOwner, setSelectedProjectOwner, projectName, setProjectName,
+            selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, organizationName, setOrganizationName, selectedProjectOwner, setSelectedProjectOwner, projectName, setProjectName,
             projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, hhRoleOther, setHhRoleOther, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType, organizationTypeOther, setOrganizationTypeOther,
-            contractStatus, setContractStatus, funding, setFunding, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
+            contractStatus, setContractStatus, funding, setFunding, exchange, setExchange, fundingSource, setFundingSource, fundingHistory, setFundingHistory, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
             cooperationType, setCooperationType, cooperationTypeOther, setCooperationTypeOther, clearAnswers
         }}>
             {children}

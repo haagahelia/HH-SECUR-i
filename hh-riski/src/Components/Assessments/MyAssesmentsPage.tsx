@@ -44,6 +44,10 @@ type Assessment = {
     organizationTypeOther?: string;
     contractStatus: string;
     funding: string;
+    exchange?: string;
+    fundingSource?: string;
+    fundingHistory?: string;
+    organizationName?: string;
     liability: string;
     personalInformation: string;
     dualUse: string;
@@ -94,6 +98,7 @@ const MyAssessmentsPage = () => {
         setSelectedLanguage,
         setSelectedCountry,
         setSelectedOrganization,
+        setOrganizationName,
         setSelectedProjectOwner,
         setProjectName,
         setProjectDescription,
@@ -106,6 +111,9 @@ const MyAssessmentsPage = () => {
         setOrganizationTypeOther,
         setContractStatus,
         setFunding,
+        setExchange,
+        setFundingSource,
+        setFundingHistory,
         setLiability,
         setPersonalInformation,
         setDualUse,
@@ -161,6 +169,10 @@ const MyAssessmentsPage = () => {
         setOrganizationTypeOther(assessment.organizationTypeOther ?? "");
         setContractStatus(assessment.contractStatus);
         setFunding(assessment.funding);
+        setOrganizationName(assessment.organizationName ?? "");
+        setExchange(assessment.exchange ?? "");
+        setFundingSource(assessment.fundingSource ?? "");
+        setFundingHistory(assessment.fundingHistory ?? "");
         setLiability(assessment.liability);
         setPersonalInformation(assessment.personalInformation);
         setDualUse(assessment.dualUse);

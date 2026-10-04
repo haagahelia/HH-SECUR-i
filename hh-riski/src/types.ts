@@ -14,6 +14,8 @@ export type RiskCalculationRequest = {
     contract: string;
     funding: string;
     exchange: string;
+    fundingsource: string;
+    fundinghistory: string;
     liability: string;
     personalinformation: string;
     dualuse: string;
