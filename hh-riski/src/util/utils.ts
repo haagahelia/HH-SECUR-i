@@ -1,4 +1,4 @@
-import type { Country, CountryRaw } from "../types";
+import type { LegacyProcessedCountry, CountryRaw } from "../types";
 
 //Artificial delay for async simulations
 export async function delay(ms: number) {
@@ -88,7 +88,7 @@ export function parseCountry(countryRaw: CountryRaw, personal: string) {
             overall = roundedAverage;
         }
     }
-    const country: Country = {
+    const country: LegacyProcessedCountry = {
         id: countryRaw.id,
         name: {
             fi: countryRaw.name.fi,
@@ -113,7 +113,7 @@ export function parseCountry(countryRaw: CountryRaw, personal: string) {
 //Calculate overall collaboration risk
 //WIP: Currently has security and sanctions multipliers implemented
 //TODO: refer to risk calculation documentation and implement the rest
-export function calculateCollaborationRisk(country: Country | undefined, cooperationType: string[]): 0 | 1 | 2 | 3 {
+export function calculateCollaborationRisk(country: LegacyProcessedCountry | undefined, cooperationType: string[]): 0 | 1 | 2 | 3 {
     if (!country) {
         return 0;
     } else if (country.risk.sanctions === 3) { //sanctioned countries trigger automatic overall risk rating of 3

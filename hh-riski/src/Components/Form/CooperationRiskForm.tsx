@@ -3,7 +3,6 @@ import {
   fetchContractInfo,
   fetchCooperationHistory,
   fetchCooperationType,
-  fetchCountriesRaw,
   fetchDualUse,
   fetchDuration,
   fetchEthicsAssessment,
@@ -14,6 +13,7 @@ import {
   fetchUsers,
   fetchOrganizationType,
   fetchPersonalInformation,
+  fetchCountries,
 } from "../../util/fetchData";
 
 import { useEffect, useState } from "react";
@@ -27,7 +27,7 @@ import {
   type ValidationField,
 } from "../../util/validation";
 
-import type { CountryRaw, Organization, Question, User } from "../../types";
+import type { Country, Organization, Question, User } from "../../types";
 import styles from "../../styles.module.css";
 
 /* import ProjectInfoSection from "./Sections/ProjectInfoSection"; */
@@ -42,7 +42,6 @@ type CooperationRiskFormProps = {
   language: "fi" | "en";
 };
 
-const countriesRaw: CountryRaw[] = fetchCountriesRaw();
 const hhRoleQuestionData: Question = fetchHhRole();
 const consortiumQuestionData: Question = fetchConsortiumType();
 const historyQuestionData: Question = fetchCooperationHistory();
@@ -60,12 +59,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const { token } = useCurrentUser();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
 
   useEffect(() => {
     if (!token) return;
 
     fetchOrganizations(token).then(setOrganizations).catch(() => setOrganizations([]));
     fetchUsers(token).then(setUsers).catch(() => setUsers([]));
+    fetchCountries(token).then(setCountries).catch(() => setCountries([]));
   }, [token]);
 
   const {
@@ -113,11 +114,11 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   } = useFormAnswers();
 
   const filteredOrganizations = organizations.filter(
-    (organization) => organization.countryId === selectedCountry,
+    (organization) => organization.countryId === selectedCountry?.id,
   );
-  const sortedOrganizations = sortElements(filteredOrganizations, language);
+  const sortedOrganizations = sortElements([...filteredOrganizations], language);
 
-  const sortedCountries = sortElements(countriesRaw, language);
+  const sortedCountries = sortElements([...countries], language);
 
   const navigate = useNavigate();
 
@@ -127,7 +128,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
   const formValues: CooperationRiskFormValues = {
     projectName,
-    selectedCountry,
+    selectedCountry: String(selectedCountry?.id ?? ""),
     selectedOrganization: String(selectedOrganization?.id ?? ""),
     hhRole,
     hhRoleOther,
@@ -260,13 +261,15 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             answers={sortedCountries}
             placeholder={{ fi: "Valitse sijaintimaa", en: "Select country" }}
             language={language}
-            value={selectedCountry}
+            value={selectedCountry?.id ?? ""}
             onChange={(value) => {
-              setSelectedCountry(value);
+              setSelectedOrganization(null);
+              setSelectedCountry(
+                countries.find((country) => country.id === value) ?? null
+              );
             }}
           />
         </li>
-
         <li>
           {renderFieldError("history")}
           <SingleChoice
@@ -279,7 +282,6 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             }}
           />
         </li>
-
         <li>
           {renderFieldError("organizationType")}
           <SingleChoice

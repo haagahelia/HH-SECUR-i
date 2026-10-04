@@ -8,14 +8,13 @@ import { Link as RouterLink } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
 import styles from "../../styles.module.css";
-import type { Country, CountryRaw, RiskCalculationRequest, Question, RiskCalculationResponse } from "../../types";
+import type { RiskCalculationRequest, Question, RiskCalculationResponse } from "../../types";
 
 import {
     fetchConsortiumType,
     fetchContractInfo,
     fetchCooperationHistory,
     fetchCooperationType,
-    fetchCountriesRaw,
     fetchDualUse,
     fetchDuration,
     fetchEthicsAssessment,
@@ -29,12 +28,9 @@ import {
 import SingleQuestionSummary from "./SingleQuestionSummary";
 import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
-import { calculateCollaborationRisk, parseCountries, parseCountry } from "../../util/utils";
 import { calculateRisk } from "../../services/riskCalculation";
 import { i18n } from "../../util/translations";
 
-//const countries: Country[] = fetchCountries();
-const countriesRaw: CountryRaw[] = fetchCountriesRaw();
 const hhRoleQuestionData: Question = fetchHhRole();
 const historyQuestionData: Question = fetchCooperationHistory();
 const organizationTypeData: Question = fetchOrganizationType();
@@ -86,42 +82,10 @@ const ResultsPage = () => {
         "INVALID_REQUEST_BODY": t.fetchFail
     }[errorCode] || t.unknown
 
-    const countries: Country[] = parseCountries(countriesRaw, personalInformation);
-
-    const country = countries.find((country) => country.id === selectedCountry);
-    //const countryRaw = countriesRaw.find((country) => country.id === selectedCountry);
-    //const country = parseCountry(countryRaw);
-
-
-    const selectedCountryData = countries.find(
-        (country) => country.id === selectedCountry
-    );
-
     const saveAssessment = () => {
         if (!user) return;
 
-        const getAverageCountryRisk = (country?: Country): 1 | 2 | 3 => {
-            if (!country) return 1;
-
-            const values: number[] = [
-                country.risk.corruption,
-                country.risk.security,
-                country.risk.academicFreedom,
-                country.risk.development,
-                country.risk.GDPR,
-                country.risk.sanctions,
-                country.risk.ruleOfLaw,
-            ];
-
-            const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
-
-            if (avg < 1.67) return 1;
-            if (avg < 2.34) return 2;
-            return 3;
-        };
-
-        //const riskLevel = getAverageCountryRisk(country);
-        const riskLevel = calculateCollaborationRisk(country, cooperationType)
+        const riskLevel = results?.collaboration.risk ?? 0;
 
         const data = {
             id: crypto.randomUUID(),
@@ -172,7 +136,7 @@ const ResultsPage = () => {
     const answers: RiskCalculationRequest = {
         hhrole: hhRole,
         collaborationtype: cooperationType,
-        country: selectedCountry,
+        country: selectedCountry?.id ?? "",
         organization: selectedOrganization?.id ?? "",
         organizationtype: organizationType,
         history: history,
@@ -331,7 +295,7 @@ const ResultsPage = () => {
 
                             <li>
                                 <p><b>{selectedLanguage === "fi" ? "Yhteistyökumppanin sijaintimaa" : "Partner country"}</b></p>
-                                <p>{selectedCountryData ? selectedCountryData.name[selectedLanguage] : "-"}</p>
+                                <p>{selectedCountry ? selectedCountry.name[selectedLanguage] : "-"}</p>
                             </li>
 
                             <li>

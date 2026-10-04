@@ -3,13 +3,11 @@ import type { RiskCalculationRequest, RiskCalculationResponse } from "../types";
 const url = import.meta.env.VITE_BACKEND_URL;
 
 export async function calculateRisk(answers: RiskCalculationRequest, token: string) {
-    const parsedToken = token ? JSON.parse(token) : null
-    
     const response = await fetch (`${url}/calculaterisk`, {
         method: "POST",
         headers: { 
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${parsedToken}`
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(answers)
     });
@@ -25,5 +23,5 @@ export async function calculateRisk(answers: RiskCalculationRequest, token: stri
         }
     }
 
-    return data as RiskCalculationResponse;
+    return data.report as RiskCalculationResponse;
 };

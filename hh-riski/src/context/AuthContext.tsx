@@ -12,9 +12,17 @@ type UserContextValue = {
 const AuthContext = createContext<UserContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-	const [token, setToken] = useState<string | null>(() =>
-		localStorage.getItem("token")
-	);
+	const [token, setToken] = useState<string | null>(() => {
+		const t = localStorage.getItem("token");
+		try {
+			return t ? t : null;
+			//return t ? JSON.parse(testToken) : null;
+		} catch (error) {
+			console.log(`Error parsing token ${t}`)
+			return null;
+		}
+	});
+
 	const [user, setUser] = useState<User | null>(() => {
 		const currentUser = localStorage.getItem("user");
 		return currentUser ? JSON.parse(currentUser) : null
@@ -26,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		});
 		setToken(userToken)
 		localStorage.setItem("user", JSON.stringify(userData));
-		localStorage.setItem("token", JSON.stringify(userToken));
+		localStorage.setItem("token", (userToken));
 	}
 
 	const clearUser = () => {

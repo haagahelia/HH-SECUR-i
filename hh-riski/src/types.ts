@@ -211,7 +211,7 @@ export type RiskCalculationResponse = {
     realCalculationImpementedFor: string[]
 };
 
-export type Country = {
+export type LegacyProcessedCountry = {
     id: string
     name: {
         fi: string
@@ -227,6 +227,30 @@ export type Country = {
         GDPR: 0 | 1 | 2 | 3,
         sanctions: 0 | 1 | 2 | 3,
         ruleOfLaw: 0 | 1 | 2 | 3
+    }
+}
+
+export type CountryApiResponse = {
+    id: number;
+    code: string;
+    fi: string;
+    en: string;
+    dataYear: number;
+    corruption: number;
+    security: number;
+    academicFreedom: number;
+    politicalStability: number;
+    development: number;
+    gdpr: number;
+    sanctions: number;
+    ruleOfLaw: number;
+};
+
+export type Country = {
+    id: string
+    name: {
+        fi: string
+        en: string
     }
 }
 
