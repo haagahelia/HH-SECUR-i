@@ -158,11 +158,13 @@ def addWB(country):
             wbLine = wbData.readline()
         country.risk.corruption = -1
         country.risk.politicalStability = -1
-        country.name.fi = "Lisää nimi"
+        #country.name.fi = "Lisää nimi"
+        country.name.fi = country.name.en
     except FileNotFoundError:
         country.risk.corruption = -1
         country.risk.politicalStability = -1
-        country.name.fi = "Lisää nimi"
+        #country.name.fi = "Lisää nimi"
+        country.name.fi = country.name.en
         print("DATA_WB.csv not found")
 
 
