@@ -53,7 +53,7 @@ Country-Year: V-Dem Core
 
 ### Placeholder - Security
 
-*Every country is given highest risk security rating until real source is implemented*
+`DATA_Travel-risk.csv`
 
-Real source will use [ministry of foreign affers' travel notices](https://um.fi/matkustustiedotteet-a-o)
+[ministry of foreign affers' travel notices RSS feed](https://um.fi/matkustustiedotteet-a-o)
 
