@@ -19,6 +19,9 @@ import {
     fetchDuration,
     fetchEthicsAssessment,
     fetchFunding,
+    fetchFundingExchange,
+    fetchFundingSource,
+    fetchFundingHistory,
     fetchHhRole,
     fetchLiability,
     fetchOrganizationType,
@@ -36,6 +39,9 @@ const historyQuestionData: Question = fetchCooperationHistory();
 const organizationTypeData: Question = fetchOrganizationType();
 const contractInfoData: Question = fetchContractInfo();
 const fundingData: Question = fetchFunding();
+const fundingExchangeData: Question = fetchFundingExchange();
+const fundingSourceData: Question = fetchFundingSource();
+const fundingHistoryData: Question = fetchFundingHistory();
 const liabilityData: Question = fetchLiability();
 const personalData: Question = fetchPersonalInformation();
 const dualUseData: Question = fetchDualUse();
@@ -54,6 +60,7 @@ const ResultsPage = () => {
         setSelectedLanguage,
         selectedCountry,
         selectedOrganization,
+        organizationName,
         selectedProjectOwner,
         projectName,
         projectDescription,
@@ -65,6 +72,9 @@ const ResultsPage = () => {
         organizationTypeOther,
         contractStatus,
         funding,
+        exchange,
+        fundingSource,
+        fundingHistory,
         liability,
         personalInformation,
         dualUse,
@@ -96,6 +106,7 @@ const ResultsPage = () => {
             projectDescription,
             selectedCountry,
             selectedOrganization,
+            organizationName,
             selectedProjectOwner,
             duration,
             hhRole,
@@ -106,6 +117,9 @@ const ResultsPage = () => {
             organizationTypeOther,
             contractStatus,
             funding,
+            exchange,
+            fundingSource,
+            fundingHistory,
             liability,
             personalInformation,
             dualUse,
@@ -142,7 +156,9 @@ const ResultsPage = () => {
         history: history,
         contract: contractStatus,
         funding: funding,
-        exchange: "option1",
+        exchange,
+        fundingsource: fundingSource,
+        fundinghistory: fundingHistory,
         liability: liability,
         personalinformation: personalInformation,
         dualuse: dualUse,
@@ -322,7 +338,9 @@ const ResultsPage = () => {
                             <li>
                                 <p><b>{selectedLanguage === "fi" ? "Organisaatio" : "Organization"}</b></p>
                                 <p>
-                                    {selectedOrganization
+                                    {selectedOrganization?.id === "other"
+                                        ? organizationName || "-"
+                                        : selectedOrganization
                                         ? selectedOrganization.name[selectedLanguage]
                                         : "-"}
                                 </p>
@@ -352,6 +370,31 @@ const ResultsPage = () => {
                                     answers={fundingData.answers}
                                     language={selectedLanguage}
                                     value={funding}
+                                />
+                            </li>
+
+                            <li>
+                                <SingleQuestionSummary
+                                    question={fundingExchangeData.question}
+                                    answers={fundingExchangeData.answers}
+                                    language={selectedLanguage}
+                                    value={exchange}
+                                />
+                            </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={fundingSourceData.question}
+                                    answers={fundingSourceData.answers}
+                                    language={selectedLanguage}
+                                    value={fundingSource}
+                                />
+                            </li>
+                            <li>
+                                <SingleQuestionSummary
+                                    question={fundingHistoryData.question}
+                                    answers={fundingHistoryData.answers}
+                                    language={selectedLanguage}
+                                    value={fundingHistory}
                                 />
                             </li>
 

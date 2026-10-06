@@ -212,6 +212,47 @@ export const fetchFunding = (): Question => {
     }
 }
 
+export const fetchFundingExchange = (): Question => ({
+    question: {
+        id: "exchange",
+        fi: "Rahoitukseen liittyvä vaihto",
+        en: "Funding exchange"
+    },
+    answers: [
+        { id: "option1", fi: "Ei vaihtoa", en: "No exchange" },
+        { id: "option2", fi: "Opiskelijavaihto", en: "Student exchange" },
+        { id: "option3", fi: "Henkilöstövaihto", en: "Staff exchange" },
+        { id: "option4", fi: "Muu", en: "Other" }
+    ]
+});
+
+export const fetchFundingSource = (): Question => ({
+    question: {
+        id: "fundingsource",
+        fi: "Rahoituksen lähde",
+        en: "Funding source"
+    },
+    answers: [
+        { id: "option1", fi: "Euroopan unioni", en: "European Union" },
+        { id: "option2", fi: "Kansallinen julkinen rahoitus", en: "National public funding" },
+        { id: "option3", fi: "Yksityinen rahoitus", en: "Private funding" },
+        { id: "option4", fi: "Muu", en: "Other" }
+    ]
+});
+
+export const fetchFundingHistory = (): Question => ({
+    question: {
+        id: "fundinghistory",
+        fi: "Aiempi rahoitushistoria",
+        en: "Funding history"
+    },
+    answers: [
+        { id: "option1", fi: "Ei aiempaa rahoitusta", en: "No previous funding" },
+        { id: "option2", fi: "Aiemmin rahoitettu yhteistyö", en: "Previously funded collaboration" },
+        { id: "option3", fi: "Aiempi rahoitus on päättynyt", en: "Previous funding has ended" }
+    ]
+});
+
 //Financial liability
 export const fetchLiability = (): Question => {
     return {
