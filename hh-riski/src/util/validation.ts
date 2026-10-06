@@ -42,9 +42,9 @@ export type CooperationRiskFormValues = {
   cooperationType: string[];
   cooperationTypeOther: string;
   funding: string;
-  exchange?: string;
-  fundingSource?: string;
-  fundingHistory?: string;
+  exchange: string;
+  fundingSource: string;
+  fundingHistory: string;
   liability: string;
   personalInformation: string;
   dualUse: string;
@@ -121,6 +121,24 @@ export const validateCooperationRiskForm = (
     ],
     ["contractStatus", "Sopimustiedot", "Contract status", t.contractStatus.required],
     ["funding", "Rahoitus", "Funding", t.funding.required],
+    [
+      "exchange",
+      "Rahoitukseen liittyvä vaihto",
+      "Funding exchange",
+      language === "fi" ? "Rahoitukseen liittyvä vaihto on pakollinen" : "Funding exchange is required",
+    ],
+    [
+      "fundingSource",
+      "Rahoituksen lähde",
+      "Funding source",
+      language === "fi" ? "Rahoituksen lähde on pakollinen" : "Funding source is required",
+    ],
+    [
+      "fundingHistory",
+      "Rahoitushistoria",
+      "Funding history",
+      language === "fi" ? "Rahoitushistoria on pakollinen" : "Funding history is required",
+    ],
     ["liability", "Vastuut", "Liability", t.liability.required],
     [
       "personalInformation",
