@@ -219,10 +219,9 @@ export const fetchFundingExchange = (): Question => ({
         en: "Funding exchange"
     },
     answers: [
-        { id: "option1", fi: "Ei vaihtoa", en: "No exchange" },
-        { id: "option2", fi: "Opiskelijavaihto", en: "Student exchange" },
-        { id: "option3", fi: "Henkilöstövaihto", en: "Staff exchange" },
-        { id: "option4", fi: "Muu", en: "Other" }
+        { id: "option1", fi: "Euromääräinen", en: "In euros" },
+        { id: "option2", fi: "Osittain euromääräinen", en: "Partially in euros" },
+        { id: "option3", fi: "Muussa valuutassa kuin euroissa", en: "In currency other than euros" }
     ]
 });
 
@@ -233,10 +232,14 @@ export const fetchFundingSource = (): Question => ({
         en: "Funding source"
     },
     answers: [
-        { id: "option1", fi: "Euroopan unioni", en: "European Union" },
-        { id: "option2", fi: "Kansallinen julkinen rahoitus", en: "National public funding" },
-        { id: "option3", fi: "Yksityinen rahoitus", en: "Private funding" },
-        { id: "option4", fi: "Muu", en: "Other" }
+        { id: "option1", fi: "Suomalainen julkisen sektorin toimija", en: "Finnish public sector entity" },
+        { id: "option2", fi: "Suomalainen säätiö tai vastaava", en: "Finnish foundation or equivalent" },
+        { id: "option3", fi: "Suomalainen yritys", en: "Finnish corporation" },
+        { id: "option4", fi: "Muu suomalainen rahoittaja", en: "Finnish source other than the above" },
+        { id: "option5", fi: "Ulkomainen julkisen sektorin toimija", en: "Foreign public sector entity" },
+        { id: "option6", fi: "Ulkomainen säätiö tai vastaava", en: "Foreign foundation or equivalent" },
+        { id: "option7", fi: "Ulkomainen yritys", en: "Foreign corporation" },
+        { id: "option8", fi: "Muu ulkomainen rahoittaja", en: "Foreign entity other than the above" }
     ]
 });
 
@@ -247,9 +250,8 @@ export const fetchFundingHistory = (): Question => ({
         en: "Funding history"
     },
     answers: [
-        { id: "option1", fi: "Ei aiempaa rahoitusta", en: "No previous funding" },
-        { id: "option2", fi: "Aiemmin rahoitettu yhteistyö", en: "Previously funded collaboration" },
-        { id: "option3", fi: "Aiempi rahoitus on päättynyt", en: "Previous funding has ended" }
+        { id: "option1", fi: "Kyllä", en: "Yes" },
+        { id: "option2", fi: "Ei", en: "No" }
     ]
 });
 

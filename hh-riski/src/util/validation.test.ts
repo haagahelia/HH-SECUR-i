@@ -6,8 +6,10 @@ import {
 
 const validValues: CooperationRiskFormValues = {
   projectName: "Risk project",
+  ownername: "owner",
   selectedCountry: "fi",
   selectedOrganization: "hh",
+  organizationIsOther: false,
   hhRole: "researcher",
   hhRoleOther: "",
   consortium: "yes",
