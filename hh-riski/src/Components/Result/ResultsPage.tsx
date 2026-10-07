@@ -148,6 +148,9 @@ const ResultsPage = () => {
     const [results, setResults] = useState<RiskCalculationResponse>();
 
     const answers: RiskCalculationRequest = {
+        name: projectName,
+        ownername: selectedProjectOwner?.username ?? "",
+        creatorname: user?.username ?? "",
         hhrole: hhRole,
         collaborationtype: cooperationType,
         country: selectedCountry?.id ?? "",
@@ -164,7 +167,7 @@ const ResultsPage = () => {
         dualuse: dualUse,
         ethics: ethics,
         duration: duration,
-        organizationother: organizationTypeOther,
+        organizationname: selectedOrganization?.countryId === "OTH" ? organizationName : undefined,
         collaborationtypeother: cooperationTypeOther,
         additionalinformation: projectDescription
     };
