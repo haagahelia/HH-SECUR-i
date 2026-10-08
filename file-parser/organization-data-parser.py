@@ -172,7 +172,7 @@ try:
             + name
             + '",\n        en: "'
             + name
-            + '",\n        country: "'
+            + '",\n        country_code: "'
             + organizations[i].country.replace("\n", "")
             + '"\n    },\n'
         )
@@ -180,7 +180,7 @@ try:
         '    {\n        code: "'
         + 'other",\n        fi: "'
         + 'Muu",\n        en: "'
-        + 'Other",\n        country: "'
+        + 'Other",\n        country_code: "'
         + 'OTH"\n    }\n'
     )
 
