@@ -3,3 +3,6 @@ parsed_countries.json
 DATA_*
 risk_data_raw_backup*
 countries.ts
+countryCodes.csv
+missingCountries.csv
+organizations.ts

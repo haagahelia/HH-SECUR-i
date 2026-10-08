@@ -409,12 +409,21 @@ try:
     except FileExistsError:
         print("Output file present")
 
+    try:
+        open("countryCodes.csv", "x")
+        print("Output file countryCodes.csv created")
+    except FileExistsError:
+        print("Output file countryCodes.csv present")
+
     parsedCountries = open("parsed_countries.json", "w")
+    countryCodes = open("countryCodes.csv", "w")
+    countryCodes.write("name,code\n")
 
     # Write countries as an array in JSON notation
     parsedCountries.write("[\n")
     for i in range(len(countries)):
         data = countries[i].to_dict()
+        countryCodes.write(countries[i].en + ',' + countries[i].code + '\n')
         if i == len(countries) - 1:
             parsedCountries.write(json.dumps(data, indent=4) + "\n")
         else:
