@@ -1,10 +1,13 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { User } from "../types";
+
+export const AUTH_EXPIRED_EVENT = "auth:expired";
 
 type UserContextValue = {
 	user: User | null,
 	token: string | null;
 	isAuthenticated: boolean;
+	sessionExpired: boolean;
 	login: (userData: User, userToken: string) => void;
 	clearUser: () => void;
 }
@@ -12,6 +15,7 @@ type UserContextValue = {
 const AuthContext = createContext<UserContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+	const [sessionExpired, setSessionExpired] = useState(false);
 	const [token, setToken] = useState<string | null>(() => {
 		const t = localStorage.getItem("token");
 		try {
@@ -29,6 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	});
 
 	const login = (userData: User, userToken: string) => {
+		setSessionExpired(false);
 		setUser({
 			username: userData.username
 		});
@@ -43,8 +48,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		localStorage.removeItem("user");
 		localStorage.removeItem("token");
 	};
+
+	useEffect(() => {
+		const handleSessionExpired = () => {
+			setUser(null);
+			setToken(null);
+			localStorage.removeItem("user");
+			localStorage.removeItem("token");
+			setSessionExpired(true);
+		};
+
+		window.addEventListener(AUTH_EXPIRED_EVENT, handleSessionExpired);
+		return () => window.removeEventListener(AUTH_EXPIRED_EVENT, handleSessionExpired);
+	}, []);
+
 	return (
-		<AuthContext value={{ user, token, isAuthenticated: !!token, login, clearUser }}>
+		<AuthContext value={{ user, token, isAuthenticated: !!token, sessionExpired, login, clearUser }}>
 			{children}
 		</AuthContext>
 	)

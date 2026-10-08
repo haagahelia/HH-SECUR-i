@@ -10,7 +10,7 @@ import { i18n } from "../util/translations";
 type LoginErrorCode = "" | "INVALID_CREDENTIALS" | "LOGIN_SERVICE_UNAVAILABLE" | "UNKNOWN";
 
 const LoginPage = () => {
-	const { login } = useCurrentUser();
+	const { login, sessionExpired } = useCurrentUser();
 	const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
 	const [inputUser, setInputUser] = useState({
 		username: "",
@@ -134,6 +134,11 @@ const LoginPage = () => {
 									setInputUser({ ...inputUser, password: e.target.value });
 								}}
 							/>
+							{sessionExpired && (
+								<Alert severity="error">
+									The session has expired, please login again
+								</Alert>
+							)}
 							{errorCode && <Alert severity="error">{getErrorMessage()}</Alert>}
 							<Button type="submit" variant="contained" disabled={isLoading}>
 								{isLoading && <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />}
