@@ -148,7 +148,7 @@ try:
                     )
                     organizations.append(organization)
             organizationsLine = organizationsRaw.readline()
-        organizations.sort(key=lambda organization: organization.en)
+        organizations.sort(key=lambda organization: organization.country)
         generateMissingCountriesList(missingCountries)
     except FileNotFoundError:
         print("Could not open DATA_WHED-partnership-organizations.csv")
