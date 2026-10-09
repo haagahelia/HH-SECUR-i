@@ -136,7 +136,9 @@ const LoginPage = () => {
 							/>
 							{sessionExpired && (
 								<Alert severity="error">
-									The session has expired, please login again
+  									{selectedLanguage === "fi"
+    									? "Istunto vanhentunut. Kirjaudu uudelleen."
+    									: "Session expired. Please log in again."}
 								</Alert>
 							)}
 							{errorCode && <Alert severity="error">{getErrorMessage()}</Alert>}
