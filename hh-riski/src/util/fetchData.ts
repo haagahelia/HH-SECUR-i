@@ -1,10 +1,11 @@
 
 import type { Country, CountryApiResponse, Organization, Question, User } from "../types";
+import { authenticatedFetch } from "./authenticatedFetch";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://hh-secur-be-git-main-hh-secur-i-backend.2.rahtiapp.fi';
 
 export const fetchOrganizations = async (token: string): Promise<Organization[]> => {
-    const response = await fetch(`${backendUrl}/organizations`, {
+    const response = await authenticatedFetch(`${backendUrl}/organizations`, token, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -19,7 +20,7 @@ export const fetchOrganizations = async (token: string): Promise<Organization[]>
 }
 
 export const fetchUsers = async (token: string): Promise<User[]> => {
-    const response = await fetch(`${backendUrl}/users`, {
+    const response = await authenticatedFetch(`${backendUrl}/users`, token, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -33,7 +34,7 @@ export const fetchUsers = async (token: string): Promise<User[]> => {
     return data.users ?? [];
 }
 export const fetchCountries = async (token: string): Promise<Country[]> => {
-    const response = await fetch(`${backendUrl}/countries`, {
+    const response = await authenticatedFetch(`${backendUrl}/countries`, token, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
