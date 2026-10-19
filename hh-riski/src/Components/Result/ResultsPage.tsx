@@ -158,8 +158,9 @@ const ResultsPage = () => {
         organizationtype: organizationType,
         history: history,
         contract: contractStatus,
+        consortium: consortium,
         funding: funding,
-        exchange,
+        exchange: exchange,
         fundingsource: fundingSource,
         fundinghistory: fundingHistory,
         liability: liability,
@@ -192,6 +193,7 @@ const ResultsPage = () => {
             console.error("Failed to calculate risk");
         }
     };
+    console.log(answers)
 
     return (
         <>

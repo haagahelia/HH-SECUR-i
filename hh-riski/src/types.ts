@@ -12,6 +12,7 @@ export type RiskCalculationRequest = {
     organizationtype: string;
     history: string;
     contract: string;
+    consortium: string;
     funding: string;
     exchange: string;
     fundingsource: string;

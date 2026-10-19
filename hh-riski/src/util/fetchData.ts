@@ -87,18 +87,18 @@ export const fetchHhRole = (): Question => {
 export const fetchConsortiumType = (): Question => {
     return {
         question: {
-            id: "cooperationType",
+            id: "consortiumType",
             fi: "Yhteistyökonsortion koostumus",
             en: "Composition of the Collaboration Consortium"
         },
         answers: [
             {
-                id: "bilateral",
+                id: "option1",
                 fi: "Kahdenvälinen",
                 en: "Bilateral"
             },
             {
-                id: "multilateral",
+                id: "option2",
                 fi: "Monenkeskeinen",
                 en: "Multilateral"
             }
