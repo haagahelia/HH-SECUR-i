@@ -53,7 +53,14 @@ Country-Year: V-Dem Core
 
 ### Placeholder - Security
 
-*Every country is given highest risk security rating until real source is implemented*
+`DATA_Travel-risk.csv`
 
-Real source will use [ministry of foreign affers' travel notices](https://um.fi/matkustustiedotteet-a-o)
+[ministry of foreign affers' travel notices RSS feed](https://um.fi/matkustustiedotteet-a-o)
 
+### Partnership organizations
+
+`DATA_WHED-partnership-organizations.csv`
+
+Data acquisition via web scraping:`whed_partnership_organizations-scraper.py`
+
+[The World Higher Education Database](https://whed.net/results_institutions.php)

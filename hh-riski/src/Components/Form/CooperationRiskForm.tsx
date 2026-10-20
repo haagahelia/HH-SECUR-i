@@ -7,6 +7,9 @@ import {
   fetchDuration,
   fetchEthicsAssessment,
   fetchFunding,
+  fetchFundingExchange,
+  fetchFundingSource,
+  fetchFundingHistory,
   fetchHhRole,
   fetchLiability,
   fetchOrganizations,
@@ -48,12 +51,16 @@ const historyQuestionData: Question = fetchCooperationHistory();
 const organizationTypeData: Question = fetchOrganizationType();
 const contractInfoData: Question = fetchContractInfo();
 const fundingData: Question = fetchFunding();
+const fundingExchangeData: Question = fetchFundingExchange();
+const fundingSourceData: Question = fetchFundingSource();
+const fundingHistoryData: Question = fetchFundingHistory();
 const liabilityData: Question = fetchLiability();
 const personalData: Question = fetchPersonalInformation();
 const dualUseData: Question = fetchDualUse();
 const ethicsData: Question = fetchEthicsAssessment();
 const durationData: Question = fetchDuration();
 const cooperationTypeData: Question = fetchCooperationType();
+const OTHER_ORGANIZATION_COUNTRY_ID = "OTH";
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const { token } = useCurrentUser();
@@ -72,6 +79,8 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const {
     selectedOrganization,
     setSelectedOrganization,
+    organizationName,
+    setOrganizationName,
     selectedProjectOwner,
     setSelectedProjectOwner,
     selectedCountry,
@@ -98,6 +107,12 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     setContractStatus,
     funding,
     setFunding,
+    exchange,
+    setExchange,
+    fundingSource,
+    setFundingSource,
+    fundingHistory,
+    setFundingHistory,
     liability,
     setLiability,
     personalInformation,
@@ -116,7 +131,18 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const filteredOrganizations = organizations.filter(
     (organization) => organization.countryId === selectedCountry?.id,
   );
-  const sortedOrganizations = sortElements([...filteredOrganizations], language);
+  const otherOrganization = organizations.find(
+    (organization) => organization.countryId === OTHER_ORGANIZATION_COUNTRY_ID,
+  );
+  const sortedOrganizations = [
+    ...sortElements(filteredOrganizations, language),
+    ...(otherOrganization
+      ? [{
+          ...otherOrganization,
+          name: { fi: "Muu", en: "Other" },
+        }]
+      : []),
+  ];
 
   const sortedCountries = sortElements([...countries], language);
 
@@ -128,8 +154,11 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
   const formValues: CooperationRiskFormValues = {
     projectName,
+    ownername: selectedProjectOwner?.username ?? "",
     selectedCountry: String(selectedCountry?.id ?? ""),
-    selectedOrganization: String(selectedOrganization?.id ?? ""),
+    selectedOrganization: selectedOrganization?.id ?? "",
+    organizationIsOther: selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID,
+    organizationName,
     hhRole,
     hhRoleOther,
     consortium,
@@ -140,6 +169,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     cooperationType,
     cooperationTypeOther,
     funding,
+    exchange,
+    fundingSource,
+    fundingHistory,
     liability,
     personalInformation,
     dualUse,
@@ -194,6 +226,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           />
         </li>
         <li>
+          {renderFieldError("ownername")}
           <SingleSelect
             question={{ fi: "Projektin omistaja", en: "Project owner" }}
             answers={users.map((user) => ({
@@ -264,6 +297,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={selectedCountry?.id ?? ""}
             onChange={(value) => {
               setSelectedOrganization(null);
+              setOrganizationName("");
               setSelectedCountry(
                 countries.find((country) => country.id === value) ?? null
               );
@@ -291,7 +325,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={organizationType}
             onChange={(value) => {
               setOrganizationType(value);
-              if (value !== "other") {
+              if (value !== "option5") {
                 setOrganizationTypeOther("");
               }
             }}
@@ -315,7 +349,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
           {renderFieldError("selectedOrganization")}
           <SingleSelect
             question={{ fi: "Organisaatio", en: "Organization" }}
-            answers={sortedOrganizations}
+            answers={[
+              ...sortedOrganizations,
+            ]}
             placeholder={{
               fi: "Valitse organisaatio",
               en: "Select organization",
@@ -323,11 +359,32 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             language={language}
             value={selectedOrganization?.id ?? ""}
             onChange={(value) => {
+              if (value === otherOrganization?.id) {
+                setSelectedOrganization(otherOrganization);
+                return;
+              }
+
+              setOrganizationName("");
               setSelectedOrganization(
                 organizations.find((organization) => organization.id === value) ?? null,
               );
             }}
           />
+          {selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID && (
+            <>
+              {renderFieldError("organizationName")}
+              <TextField
+                label={language === "fi" ? "Organisaation nimi" : "Organization name"}
+                placeholder={language === "fi" ? "Kirjoita organisaation nimi" : "Enter organization name"}
+                fullWidth
+                size="small"
+                slotProps={{ htmlInput: { maxLength: 100 } }}
+                error={Boolean(fieldErrors.organizationName)}
+                value={organizationName}
+                onChange={(event) => setOrganizationName(event.target.value)}
+              />
+            </>
+          )}
         </li>
         <li>
           {renderFieldError("contractStatus")}
@@ -379,9 +436,60 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={funding}
             onChange={(value) => {
               setFunding(value);
+              if (value !== "option1") {
+                setExchange("");
+                setFundingSource("");
+                setFundingHistory("");
+              }
             }}
           />
         </li>
+        {funding === "option1" && (
+          <>
+            <li>
+              {renderFieldError("exchange")}
+              <SingleSelect
+                question={fundingExchangeData.question}
+                answers={fundingExchangeData.answers.map((answer) => ({
+                  id: answer.id,
+                  name: { fi: answer.fi, en: answer.en },
+                }))}
+                placeholder={{ fi: "Valitse valuutta", en: "Select currency" }}
+                language={language}
+                value={exchange}
+                onChange={setExchange}
+              />
+            </li>
+            <li>
+              {renderFieldError("fundingSource")}
+              <SingleSelect
+                question={fundingSourceData.question}
+                answers={fundingSourceData.answers.map((answer) => ({
+                  id: answer.id,
+                  name: { fi: answer.fi, en: answer.en },
+                }))}
+                placeholder={{ fi: "Valitse rahoittajan tyyppi", en: "Select funding organization type" }}
+                language={language}
+                value={fundingSource}
+                onChange={setFundingSource}
+              />
+            </li>
+            <li>
+              {renderFieldError("fundingHistory")}
+              <SingleSelect
+                question={fundingHistoryData.question}
+                answers={fundingHistoryData.answers.map((answer) => ({
+                  id: answer.id,
+                  name: { fi: answer.fi, en: answer.en },
+                }))}
+                placeholder={{ fi: "Valitse aiempi historia", en: "Select prior history" }}
+                language={language}
+                value={fundingHistory}
+                onChange={setFundingHistory}
+              />
+            </li>
+          </>
+        )}
         <li>
           {renderFieldError("liability")}
           <SingleChoice

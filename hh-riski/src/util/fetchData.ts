@@ -1,10 +1,11 @@
 
 import type { Country, CountryApiResponse, Organization, Question, User } from "../types";
+import { authenticatedFetch } from "./authenticatedFetch";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://hh-secur-be-git-main-hh-secur-i-backend.2.rahtiapp.fi';
 
 export const fetchOrganizations = async (token: string): Promise<Organization[]> => {
-    const response = await fetch(`${backendUrl}/organizations`, {
+    const response = await authenticatedFetch(`${backendUrl}/organizations`, token, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -19,7 +20,7 @@ export const fetchOrganizations = async (token: string): Promise<Organization[]>
 }
 
 export const fetchUsers = async (token: string): Promise<User[]> => {
-    const response = await fetch(`${backendUrl}/users`, {
+    const response = await authenticatedFetch(`${backendUrl}/users`, token, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -33,7 +34,7 @@ export const fetchUsers = async (token: string): Promise<User[]> => {
     return data.users ?? [];
 }
 export const fetchCountries = async (token: string): Promise<Country[]> => {
-    const response = await fetch(`${backendUrl}/countries`, {
+    const response = await authenticatedFetch(`${backendUrl}/countries`, token, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -86,18 +87,18 @@ export const fetchHhRole = (): Question => {
 export const fetchConsortiumType = (): Question => {
     return {
         question: {
-            id: "cooperationType",
+            id: "consortiumType",
             fi: "Yhteistyökonsortion koostumus",
             en: "Composition of the Collaboration Consortium"
         },
         answers: [
             {
-                id: "bilateral",
+                id: "option1",
                 fi: "Kahdenvälinen",
                 en: "Bilateral"
             },
             {
-                id: "multilateral",
+                id: "option2",
                 fi: "Monenkeskeinen",
                 en: "Multilateral"
             }
@@ -211,6 +212,49 @@ export const fetchFunding = (): Question => {
         ]
     }
 }
+
+export const fetchFundingExchange = (): Question => ({
+    question: {
+        id: "exchange",
+        fi: "Rahoitukseen liittyvä vaihto",
+        en: "Funding exchange"
+    },
+    answers: [
+        { id: "option1", fi: "Euromääräinen", en: "In euros" },
+        { id: "option2", fi: "Osittain euromääräinen", en: "Partially in euros" },
+        { id: "option3", fi: "Muussa valuutassa kuin euroissa", en: "In currency other than euros" }
+    ]
+});
+
+export const fetchFundingSource = (): Question => ({
+    question: {
+        id: "fundingsource",
+        fi: "Rahoituksen lähde",
+        en: "Funding source"
+    },
+    answers: [
+        { id: "option1", fi: "Suomalainen julkisen sektorin toimija", en: "Finnish public sector entity" },
+        { id: "option2", fi: "Suomalainen säätiö tai vastaava", en: "Finnish foundation or equivalent" },
+        { id: "option3", fi: "Suomalainen yritys", en: "Finnish corporation" },
+        { id: "option4", fi: "Muu suomalainen rahoittaja", en: "Finnish source other than the above" },
+        { id: "option5", fi: "Ulkomainen julkisen sektorin toimija", en: "Foreign public sector entity" },
+        { id: "option6", fi: "Ulkomainen säätiö tai vastaava", en: "Foreign foundation or equivalent" },
+        { id: "option7", fi: "Ulkomainen yritys", en: "Foreign corporation" },
+        { id: "option8", fi: "Muu ulkomainen rahoittaja", en: "Foreign entity other than the above" }
+    ]
+});
+
+export const fetchFundingHistory = (): Question => ({
+    question: {
+        id: "fundinghistory",
+        fi: "Aiempi rahoitushistoria",
+        en: "Funding history"
+    },
+    answers: [
+        { id: "option1", fi: "Kyllä", en: "Yes" },
+        { id: "option2", fi: "Ei", en: "No" }
+    ]
+});
 
 //Financial liability
 export const fetchLiability = (): Question => {

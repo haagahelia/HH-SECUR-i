@@ -1,9 +1,10 @@
 import type { RiskCalculationRequest, RiskCalculationResponse } from "../types";
+import { authenticatedFetch } from "../util/authenticatedFetch";
 
 const url = import.meta.env.VITE_BACKEND_URL;
 
 export async function calculateRisk(answers: RiskCalculationRequest, token: string) {
-    const response = await fetch (`${url}/calculaterisk`, {
+    const response = await authenticatedFetch(`${url}/calculaterisk`, token, {
         method: "POST",
         headers: { 
             "Content-Type": "application/json",

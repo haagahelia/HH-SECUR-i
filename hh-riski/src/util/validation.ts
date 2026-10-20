@@ -2,8 +2,10 @@ import { i18n } from "./translations";
 
 export type ValidationField =
   | "projectName"
+  | "ownername"
   | "selectedCountry"
   | "selectedOrganization"
+  | "organizationName"
   | "hhRole"
   | "hhRoleOther"
   | "consortium"
@@ -14,6 +16,9 @@ export type ValidationField =
   | "cooperationType"
   | "cooperationTypeOther"
   | "funding"
+  | "exchange"
+  | "fundingSource"
+  | "fundingHistory"
   | "liability"
   | "personalInformation"
   | "dualUse"
@@ -25,8 +30,11 @@ export type ValidationErrors = Partial<Record<ValidationField, string>>;
 
 export type CooperationRiskFormValues = {
   projectName: string;
+  ownername: string;
   selectedCountry: string;
   selectedOrganization: string;
+  organizationIsOther: boolean;
+  organizationName?: string;
   hhRole: string;
   hhRoleOther: string;
   consortium: string;
@@ -37,6 +45,9 @@ export type CooperationRiskFormValues = {
   cooperationType: string[];
   cooperationTypeOther: string;
   funding: string;
+  exchange: string;
+  fundingSource: string;
+  fundingHistory: string;
   liability: string;
   personalInformation: string;
   dualUse: string;
@@ -75,11 +86,17 @@ export const validateCooperationRiskForm = (
   }
 
   if (
-    values.organizationType === "other" &&
+    values.organizationType === "option5" &&
     !toString(values.organizationTypeOther).trim()
   ) {
     errors.organizationTypeOther = requiredMessage(
       t.organizationTypeOther.required,
+    );
+  }
+
+  if (values.organizationIsOther && !toString(values.organizationName).trim()) {
+    errors.organizationName = requiredMessage(
+      language === "fi" ? "Anna organisaation nimi" : "Please specify the organization name",
     );
   }
 
@@ -89,6 +106,7 @@ export const validateCooperationRiskForm = (
     string,
     string,
   ]> = [
+    ["ownername", "Projektin omistaja", "Project owner", language === "fi" ? "Projektin omistaja on pakollinen" : "Project owner is required"],
     ["selectedCountry", "Maa", "Country", t.selectedCountry.required],
     [
       "selectedOrganization",
@@ -125,6 +143,18 @@ export const validateCooperationRiskForm = (
       errors[field] = requiredMessage(message);
     }
   });
+
+  if (values.funding === "option1") {
+    for (const [field, message] of [
+      ["exchange", language === "fi" ? "Rahoitukseen liittyvä vaihto on pakollinen" : "Funding exchange is required"],
+      ["fundingSource", language === "fi" ? "Rahoituksen lähde on pakollinen" : "Funding source is required"],
+      ["fundingHistory", language === "fi" ? "Rahoitushistoria on pakollinen" : "Funding history is required"],
+    ] as const) {
+      if (!toString(values[field]).trim()) {
+        errors[field] = message;
+      }
+    }
+  }
 
   if (!Array.isArray(values.cooperationType) || values.cooperationType.length === 0) {
     errors.cooperationType = requiredMessage(
