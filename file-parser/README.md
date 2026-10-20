@@ -57,3 +57,10 @@ Country-Year: V-Dem Core
 
 [ministry of foreign affers' travel notices RSS feed](https://um.fi/matkustustiedotteet-a-o)
 
+### Partnership organizations
+
+`DATA_WHED-partnership-organizations.csv`
+
+Data acquisition via web scraping:`whed_partnership_organizations-scraper.py`
+
+[The World Higher Education Database](https://whed.net/results_institutions.php)
