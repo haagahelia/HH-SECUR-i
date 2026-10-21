@@ -6,12 +6,13 @@ import { useState } from "react";
 import { Alert, Box, Button, CircularProgress, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { i18n } from "../util/translations";
+import { useFormAnswers } from "../context/FormAnswersContext";
 
 type LoginErrorCode = "" | "INVALID_CREDENTIALS" | "LOGIN_SERVICE_UNAVAILABLE" | "UNKNOWN";
 
 const LoginPage = () => {
 	const { login, sessionExpired } = useCurrentUser();
-	const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
+	const { selectedLanguage, setSelectedLanguage } = useFormAnswers();
 	const [inputUser, setInputUser] = useState({
 		username: "",
 		password: ""
@@ -61,7 +62,7 @@ const LoginPage = () => {
 
 	return (
 		<>
-			<Navbar language={selectedLanguage} setLanguage={setSelectedLanguage} />
+			<Navbar />
 			<Box component="section" aria-labelledby="login-title" sx={{ maxWidth: 480, mx: "auto" }}>
 				<Typography id="login-title" component="h1" variant="h4" sx={{ mb: 3 }}>
 					{selectedLanguage === "fi" ? "Kirjaudu sisään" : "Sign in"}
