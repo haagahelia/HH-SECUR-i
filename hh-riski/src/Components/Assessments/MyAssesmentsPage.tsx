@@ -218,7 +218,7 @@ const MyAssessmentsPage = () => {
     }, [assessments, search, orderBy, order]);
     return (
         <>
-            <Navbar language={selectedLanguage} setLanguage={setSelectedLanguage} />
+            <Navbar />
 
             <Box
                 sx={{
