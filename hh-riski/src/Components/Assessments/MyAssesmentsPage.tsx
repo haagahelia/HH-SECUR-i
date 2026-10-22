@@ -189,13 +189,13 @@ const MyAssessmentsPage = () => {
 
 
     const deleteAssessment = async (id: number) => {
-        if (!token) return;
-        try {
-            await deleteReport(token, id);
-            setAssessments((prev) => prev.filter((item) => item.id !== id));
-        } catch (e) {
-            console.error("Failed to delete report", e);
-        }
+    if (!token) return;
+    try {
+        await deleteReport(token, id);
+        setAssessments((prev) => prev.filter((item) => item.id !== id));
+    } catch (e) {
+        console.error("Failed to delete report", e);
+    }
     };
 
     const filteredAssessments = useMemo(() => {

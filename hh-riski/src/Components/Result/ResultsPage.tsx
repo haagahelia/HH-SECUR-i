@@ -32,6 +32,7 @@ import SingleQuestionSummary from "./SingleQuestionSummary";
 import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
 import { calculateRisk } from "../../services/riskCalculation";
+import { createReport, ApiError } from "../../services/reports";
 import { i18n } from "../../util/translations";
 
 const hhRoleQuestionData: Question = fetchHhRole();
@@ -92,57 +93,23 @@ const ResultsPage = () => {
         "INVALID_REQUEST_BODY": t.fetchFail
     }[errorCode] || t.unknown
 
-    const saveAssessment = () => {
-        if (!user) return;
+    const saveAssessment = async () => {
+    if (!token) return;
 
-        const riskLevel = results?.collaboration.risk ?? 0;
+    const payload = {
+        ...answers,
+        ownerusername: answers.ownername,
+        creatorusername: answers.creatorname,
+        organizationother: answers.organizationname,
+    };
 
-        const data = {
-            id: crypto.randomUUID(),
-            createdAt: new Date().toISOString(),
-            riskLevel,
-
-            projectName,
-            projectDescription,
-            selectedCountry,
-            selectedOrganization,
-            organizationName,
-            selectedProjectOwner,
-            duration,
-            hhRole,
-            hhRoleOther,
-            consortium,
-            history,
-            organizationType,
-            organizationTypeOther,
-            contractStatus,
-            funding,
-            exchange,
-            fundingSource,
-            fundingHistory,
-            liability,
-            personalInformation,
-            dualUse,
-            ethics,
-            cooperationType,
-            cooperationTypeOther,
-            selectedLanguage,
-
-            savedBy: {
-                id: user.id,
-                username: user.username,
-            },
-        };
-
-        const existing = JSON.parse(localStorage.getItem("assessments") || "[]");
-
-        localStorage.setItem(
-            "assessments",
-            JSON.stringify([...existing, data])
-        );
-
-        console.log("Saved assessment:", data);
+    try {
+        await createReport(token, payload);
         setSaveMessageOpen(true);
+    } catch (error) {
+        if (error instanceof ApiError) console.error("Backend said:", error.body);
+        setErrorCode("UNKNOWN_ERROR");
+    }
     };
 
     const [results, setResults] = useState<RiskCalculationResponse>();
