@@ -28,10 +28,42 @@ export interface ReportListItem {
   updated_at: string;
 }
 
+export interface ReportChoices {
+  name: string;
+  ownerusername: string;
+  creatorusername: string;
+  country: string;
+  organization: number | number[];
+  organizationtype: string;
+  hhrole: string;
+  collaborationtype: string[];
+  history: string;
+  contract: string;
+  consortium: string;
+  funding: string;
+  exchange: string;
+  fundingsource: string;
+  fundinghistory: string;
+  liability: string;
+  personalinformation: string;
+  dualuse: string;
+  ethics: string;
+  duration: string;
+  organizationother?: string;
+  collaborationtypeother?: string;
+  additionalinformation?: string;
+}
+
 export interface ReportDetail {
-  reportDetails: { id: number; [key: string]: unknown };
+  reportDetails: {
+    id: number;
+    country: { id: number; code: string; fi: string; en: string };
+    consortium: {
+      organizations: { id: number; fi: string; en: string; country_code: string }[];
+    };
+  };
   report: unknown;
-  choices: Record<string, unknown>;
+  choices: ReportChoices;
 }
 
 export interface CreateReportResponse {

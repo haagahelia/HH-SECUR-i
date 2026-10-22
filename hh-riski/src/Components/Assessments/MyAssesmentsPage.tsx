@@ -21,50 +21,7 @@ import { DeleteOutline, Search, West } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import type { Organization, Country } from "../../types";
 import { useCurrentUser } from "../../context/AuthContext";
-import { getReports, deleteReport, type ReportListItem } from "../../services/reports";
-
-type Assessment = {
-    id: string;
-    createdAt: string;
-    riskLevel: 1 | 2 | 3;
-
-    projectName: string;
-    projectDescription: string;
-    selectedCountry: Country | null;
-    selectedOrganization: Organization | null;
-    selectedProjectOwner?: {
-        id?: string | number;
-        username: string;
-        name?: string;
-    } | null;
-    duration: string;
-    hhRole: string;
-    hhRoleOther?: string;
-    consortium: string;
-    history: string;
-    organizationType: string;
-    organizationTypeOther?: string;
-    contractStatus: string;
-    funding: string;
-    exchange?: string;
-    fundingSource?: string;
-    fundingHistory?: string;
-    organizationName?: string;
-    liability: string;
-    personalInformation: string;
-    dualUse: string;
-    ethics: string;
-    cooperationType: string[];
-    cooperationTypeOther?: string;
-    selectedLanguage: "fi" | "en";
-
-    savedBy?: {
-        id?: string;
-        username?: string;
-    };
-};
-
-
+import { getReports, getReport, deleteReport, type ReportListItem } from "../../services/reports";
 
 const getRowColor = (level: number) => {
     if (level === 1) return "rgb(255, 255, 255)";
@@ -145,46 +102,53 @@ const MyAssessmentsPage = () => {
         .catch((e) => console.error("Failed to load reports", e));
     }, [token]);
 
-    const applyAssessmentToContext = (assessment: Assessment) => {
-        setSelectedLanguage(assessment.selectedLanguage);
-        setSelectedCountry(assessment.selectedCountry);
+    const openReport = async (id: number) => {
+    if (!token) return;
+    try {
+        const { reportDetails, choices } = await getReport(token, id);
+        const org = reportDetails.consortium.organizations[0];
+
+        setSelectedCountry({
+            id: reportDetails.country.code,
+            name: { fi: reportDetails.country.fi, en: reportDetails.country.en },
+        });
         setSelectedOrganization(
-            assessment.selectedOrganization
+            org
                 ? {
-                    id: assessment.selectedOrganization.id,
-                    countryId: assessment.selectedOrganization.countryId,
-                    name: assessment.selectedOrganization.name,
-                }
+                      id: String(org.id),
+                      name: { fi: org.fi, en: org.en },
+                      countryId: org.country_code,
+                  }
                 : null,
         );
-        setSelectedProjectOwner(assessment.selectedProjectOwner ?? null);
-        setProjectName(assessment.projectName);
-        setProjectDescription(assessment.projectDescription);
-        setDuration(assessment.duration);
-        setHhRole(assessment.hhRole);
-        setHhRoleOther(assessment.hhRoleOther ?? "");
-        setConsortium(assessment.consortium);
-        setHistory(assessment.history);
-        setOrganizationType(assessment.organizationType);
-        setOrganizationTypeOther(assessment.organizationTypeOther ?? "");
-        setContractStatus(assessment.contractStatus);
-        setFunding(assessment.funding);
-        setOrganizationName(assessment.organizationName ?? "");
-        setExchange(assessment.exchange ?? "");
-        setFundingSource(assessment.fundingSource ?? "");
-        setFundingHistory(assessment.fundingHistory ?? "");
-        setLiability(assessment.liability);
-        setPersonalInformation(assessment.personalInformation);
-        setDualUse(assessment.dualUse);
-        setEthics(assessment.ethics);
-        setCooperationType(assessment.cooperationType);
-        setCooperationTypeOther(assessment.cooperationTypeOther ?? "");
-    };
+        setOrganizationName(choices.organizationother ?? "");
+        setSelectedProjectOwner({ username: choices.ownerusername });
+        setProjectName(choices.name);
+        setProjectDescription(choices.additionalinformation ?? "");
+        setDuration(choices.duration);
+        setHhRole(choices.hhrole);
+        setHhRoleOther("");
+        setConsortium(choices.consortium);
+        setHistory(choices.history);
+        setOrganizationType(choices.organizationtype);
+        setOrganizationTypeOther("");
+        setContractStatus(choices.contract);
+        setFunding(choices.funding);
+        setExchange(choices.exchange);
+        setFundingSource(choices.fundingsource);
+        setFundingHistory(choices.fundinghistory);
+        setLiability(choices.liability);
+        setPersonalInformation(choices.personalinformation);
+        setDualUse(choices.dualuse);
+        setEthics(choices.ethics);
+        setCooperationType(choices.collaborationtype);
+        setCooperationTypeOther(choices.collaborationtypeother ?? "");
 
-    const openAssessmentResults = (assessment: Assessment) => {
-        applyAssessmentToContext(assessment);
-        navigate("/results");
-    };
+        navigate(`/results?reportId=${id}`);
+    } catch (e) {
+        console.error("Failed to open report", e);
+    }
+};
 
 
 
@@ -399,6 +363,7 @@ const MyAssessmentsPage = () => {
                                                         textTransform: "none",
                                                         justifyContent: "flex-start",
                                                     }}
+                                                    onClick={() => openReport(item.id)}
                                                 >
                                                     {item.name}
                                                 </Button>
