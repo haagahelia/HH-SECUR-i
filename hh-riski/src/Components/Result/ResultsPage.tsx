@@ -164,10 +164,7 @@ const ResultsPage = () => {
 
     return (
         <>
-            <Navbar
-                language={selectedLanguage}
-                setLanguage={setSelectedLanguage}
-            />
+            <Navbar />
 
             {errorCode && <Alert severity="error">{errorMessage}</Alert>}
 

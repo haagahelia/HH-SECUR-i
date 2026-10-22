@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 import type { Organization, User, Country } from "../types";
 
 type FormAnswersContextValues = {
@@ -83,7 +83,14 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const [ethics, setEthics] = useState("");
     const [cooperationType, setCooperationType] = useState<string[]>([]);
     const [cooperationTypeOther, setCooperationTypeOther] = useState("");
-    const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">("fi");
+    const [selectedLanguage, setSelectedLanguage] = useState<"fi" | "en">(() => {
+        const lang = localStorage.getItem("lang");
+        return (lang === "fi" || lang === "en" ? lang : "fi")
+    });
+
+    useEffect(() => {
+        localStorage.setItem("lang", selectedLanguage)
+    }, [selectedLanguage])
 
     const clearAnswers = () => {
         setSelectedCountry(null);

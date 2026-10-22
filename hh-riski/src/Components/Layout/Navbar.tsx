@@ -3,11 +3,7 @@ import { Link as RouterLink } from "react-router-dom";
 import LanguageIcon from "@mui/icons-material/Language";
 import logo from "../../assets/logo.png";
 import { useCurrentUser } from "../../context/AuthContext";
-
-type NavbarProps = {
-    language: "fi" | "en";
-    setLanguage: (lang: "fi" | "en") => void;
-};
+import { useFormAnswers } from "../../context/FormAnswersContext";
 
 function HideOnScroll(props: { children: React.ReactElement }) {
     const trigger = useScrollTrigger();
@@ -19,9 +15,14 @@ function HideOnScroll(props: { children: React.ReactElement }) {
     );
 }
 
-
-const Navbar = ({ language, setLanguage }: NavbarProps) => {
+const Navbar = () => {
     const { user, isAuthenticated, clearUser } = useCurrentUser();
+    const { selectedLanguage, setSelectedLanguage } = useFormAnswers();
+
+    function toggleLanguage() {
+        setSelectedLanguage((lang) => (lang === "fi" ? "en" : "fi"));
+    };
+
     return (
         <>
             {/* YLÄPALKKI */}
@@ -54,7 +55,7 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 2.5, ml: 1 }}>
                                     <Box>
                                         <Typography variant="caption" display="block" color="text.secondary" lineHeight={1.1}>
-                                            {language === "fi" ? "Kirjautuneena" : "Logged in as"}
+                                            {selectedLanguage === "fi" ? "Kirjautuneena" : "Logged in as"}
                                         </Typography>
                                         <Typography variant="body2" fontWeight={600} lineHeight={1.2}>
                                             {user.username}
@@ -66,7 +67,7 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                                         onClick={clearUser}
                                         sx={{ px: 1.5, py: 0.75, minWidth: "auto" }}
                                     >
-                                        {language === "fi" ? "Kirjaudu ulos" : "Logout"}
+                                        {selectedLanguage === "fi" ? "Kirjaudu ulos" : "Logout"}
                                     </Button>
                                 </Box>
                             )}
@@ -83,7 +84,7 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                                 whiteSpace: "nowrap",
                             }}
                         >
-                            {language === "fi"
+                            {selectedLanguage === "fi"
                                 ? "KANSAINVÄLISEN YHTEISTYÖN RISKIARVIO"
                                 : "RISK ASSESSMENT"}
                         </Typography>
@@ -100,12 +101,12 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                         >
                             {user && (
                                 <Button component={RouterLink} to="/my-assessments">
-                                    {language === "fi" ? "Aiemmat raportit" : "Reports"}
+                                    {selectedLanguage === "fi" ? "Aiemmat raportit" : "Reports"}
                                 </Button>
                             )}
 
                             <Button
-                                onClick={() => setLanguage(language === "fi" ? "en" : "fi")}
+                                onClick={toggleLanguage}
                                 sx={{
                                     display: "flex",
                                     alignItems: "center",
@@ -120,7 +121,7 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                                 }}
                             >
                                 <LanguageIcon fontSize="small" />
-                                {language.toUpperCase()}
+                                {selectedLanguage.toUpperCase()}
                             </Button>
                         </Box>
                     </Toolbar>
@@ -140,15 +141,15 @@ const Navbar = ({ language, setLanguage }: NavbarProps) => {
                 <Toolbar sx={{ justifyContent: "center" }}>
                     <Box sx={{ display: "flex", gap: 2 }}>
                         <Button color="inherit" component={RouterLink} to="/">
-                            {language === "fi" ? "Riskilomake" : "Risk form"}
+                            {selectedLanguage === "fi" ? "Riskilomake" : "Risk form"}
                         </Button>
                         {!isAuthenticated ?
                         <Button color="inherit" component={RouterLink} to="/login">
-                            {language === "fi" ? "Kirjaudu sisään" : "Sign in"}
+                            {selectedLanguage === "fi" ? "Kirjaudu sisään" : "Sign in"}
                         </Button>
                         :
                         <Button color="inherit" component={RouterLink} to="/user">
-                            {language === "fi" ? "Käyttäjä" : "User"}
+                            {selectedLanguage === "fi" ? "Käyttäjä" : "User"}
                         </Button>
                         }
                     </Box>

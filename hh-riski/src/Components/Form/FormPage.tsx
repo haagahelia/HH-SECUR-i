@@ -15,7 +15,7 @@ const FormPage = () => {
 
   return (
     <>
-      <Navbar language={selectedLanguage} setLanguage={setSelectedLanguage} />
+      <Navbar />
 
       <div>
         {selectedLanguage === "fi" ? (
