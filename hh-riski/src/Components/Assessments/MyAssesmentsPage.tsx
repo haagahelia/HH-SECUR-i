@@ -20,6 +20,8 @@ import {
 import { DeleteOutline, Search, West } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import type { Organization, Country } from "../../types";
+import { useCurrentUser } from "../../context/AuthContext";
+import { getReports, deleteReport, type ReportListItem } from "../../services/reports";
 
 type Assessment = {
     id: string;
@@ -91,6 +93,7 @@ const formatDateTime = (isoString: string) => {
 };
 
 const MyAssessmentsPage = () => {
+    const { token } = useCurrentUser();
     const navigate = useNavigate();
 
     const {
@@ -123,27 +126,24 @@ const MyAssessmentsPage = () => {
         clearAnswers,
     } = useFormAnswers();
 
-    const [orderBy, setOrderBy] = useState<"projectName" | "createdAt" | "riskLevel">("createdAt");
+    const [orderBy, setOrderBy] = useState<"name" | "created_at" | "risk">("created_at");
     const [order, setOrder] = useState<"asc" | "desc">("desc");
 
-    const handleSort = (column: "projectName" | "createdAt" | "riskLevel") => {
+    const handleSort = (column: "name" | "created_at" | "risk") => {
         const isAsc = orderBy === column && order === "asc";
         setOrder(isAsc ? "desc" : "asc");
         setOrderBy(column);
     };
 
-    const [assessments, setAssessments] = useState<Assessment[]>([]);
+    const [assessments, setAssessments] = useState<ReportListItem[]>([]);
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        try {
-            const raw = localStorage.getItem("assessments");
-            const data = raw ? JSON.parse(raw) : [];
-            setAssessments(data);
-        } catch {
-            setAssessments([]);
-        }
-    }, []);
+        if (!token) return;
+        getReports(token)
+        .then(setAssessments)
+        .catch((e) => console.error("Failed to load reports", e));
+    }, [token]);
 
     const applyAssessmentToContext = (assessment: Assessment) => {
         setSelectedLanguage(assessment.selectedLanguage);
@@ -188,27 +188,31 @@ const MyAssessmentsPage = () => {
 
 
 
-    const deleteAssessment = (id: string) => {
-        const updated = assessments.filter((item) => item.id !== id);
-        setAssessments(updated);
-        localStorage.setItem("assessments", JSON.stringify(updated));
+    const deleteAssessment = async (id: number) => {
+        if (!token) return;
+        try {
+            await deleteReport(token, id);
+            setAssessments((prev) => prev.filter((item) => item.id !== id));
+        } catch (e) {
+            console.error("Failed to delete report", e);
+        }
     };
 
     const filteredAssessments = useMemo(() => {
         const filtered = assessments.filter((item) =>
-            item.projectName.toLowerCase().includes(search.toLowerCase())
+            item.name.toLowerCase().includes(search.toLowerCase())
         );
 
         const sorted = [...filtered].sort((a, b) => {
             let comparison = 0;
 
-            if (orderBy === "projectName") {
-                comparison = a.projectName.localeCompare(b.projectName);
-            } else if (orderBy === "createdAt") {
+            if (orderBy === "name") {
+                comparison = a.name.localeCompare(b.name);
+            } else if (orderBy === "created_at") {
                 comparison =
-                    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-            } else if (orderBy === "riskLevel") {
-                comparison = a.riskLevel - b.riskLevel;
+                    new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+            } else if (orderBy === "risk") {
+                comparison = a.risk - b.risk;
             }
 
             return order === "asc" ? comparison : -comparison;
@@ -322,9 +326,9 @@ const MyAssessmentsPage = () => {
                                 >
                                     <TableCell>
                                         <TableSortLabel
-                                            active={orderBy === "projectName"}
-                                            direction={orderBy === "projectName" ? order : "asc"}
-                                            onClick={() => handleSort("projectName")}
+                                            active={orderBy === "name"}
+                                            direction={orderBy === "name" ? order : "asc"}
+                                            onClick={() => handleSort("name")}
                                             hideSortIcon={false}
                                         >
                                             {selectedLanguage === "fi"
@@ -335,9 +339,9 @@ const MyAssessmentsPage = () => {
 
                                     <TableCell>
                                         <TableSortLabel
-                                            active={orderBy === "createdAt"}
-                                            direction={orderBy === "createdAt" ? order : "asc"}
-                                            onClick={() => handleSort("createdAt")}
+                                            active={orderBy === "created_at"}
+                                            direction={orderBy === "created_at" ? order : "asc"}
+                                            onClick={() => handleSort("created_at")}
                                             hideSortIcon={false}
                                         >
                                             {selectedLanguage === "fi" ? "Päivämäärä" : "Date"}
@@ -346,9 +350,9 @@ const MyAssessmentsPage = () => {
 
                                     <TableCell>
                                         <TableSortLabel
-                                            active={orderBy === "riskLevel"}
-                                            direction={orderBy === "riskLevel" ? order : "asc"}
-                                            onClick={() => handleSort("riskLevel")}
+                                            active={orderBy === "risk"}
+                                            direction={orderBy === "risk" ? order : "asc"}
+                                            onClick={() => handleSort("risk")}
                                             hideSortIcon={false}
                                         >
                                             {selectedLanguage === "fi"
@@ -369,13 +373,13 @@ const MyAssessmentsPage = () => {
 
                             <TableBody>
                                 {filteredAssessments.map((item) => {
-                                    const formatted = formatDateTime(item.createdAt);
+                                    const formatted = formatDateTime(item.created_at);
 
                                     return (
                                         <TableRow
                                             key={item.id}
                                             sx={{
-                                                backgroundColor: getRowColor(item.riskLevel),
+                                                backgroundColor: getRowColor(item.risk),
                                                 "& td": {
                                                     borderBottom: "2px solid #fbf6f6",
                                                     py: 2,
@@ -384,7 +388,6 @@ const MyAssessmentsPage = () => {
                                         >
                                             <TableCell>
                                                 <Button
-                                                    onClick={() => openAssessmentResults(item)}
                                                     variant="text"
                                                     sx={{
                                                         color: "#145b87",
@@ -397,7 +400,7 @@ const MyAssessmentsPage = () => {
                                                         justifyContent: "flex-start",
                                                     }}
                                                 >
-                                                    {item.projectName}
+                                                    {item.name}
                                                 </Button>
                                             </TableCell>
 
@@ -416,7 +419,7 @@ const MyAssessmentsPage = () => {
                                                         width: 42,
                                                         height: 42,
                                                         borderRadius: "50%",
-                                                        backgroundColor: getRiskCircleColor(item.riskLevel),
+                                                        backgroundColor: getRiskCircleColor(item.risk),
                                                         display: "flex",
                                                         alignItems: "center",
                                                         justifyContent: "center",
@@ -426,7 +429,7 @@ const MyAssessmentsPage = () => {
                                                         boxShadow: "0 3px 8px rgba(0,0,0,0.28)",
                                                     }}
                                                 >
-                                                    {item.riskLevel}
+                                                    {item.risk}
                                                 </Box>
                                             </TableCell>
 
