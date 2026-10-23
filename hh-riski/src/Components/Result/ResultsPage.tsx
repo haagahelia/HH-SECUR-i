@@ -106,10 +106,12 @@ const ResultsPage = () => {
         ownerusername: answers.ownername || user?.username,
         creatorusername: answers.creatorname,
         organizationother: answers.organizationname,
+        hhroleother: answers.hhroleother,
+        organizationtypeother: answers.organizationtypeother,
     };
 
     try {
-        if (editingReportId) {
+        if (editingReportId !== null) {
             await updateReport(token, editingReportId, payload);
         } else {
             const created = await createReport(token, payload);
@@ -153,6 +155,8 @@ const ResultsPage = () => {
         ethics: ethics,
         duration: duration,
         organizationname: selectedOrganization?.countryId === "OTH" ? organizationName : undefined,
+        hhroleother: hhRoleOther,
+        organizationtypeother: organizationTypeOther,
         collaborationtypeother: cooperationTypeOther,
         additionalinformation: projectDescription
     };

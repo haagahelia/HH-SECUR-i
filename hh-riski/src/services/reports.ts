@@ -16,6 +16,9 @@ export class ApiError extends Error {
   }
 }
 
+const isApiErrorBody = (value: unknown): value is ApiErrorBody =>
+  typeof value === "object" && value !== null;
+
 export interface ReportListItem {
   id: number;
   name: string;
@@ -50,6 +53,8 @@ export interface ReportChoices {
   ethics: string;
   duration: string;
   organizationother?: string;
+  hhroleother?: string;
+  organizationtypeother?: string;
   collaborationtypeother?: string;
   additionalinformation?: string;
 }
@@ -87,8 +92,23 @@ async function request<T>(
     },
   });
   const text = await res.text();
-  const data = text ? JSON.parse(text) : undefined;
-  if (!res.ok) throw new ApiError(res.status, data); // Edit 1 in use
+  let data: unknown;
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      if (!res.ok) {
+        throw new ApiError(res.status, undefined);
+      }
+      throw new Error(`Invalid JSON response from ${path}`);
+    }
+  }
+  if (!res.ok) {
+    throw new ApiError(
+      res.status,
+      isApiErrorBody(data) ? data : undefined,
+    );
+  }
   return data as T;
 }
 

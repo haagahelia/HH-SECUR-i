@@ -54,7 +54,6 @@ const MyAssessmentsPage = () => {
 
     const {
         selectedLanguage,
-        setSelectedLanguage,
         setSelectedCountry,
         setSelectedOrganization,
         setOrganizationName,
@@ -106,7 +105,17 @@ const MyAssessmentsPage = () => {
     if (!token) return;
     try {
         const { reportDetails, choices } = await getReport(token, id);
-        const org = reportDetails.consortium.organizations[0];
+        const organizations = reportDetails.consortium.organizations;
+        const organizationId = Array.isArray(choices.organization)
+            ? choices.organization[0]
+            : choices.organization;
+        const org = organizations.find(
+            (organization) => organization.id === Number(organizationId),
+        ) ?? (choices.organizationother
+            ? organizations.find(
+                (organization) => organization.country_code === "OTH",
+            )
+            : undefined);
 
         setSelectedCountry({
             id: reportDetails.country.code,
@@ -127,11 +136,11 @@ const MyAssessmentsPage = () => {
         setProjectDescription(choices.additionalinformation ?? "");
         setDuration(choices.duration);
         setHhRole(choices.hhrole);
-        setHhRoleOther("");
+        setHhRoleOther(choices.hhroleother ?? "");
         setConsortium(choices.consortium);
         setHistory(choices.history);
         setOrganizationType(choices.organizationtype);
-        setOrganizationTypeOther("");
+        setOrganizationTypeOther(choices.organizationtypeother ?? "");
         setContractStatus(choices.contract);
         setFunding(choices.funding);
         setExchange(choices.exchange);
