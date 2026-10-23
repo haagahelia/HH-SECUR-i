@@ -19,7 +19,6 @@ import {
 } from "@mui/material";
 import { DeleteOutline, Search, West } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import type { Organization, Country } from "../../types";
 import { useCurrentUser } from "../../context/AuthContext";
 import { getReports, getReport, deleteReport, type ReportListItem } from "../../services/reports";
 
@@ -81,6 +80,7 @@ const MyAssessmentsPage = () => {
         setCooperationType,
         setCooperationTypeOther,
         clearAnswers,
+        setEditingReportId
     } = useFormAnswers();
 
     const [orderBy, setOrderBy] = useState<"name" | "created_at" | "risk">("created_at");
@@ -144,7 +144,8 @@ const MyAssessmentsPage = () => {
         setCooperationType(choices.collaborationtype);
         setCooperationTypeOther(choices.collaborationtypeother ?? "");
 
-        navigate(`/results?reportId=${id}`);
+        setEditingReportId(id);
+        navigate("/results");
     } catch (e) {
         console.error("Failed to open report", e);
     }
@@ -154,6 +155,7 @@ const MyAssessmentsPage = () => {
 
     const deleteAssessment = async (id: number) => {
     if (!token) return;
+    if (!window.confirm(selectedLanguage === "fi" ? "Poistetaanko raportti?" : "Delete this report?")) return;
     try {
         await deleteReport(token, id);
         setAssessments((prev) => prev.filter((item) => item.id !== id));

@@ -32,7 +32,7 @@ import SingleQuestionSummary from "./SingleQuestionSummary";
 import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
 import { calculateRisk } from "../../services/riskCalculation";
-import { createReport, ApiError } from "../../services/reports";
+import { createReport, ApiError, updateReport } from "../../services/reports";
 import { i18n } from "../../util/translations";
 
 const hhRoleQuestionData: Question = fetchHhRole();
@@ -84,13 +84,18 @@ const ResultsPage = () => {
         cooperationTypeOther,
         duration,
         clearAnswers,
+        editingReportId,
+        setEditingReportId
     } = useFormAnswers();
 
     const t = i18n[selectedLanguage].riskAssessment
 
     const errorMessage = {
-        "AUTHENTICATION_ERROR": t.authFail,
-        "INVALID_REQUEST_BODY": t.fetchFail
+    "AUTHENTICATION_ERROR": t.authFail,
+    "INVALID_REQUEST_BODY": t.fetchFail,
+    "DUPLICATE_NAME": selectedLanguage === "fi"
+        ? "Tämän niminen raportti on jo olemassa. Valitse toinen nimi."
+        : "A report with this name already exists. Please choose another name.",
     }[errorCode] || t.unknown
 
     const saveAssessment = async () => {
@@ -98,19 +103,31 @@ const ResultsPage = () => {
 
     const payload = {
         ...answers,
-        ownerusername: answers.ownername,
+        ownerusername: answers.ownername || user?.username,
         creatorusername: answers.creatorname,
         organizationother: answers.organizationname,
     };
 
     try {
-        await createReport(token, payload);
+        if (editingReportId) {
+            await updateReport(token, editingReportId, payload);
+        } else {
+            const created = await createReport(token, payload);
+            setEditingReportId(created.reportDetails.id); // next Save becomes PATCH
+        }
+        setErrorCode("");
         setSaveMessageOpen(true);
     } catch (error) {
-        if (error instanceof ApiError) console.error("Backend said:", error.body);
+        if (error instanceof ApiError) {
+            console.error("Backend said:", error.body);
+            if (error.body?.details?.[0]?.type === "unique violation") {
+                setErrorCode("DUPLICATE_NAME");
+                return;
+            }
+        }
         setErrorCode("UNKNOWN_ERROR");
     }
-    };
+};
 
     const [results, setResults] = useState<RiskCalculationResponse>();
 
