@@ -304,7 +304,7 @@ export const fetchPersonalInformation = (): Question => {
                 en: "No"
             },
             {
-                id: "unknown",
+                id: "option3",
                 fi: "Ei tiedossa",
                 en: "Unknown"
             }
