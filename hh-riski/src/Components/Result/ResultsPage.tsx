@@ -32,6 +32,7 @@ import SingleQuestionSummary from "./SingleQuestionSummary";
 import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
 import { calculateRisk } from "../../services/riskCalculation";
+import { createReport, ApiError, updateReport } from "../../services/reports";
 import { i18n } from "../../util/translations";
 
 const hhRoleQuestionData: Question = fetchHhRole();
@@ -83,67 +84,52 @@ const ResultsPage = () => {
         cooperationTypeOther,
         duration,
         clearAnswers,
+        editingReportId,
+        setEditingReportId
     } = useFormAnswers();
 
     const t = i18n[selectedLanguage].riskAssessment
 
     const errorMessage = {
-        "AUTHENTICATION_ERROR": t.authFail,
-        "INVALID_REQUEST_BODY": t.fetchFail
+    "AUTHENTICATION_ERROR": t.authFail,
+    "INVALID_REQUEST_BODY": t.fetchFail,
+    "DUPLICATE_NAME": selectedLanguage === "fi"
+        ? "Tämän niminen raportti on jo olemassa. Valitse toinen nimi."
+        : "A report with this name already exists. Please choose another name.",
     }[errorCode] || t.unknown
 
-    const saveAssessment = () => {
-        if (!user) return;
+    const saveAssessment = async () => {
+    if (!token) return;
 
-        const riskLevel = results?.collaboration.risk ?? 0;
-
-        const data = {
-            id: crypto.randomUUID(),
-            createdAt: new Date().toISOString(),
-            riskLevel,
-
-            projectName,
-            projectDescription,
-            selectedCountry,
-            selectedOrganization,
-            organizationName,
-            selectedProjectOwner,
-            duration,
-            hhRole,
-            hhRoleOther,
-            consortium,
-            history,
-            organizationType,
-            organizationTypeOther,
-            contractStatus,
-            funding,
-            exchange,
-            fundingSource,
-            fundingHistory,
-            liability,
-            personalInformation,
-            dualUse,
-            ethics,
-            cooperationType,
-            cooperationTypeOther,
-            selectedLanguage,
-
-            savedBy: {
-                id: user.id,
-                username: user.username,
-            },
-        };
-
-        const existing = JSON.parse(localStorage.getItem("assessments") || "[]");
-
-        localStorage.setItem(
-            "assessments",
-            JSON.stringify([...existing, data])
-        );
-
-        console.log("Saved assessment:", data);
-        setSaveMessageOpen(true);
+    const payload = {
+        ...answers,
+        ownerusername: answers.ownername || user?.username,
+        creatorusername: answers.creatorname,
+        organizationother: answers.organizationname,
+        hhroleother: answers.hhroleother,
+        organizationtypeother: answers.organizationtypeother,
     };
+
+    try {
+        if (editingReportId !== null) {
+            await updateReport(token, editingReportId, payload);
+        } else {
+            const created = await createReport(token, payload);
+            setEditingReportId(created.reportDetails.id); // next Save becomes PATCH
+        }
+        setErrorCode("");
+        setSaveMessageOpen(true);
+    } catch (error) {
+        if (error instanceof ApiError) {
+            console.error("Backend said:", error.body);
+            if (error.body?.details?.[0]?.type === "unique violation") {
+                setErrorCode("DUPLICATE_NAME");
+                return;
+            }
+        }
+        setErrorCode("UNKNOWN_ERROR");
+    }
+};
 
     const [results, setResults] = useState<RiskCalculationResponse>();
 
@@ -169,6 +155,8 @@ const ResultsPage = () => {
         ethics: ethics,
         duration: duration,
         organizationname: selectedOrganization?.countryId === "OTH" ? organizationName : undefined,
+        hhroleother: hhRoleOther,
+        organizationtypeother: organizationTypeOther,
         collaborationtypeother: cooperationTypeOther,
         additionalinformation: projectDescription
     };

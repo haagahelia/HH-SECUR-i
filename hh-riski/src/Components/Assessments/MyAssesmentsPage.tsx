@@ -19,50 +19,8 @@ import {
 } from "@mui/material";
 import { DeleteOutline, Search, West } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import type { Organization, Country } from "../../types";
-
-type Assessment = {
-    id: string;
-    createdAt: string;
-    riskLevel: 1 | 2 | 3;
-
-    projectName: string;
-    projectDescription: string;
-    selectedCountry: Country | null;
-    selectedOrganization: Organization | null;
-    selectedProjectOwner?: {
-        id?: string | number;
-        username: string;
-        name?: string;
-    } | null;
-    duration: string;
-    hhRole: string;
-    hhRoleOther?: string;
-    consortium: string;
-    history: string;
-    organizationType: string;
-    organizationTypeOther?: string;
-    contractStatus: string;
-    funding: string;
-    exchange?: string;
-    fundingSource?: string;
-    fundingHistory?: string;
-    organizationName?: string;
-    liability: string;
-    personalInformation: string;
-    dualUse: string;
-    ethics: string;
-    cooperationType: string[];
-    cooperationTypeOther?: string;
-    selectedLanguage: "fi" | "en";
-
-    savedBy?: {
-        id?: string;
-        username?: string;
-    };
-};
-
-
+import { useCurrentUser } from "../../context/AuthContext";
+import { getReports, getReport, deleteReport, type ReportListItem } from "../../services/reports";
 
 const getRowColor = (level: number) => {
     if (level === 1) return "rgb(255, 255, 255)";
@@ -91,11 +49,11 @@ const formatDateTime = (isoString: string) => {
 };
 
 const MyAssessmentsPage = () => {
+    const { token } = useCurrentUser();
     const navigate = useNavigate();
 
     const {
         selectedLanguage,
-        setSelectedLanguage,
         setSelectedCountry,
         setSelectedOrganization,
         setOrganizationName,
@@ -121,94 +79,115 @@ const MyAssessmentsPage = () => {
         setCooperationType,
         setCooperationTypeOther,
         clearAnswers,
+        setEditingReportId
     } = useFormAnswers();
 
-    const [orderBy, setOrderBy] = useState<"projectName" | "createdAt" | "riskLevel">("createdAt");
+    const [orderBy, setOrderBy] = useState<"name" | "created_at" | "risk">("created_at");
     const [order, setOrder] = useState<"asc" | "desc">("desc");
 
-    const handleSort = (column: "projectName" | "createdAt" | "riskLevel") => {
+    const handleSort = (column: "name" | "created_at" | "risk") => {
         const isAsc = orderBy === column && order === "asc";
         setOrder(isAsc ? "desc" : "asc");
         setOrderBy(column);
     };
 
-    const [assessments, setAssessments] = useState<Assessment[]>([]);
+    const [assessments, setAssessments] = useState<ReportListItem[]>([]);
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        try {
-            const raw = localStorage.getItem("assessments");
-            const data = raw ? JSON.parse(raw) : [];
-            setAssessments(data);
-        } catch {
-            setAssessments([]);
-        }
-    }, []);
+        if (!token) return;
+        getReports(token)
+        .then(setAssessments)
+        .catch((e) => console.error("Failed to load reports", e));
+    }, [token]);
 
-    const applyAssessmentToContext = (assessment: Assessment) => {
-        setSelectedLanguage(assessment.selectedLanguage);
-        setSelectedCountry(assessment.selectedCountry);
+    const openReport = async (id: number) => {
+    if (!token) return;
+    try {
+        const { reportDetails, choices } = await getReport(token, id);
+        const organizations = reportDetails.consortium.organizations;
+        const organizationId = Array.isArray(choices.organization)
+            ? choices.organization[0]
+            : choices.organization;
+        const org = organizations.find(
+            (organization) => organization.id === Number(organizationId),
+        ) ?? (choices.organizationother
+            ? organizations.find(
+                (organization) => organization.country_code === "OTH",
+            )
+            : undefined);
+
+        setSelectedCountry({
+            id: reportDetails.country.code,
+            name: { fi: reportDetails.country.fi, en: reportDetails.country.en },
+        });
         setSelectedOrganization(
-            assessment.selectedOrganization
+            org
                 ? {
-                    id: assessment.selectedOrganization.id,
-                    countryId: assessment.selectedOrganization.countryId,
-                    name: assessment.selectedOrganization.name,
-                }
+                      id: String(org.id),
+                      name: { fi: org.fi, en: org.en },
+                      countryId: org.country_code,
+                  }
                 : null,
         );
-        setSelectedProjectOwner(assessment.selectedProjectOwner ?? null);
-        setProjectName(assessment.projectName);
-        setProjectDescription(assessment.projectDescription);
-        setDuration(assessment.duration);
-        setHhRole(assessment.hhRole);
-        setHhRoleOther(assessment.hhRoleOther ?? "");
-        setConsortium(assessment.consortium);
-        setHistory(assessment.history);
-        setOrganizationType(assessment.organizationType);
-        setOrganizationTypeOther(assessment.organizationTypeOther ?? "");
-        setContractStatus(assessment.contractStatus);
-        setFunding(assessment.funding);
-        setOrganizationName(assessment.organizationName ?? "");
-        setExchange(assessment.exchange ?? "");
-        setFundingSource(assessment.fundingSource ?? "");
-        setFundingHistory(assessment.fundingHistory ?? "");
-        setLiability(assessment.liability);
-        setPersonalInformation(assessment.personalInformation);
-        setDualUse(assessment.dualUse);
-        setEthics(assessment.ethics);
-        setCooperationType(assessment.cooperationType);
-        setCooperationTypeOther(assessment.cooperationTypeOther ?? "");
-    };
+        setOrganizationName(choices.organizationother ?? "");
+        setSelectedProjectOwner({ username: choices.ownerusername });
+        setProjectName(choices.name);
+        setProjectDescription(choices.additionalinformation ?? "");
+        setDuration(choices.duration);
+        setHhRole(choices.hhrole);
+        setHhRoleOther(choices.hhroleother ?? "");
+        setConsortium(choices.consortium);
+        setHistory(choices.history);
+        setOrganizationType(choices.organizationtype);
+        setOrganizationTypeOther(choices.organizationtypeother ?? "");
+        setContractStatus(choices.contract);
+        setFunding(choices.funding);
+        setExchange(choices.exchange);
+        setFundingSource(choices.fundingsource);
+        setFundingHistory(choices.fundinghistory);
+        setLiability(choices.liability);
+        setPersonalInformation(choices.personalinformation);
+        setDualUse(choices.dualuse);
+        setEthics(choices.ethics);
+        setCooperationType(choices.collaborationtype);
+        setCooperationTypeOther(choices.collaborationtypeother ?? "");
 
-    const openAssessmentResults = (assessment: Assessment) => {
-        applyAssessmentToContext(assessment);
+        setEditingReportId(id);
         navigate("/results");
-    };
+    } catch (e) {
+        console.error("Failed to open report", e);
+    }
+};
 
 
 
-    const deleteAssessment = (id: string) => {
-        const updated = assessments.filter((item) => item.id !== id);
-        setAssessments(updated);
-        localStorage.setItem("assessments", JSON.stringify(updated));
+    const deleteAssessment = async (id: number) => {
+    if (!token) return;
+    if (!window.confirm(selectedLanguage === "fi" ? "Poistetaanko raportti?" : "Delete this report?")) return;
+    try {
+        await deleteReport(token, id);
+        setAssessments((prev) => prev.filter((item) => item.id !== id));
+    } catch (e) {
+        console.error("Failed to delete report", e);
+    }
     };
 
     const filteredAssessments = useMemo(() => {
         const filtered = assessments.filter((item) =>
-            item.projectName.toLowerCase().includes(search.toLowerCase())
+            item.name.toLowerCase().includes(search.toLowerCase())
         );
 
         const sorted = [...filtered].sort((a, b) => {
             let comparison = 0;
 
-            if (orderBy === "projectName") {
-                comparison = a.projectName.localeCompare(b.projectName);
-            } else if (orderBy === "createdAt") {
+            if (orderBy === "name") {
+                comparison = a.name.localeCompare(b.name);
+            } else if (orderBy === "created_at") {
                 comparison =
-                    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-            } else if (orderBy === "riskLevel") {
-                comparison = a.riskLevel - b.riskLevel;
+                    new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+            } else if (orderBy === "risk") {
+                comparison = a.risk - b.risk;
             }
 
             return order === "asc" ? comparison : -comparison;
@@ -322,9 +301,9 @@ const MyAssessmentsPage = () => {
                                 >
                                     <TableCell>
                                         <TableSortLabel
-                                            active={orderBy === "projectName"}
-                                            direction={orderBy === "projectName" ? order : "asc"}
-                                            onClick={() => handleSort("projectName")}
+                                            active={orderBy === "name"}
+                                            direction={orderBy === "name" ? order : "asc"}
+                                            onClick={() => handleSort("name")}
                                             hideSortIcon={false}
                                         >
                                             {selectedLanguage === "fi"
@@ -335,9 +314,9 @@ const MyAssessmentsPage = () => {
 
                                     <TableCell>
                                         <TableSortLabel
-                                            active={orderBy === "createdAt"}
-                                            direction={orderBy === "createdAt" ? order : "asc"}
-                                            onClick={() => handleSort("createdAt")}
+                                            active={orderBy === "created_at"}
+                                            direction={orderBy === "created_at" ? order : "asc"}
+                                            onClick={() => handleSort("created_at")}
                                             hideSortIcon={false}
                                         >
                                             {selectedLanguage === "fi" ? "Päivämäärä" : "Date"}
@@ -346,9 +325,9 @@ const MyAssessmentsPage = () => {
 
                                     <TableCell>
                                         <TableSortLabel
-                                            active={orderBy === "riskLevel"}
-                                            direction={orderBy === "riskLevel" ? order : "asc"}
-                                            onClick={() => handleSort("riskLevel")}
+                                            active={orderBy === "risk"}
+                                            direction={orderBy === "risk" ? order : "asc"}
+                                            onClick={() => handleSort("risk")}
                                             hideSortIcon={false}
                                         >
                                             {selectedLanguage === "fi"
@@ -369,13 +348,13 @@ const MyAssessmentsPage = () => {
 
                             <TableBody>
                                 {filteredAssessments.map((item) => {
-                                    const formatted = formatDateTime(item.createdAt);
+                                    const formatted = formatDateTime(item.created_at);
 
                                     return (
                                         <TableRow
                                             key={item.id}
                                             sx={{
-                                                backgroundColor: getRowColor(item.riskLevel),
+                                                backgroundColor: getRowColor(item.risk),
                                                 "& td": {
                                                     borderBottom: "2px solid #fbf6f6",
                                                     py: 2,
@@ -384,7 +363,6 @@ const MyAssessmentsPage = () => {
                                         >
                                             <TableCell>
                                                 <Button
-                                                    onClick={() => openAssessmentResults(item)}
                                                     variant="text"
                                                     sx={{
                                                         color: "#145b87",
@@ -396,8 +374,9 @@ const MyAssessmentsPage = () => {
                                                         textTransform: "none",
                                                         justifyContent: "flex-start",
                                                     }}
+                                                    onClick={() => openReport(item.id)}
                                                 >
-                                                    {item.projectName}
+                                                    {item.name}
                                                 </Button>
                                             </TableCell>
 
@@ -416,7 +395,7 @@ const MyAssessmentsPage = () => {
                                                         width: 42,
                                                         height: 42,
                                                         borderRadius: "50%",
-                                                        backgroundColor: getRiskCircleColor(item.riskLevel),
+                                                        backgroundColor: getRiskCircleColor(item.risk),
                                                         display: "flex",
                                                         alignItems: "center",
                                                         justifyContent: "center",
@@ -426,7 +405,7 @@ const MyAssessmentsPage = () => {
                                                         boxShadow: "0 3px 8px rgba(0,0,0,0.28)",
                                                     }}
                                                 >
-                                                    {item.riskLevel}
+                                                    {item.risk}
                                                 </Box>
                                             </TableCell>
 

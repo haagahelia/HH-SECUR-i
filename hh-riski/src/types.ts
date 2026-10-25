@@ -26,6 +26,8 @@ export type RiskCalculationRequest = {
     ethics: string;
     duration: string;
     organizationname?: string;
+    hhroleother?: string;
+    organizationtypeother?: string;
     collaborationtypeother?: string;
     additionalinformation?: string;
 }

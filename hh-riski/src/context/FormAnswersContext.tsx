@@ -52,6 +52,8 @@ type FormAnswersContextValues = {
     setCooperationType: React.Dispatch<React.SetStateAction<string[]>>;
     cooperationTypeOther: string;
     setCooperationTypeOther: React.Dispatch<React.SetStateAction<string>>;
+    editingReportId: number | null;
+    setEditingReportId: React.Dispatch<React.SetStateAction<number | null>>;
     clearAnswers: () => void;
 
 }
@@ -87,6 +89,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
         const lang = localStorage.getItem("lang");
         return (lang === "fi" || lang === "en" ? lang : "fi")
     });
+    const [editingReportId, setEditingReportId] = useState<number | null>(null);
 
     useEffect(() => {
         localStorage.setItem("lang", selectedLanguage)
@@ -117,6 +120,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setEthics("");
         setCooperationType([]);
         setCooperationTypeOther("");
+        setEditingReportId(null);
         window.scrollTo(0, 0);
     }
 
@@ -125,7 +129,7 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
             selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, organizationName, setOrganizationName, selectedProjectOwner, setSelectedProjectOwner, projectName, setProjectName,
             projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, hhRoleOther, setHhRoleOther, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType, organizationTypeOther, setOrganizationTypeOther,
             contractStatus, setContractStatus, funding, setFunding, exchange, setExchange, fundingSource, setFundingSource, fundingHistory, setFundingHistory, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
-            cooperationType, setCooperationType, cooperationTypeOther, setCooperationTypeOther, clearAnswers
+            cooperationType, setCooperationType, cooperationTypeOther, setCooperationTypeOther, clearAnswers, editingReportId, setEditingReportId
         }}>
             {children}
         </FormAnswersContext.Provider>

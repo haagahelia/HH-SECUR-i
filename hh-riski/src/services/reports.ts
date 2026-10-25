@@ -1,0 +1,134 @@
+const BASE = import.meta.env.VITE_BACKEND_URL;
+
+export interface ApiErrorBody {
+  error?: string;
+  details?: { type?: string; path?: string; message?: string }[];
+}
+
+export class ApiError extends Error {
+  status: number;
+  body: ApiErrorBody | undefined;
+
+  constructor(status: number, body: ApiErrorBody | undefined) {
+    super(`Request failed: ${status}`);
+    this.status = status;
+    this.body = body;
+  }
+}
+
+const isApiErrorBody = (value: unknown): value is ApiErrorBody =>
+  typeof value === "object" && value !== null;
+
+export interface ReportListItem {
+  id: number;
+  name: string;
+  risk: number;
+  ownername: string;
+  creatorname: string;
+  country: { code: string; fi: string; en: string };
+  organizations: { id: number; fi: string; en: string; country_code: string }[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ReportChoices {
+  name: string;
+  ownerusername: string;
+  creatorusername: string;
+  country: string;
+  organization: number | number[];
+  organizationtype: string;
+  hhrole: string;
+  collaborationtype: string[];
+  history: string;
+  contract: string;
+  consortium: string;
+  funding: string;
+  exchange: string;
+  fundingsource: string;
+  fundinghistory: string;
+  liability: string;
+  personalinformation: string;
+  dualuse: string;
+  ethics: string;
+  duration: string;
+  organizationother?: string;
+  hhroleother?: string;
+  organizationtypeother?: string;
+  collaborationtypeother?: string;
+  additionalinformation?: string;
+}
+
+export interface ReportDetail {
+  reportDetails: {
+    id: number;
+    country: { id: number; code: string; fi: string; en: string };
+    consortium: {
+      organizations: { id: number; fi: string; en: string; country_code: string }[];
+    };
+  };
+  report: unknown;
+  choices: ReportChoices;
+}
+
+export interface CreateReportResponse {
+  message: string;
+  reportDetails: { id: number; [key: string]: unknown };
+  report: unknown;
+  choices: Record<string, unknown>;
+}
+
+async function request<T>(
+  path: string,
+  token: string,
+  init: RequestInit = {},
+): Promise<T> {
+  const res = await fetch(`${BASE}${path}`, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...init.headers,
+    },
+  });
+  const text = await res.text();
+  let data: unknown;
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      if (!res.ok) {
+        throw new ApiError(res.status, undefined);
+      }
+      throw new Error(`Invalid JSON response from ${path}`);
+    }
+  }
+  if (!res.ok) {
+    throw new ApiError(
+      res.status,
+      isApiErrorBody(data) ? data : undefined,
+    );
+  }
+  return data as T;
+}
+
+export const getReports = (token: string) =>
+  request<ReportListItem[]>("/reports", token);
+
+export const getReport = (token: string, id: number) =>
+  request<ReportDetail>(`/reports/${id}`, token);
+
+export const createReport = (token: string, payload: unknown) =>
+  request<CreateReportResponse>("/reports", token, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+export const updateReport = (token: string, id: number, payload: unknown) =>
+  request<unknown>(`/reports/${id}`, token, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+
+export const deleteReport = (token: string, id: number) =>
+  request<void>(`/reports/${id}`, token, { method: "DELETE" });
