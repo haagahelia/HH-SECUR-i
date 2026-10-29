@@ -4,6 +4,31 @@ import { authenticatedFetch } from "./authenticatedFetch";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://hh-secur-be-git-main-hh-secur-i-backend.2.rahtiapp.fi';
 
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+};
+
+const isOrganization =  (value: unknown): value is Organization => {
+    if (!isRecord(value) || !isRecord(value.name)) {
+        return false;
+    }
+
+    return (
+        typeof value.id === "string" &&
+        typeof value.name.fi === "string" &&
+        typeof value.name.en === "string" &&
+        typeof value.countryId === "string"
+    );
+};
+const isUser = (value: unknown): value is User => {
+    return (
+        isRecord(value) &&
+        (typeof value.id === "string" || typeof value.id === "number") &&
+        typeof value.username === "string" &&
+        (value.name === undefined || typeof value.name === "string")
+    );
+};
+
 export const fetchOrganizations = async (token: string): Promise<Organization[]> => {
     const response = await authenticatedFetch(`${backendUrl}/organizations`, token, {
         headers: {
@@ -15,8 +40,17 @@ export const fetchOrganizations = async (token: string): Promise<Organization[]>
         throw new Error(`ORGANIZATIONS_REQUEST_FAILED_${response.status}`);
     }
 
-    const data: { organizations?: Organization[] } = await response.json();
-    return data.organizations ?? [];
+    const data: unknown = await response.json();
+    if (
+        !isRecord(data) || !Array.isArray(data.organizations)
+    ) {
+        throw new Error("INVALID_ORGANIZATIONS_RESPONSE");
+    }
+    const organizations = data.organizations.filter(isOrganization);
+    if (organizations.length !== data.organizations.length) {
+        throw new Error("INVALID_ORGANIZATIONS_RESPONSE");
+    }
+    return organizations;
 }
 
 export const fetchUsers = async (token: string): Promise<User[]> => {
@@ -30,8 +64,19 @@ export const fetchUsers = async (token: string): Promise<User[]> => {
         throw new Error(`USERS_REQUEST_FAILED_${response.status}`);
     }
 
-    const data: { users?: User[] } = await response.json();
-    return data.users ?? [];
+    const data: unknown = await response.json();
+
+    if (
+        !isRecord(data) || !Array.isArray(data.users)
+    ) {
+        throw new Error("INVALID_USERS_RESPONSE");
+    }
+    const users = data.users.filter(isUser);
+
+    if (users.length !== data.users.length) {
+        throw new Error("INVALID_USERS_RESPONSE");
+    }
+    return users;
 }
 export const fetchCountries = async (token: string): Promise<Country[]> => {
     const response = await authenticatedFetch(`${backendUrl}/countries`, token, {
@@ -44,9 +89,20 @@ export const fetchCountries = async (token: string): Promise<Country[]> => {
         throw new Error(`COUNTRIES_REQUEST_FAILED_${response.status}`);
     }
 
-    const data: { countries?: CountryApiResponse[] } = await response.json();
+    const data: unknown = await response.json();
 
-    return (data.countries ?? []).map((country) => ({
+    if (
+        typeof data !== "object" ||
+        data === null ||
+        !("countries" in data) ||
+        !Array.isArray(data.countries)  
+    ) {
+        throw new Error("INVALID_COUNTRIES_RESPONSE");
+    }
+
+    const countries = data.countries as CountryApiResponse[];
+
+    return countries.map((country) => ({
         id: country.code,
         name: {
             fi: country.fi,
