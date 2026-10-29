@@ -72,12 +72,22 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   useEffect(() => {
     if (!token) return;
 
+    setLoadError(false);
+
     fetchOrganizations(token).then(setOrganizations).catch(() => {
-      setOrganizations([]); setLoadError(true); });
+      setOrganizations([]); 
+      setLoadError(true);
+    });
+
     fetchUsers(token).then(setUsers).catch(() => {
-      setUsers([]); setLoadError(true); });
+      setUsers([]);
+      setLoadError(true);
+    });
+
     fetchCountries(token).then(setCountries).catch(() => {
-      setCountries([]); setLoadError(true); });
+      setCountries([]); 
+      setLoadError(true);
+    });
   }, [token]);
 
   const {

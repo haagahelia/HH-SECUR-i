@@ -4,6 +4,31 @@ import { authenticatedFetch } from "./authenticatedFetch";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://hh-secur-be-git-main-hh-secur-i-backend.2.rahtiapp.fi';
 
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+};
+
+const isOrganization =  (value: unknown): value is Organization => {
+    if (!isRecord(value) || !isRecord(value.name)) {
+        return false;
+    }
+
+    return (
+        typeof value.id === "string" &&
+        typeof value.name.fi === "string" &&
+        typeof value.name.en === "string" &&
+        typeof value.countryId === "string"
+    );
+};
+const isUser = (value: unknown): value is User => {
+    return (
+        isRecord(value) &&
+        (typeof value.id === "string" || typeof value.id === "number") &&
+        typeof value.username === "string" &&
+        (value.name === undefined || typeof value.name === "string")
+    );
+};
+
 export const fetchOrganizations = async (token: string): Promise<Organization[]> => {
     const response = await authenticatedFetch(`${backendUrl}/organizations`, token, {
         headers: {
@@ -17,15 +42,15 @@ export const fetchOrganizations = async (token: string): Promise<Organization[]>
 
     const data: unknown = await response.json();
     if (
-        typeof data !== "object" ||
-        data === null ||
-        !("organizations" in data) ||
-        !Array.isArray(data.organizations)
+        !isRecord(data) || !Array.isArray(data.organizations)
     ) {
         throw new Error("INVALID_ORGANIZATIONS_RESPONSE");
     }
-    
-    return data.organizations as Organization[];
+    const organizations = data.organizations.filter(isOrganization);
+    if (organizations.length !== data.organizations.length) {
+        throw new Error("INVALID_ORGANIZATIONS_RESPONSE");
+    }
+    return organizations;
 }
 
 export const fetchUsers = async (token: string): Promise<User[]> => {
@@ -42,14 +67,16 @@ export const fetchUsers = async (token: string): Promise<User[]> => {
     const data: unknown = await response.json();
 
     if (
-        typeof data !== "object" ||
-        data === null ||
-        !("users" in data) ||
-        !Array.isArray(data.users)
+        !isRecord(data) || !Array.isArray(data.users)
     ) {
         throw new Error("INVALID_USERS_RESPONSE");
     }
-    return data.users as User[];
+    const users = data.users.filter(isUser);
+
+    if (users.length !== data.users.length) {
+        throw new Error("INVALID_USERS_RESPONSE");
+    }
+    return users;
 }
 export const fetchCountries = async (token: string): Promise<Country[]> => {
     const response = await authenticatedFetch(`${backendUrl}/countries`, token, {
