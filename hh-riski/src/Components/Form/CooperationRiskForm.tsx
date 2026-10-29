@@ -67,13 +67,17 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     if (!token) return;
 
-    fetchOrganizations(token).then(setOrganizations).catch(() => setOrganizations([]));
-    fetchUsers(token).then(setUsers).catch(() => setUsers([]));
-    fetchCountries(token).then(setCountries).catch(() => setCountries([]));
+    fetchOrganizations(token).then(setOrganizations).catch(() => {
+      setOrganizations([]); setLoadError(true); });
+    fetchUsers(token).then(setUsers).catch(() => {
+      setUsers([]); setLoadError(true); });
+    fetchCountries(token).then(setCountries).catch(() => {
+      setCountries([]); setLoadError(true); });
   }, [token]);
 
   const {
@@ -205,6 +209,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
   return (
     <div className={styles.form}>
+      {loadError && (
+        <div role="alert">
+          {language === "fi"
+            ? "Tietojen lataaminen epäonnistui. Päivitä sivu ja yritä uudelleen."
+            : "Some form data could not be loaded. Please refresh the page and try again."}
+        </div>
+      )}
+
       {errors.length > 0 && (
         <div role="alert">
           <strong>

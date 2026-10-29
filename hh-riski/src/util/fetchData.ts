@@ -15,8 +15,17 @@ export const fetchOrganizations = async (token: string): Promise<Organization[]>
         throw new Error(`ORGANIZATIONS_REQUEST_FAILED_${response.status}`);
     }
 
-    const data: { organizations?: Organization[] } = await response.json();
-    return data.organizations ?? [];
+    const data: unknown = await response.json();
+    if (
+        typeof data !== "object" ||
+        data === null ||
+        !("organizations" in data) ||
+        !Array.isArray(data.organizations)
+    ) {
+        throw new Error("INVALID_ORGANIZATIONS_RESPONSE");
+    }
+    
+    return data.organizations as Organization[];
 }
 
 export const fetchUsers = async (token: string): Promise<User[]> => {
@@ -30,8 +39,17 @@ export const fetchUsers = async (token: string): Promise<User[]> => {
         throw new Error(`USERS_REQUEST_FAILED_${response.status}`);
     }
 
-    const data: { users?: User[] } = await response.json();
-    return data.users ?? [];
+    const data: unknown = await response.json();
+
+    if (
+        typeof data !== "object" ||
+        data === null ||
+        !("users" in data) ||
+        !Array.isArray(data.users)
+    ) {
+        throw new Error("INVALID_USERS_RESPONSE");
+    }
+    return data.users as User[];
 }
 export const fetchCountries = async (token: string): Promise<Country[]> => {
     const response = await authenticatedFetch(`${backendUrl}/countries`, token, {
@@ -44,9 +62,20 @@ export const fetchCountries = async (token: string): Promise<Country[]> => {
         throw new Error(`COUNTRIES_REQUEST_FAILED_${response.status}`);
     }
 
-    const data: { countries?: CountryApiResponse[] } = await response.json();
+    const data: unknown = await response.json();
 
-    return (data.countries ?? []).map((country) => ({
+    if (
+        typeof data !== "object" ||
+        data === null ||
+        !("countries" in data) ||
+        !Array.isArray(data.countries)  
+    ) {
+        throw new Error("INVALID_COUNTRIES_RESPONSE");
+    }
+
+    const countries = data.countries as CountryApiResponse[];
+
+    return countries.map((country) => ({
         id: country.code,
         name: {
             fi: country.fi,
