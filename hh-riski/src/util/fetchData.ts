@@ -8,17 +8,39 @@ const isRecord = (value: unknown): value is Record<string, unknown> => {
     return typeof value === "object" && value !== null && !Array.isArray(value);
 };
 
-const isOrganization =  (value: unknown): value is Organization => {
-    if (!isRecord(value) || !isRecord(value.name)) {
-        return false;
+const toOrganization = (value: unknown): Organization | null => {
+    if (!isRecord(value)) {
+        return null;
     }
 
-    return (
-        typeof value.id === "string" &&
+    if (
+        (typeof value.id === "string" || typeof value.id === "number") &&
+        isRecord(value.name) &&
         typeof value.name.fi === "string" &&
         typeof value.name.en === "string" &&
         typeof value.countryId === "string"
-    );
+    ) {
+        return {
+            id: String(value.id),
+            name: { fi: value.name.fi, en: value.name.en },
+            countryId: value.countryId,
+        };
+    }
+
+    if (
+        (typeof value.id === "string" || typeof value.id === "number") &&
+        typeof value.fi === "string" &&
+        typeof value.en === "string" &&
+        typeof value.country_code === "string"
+    ) {
+        return {
+            id: String(value.id),
+            name: { fi: value.fi, en: value.en },
+            countryId: value.country_code,
+        };
+    }
+
+    return null;
 };
 const isUser = (value: unknown): value is User => {
     return (
@@ -46,11 +68,13 @@ export const fetchOrganizations = async (token: string): Promise<Organization[]>
     ) {
         throw new Error("INVALID_ORGANIZATIONS_RESPONSE");
     }
-    const organizations = data.organizations.filter(isOrganization);
-    if (organizations.length !== data.organizations.length) {
+    const organizations = data.organizations.map(toOrganization);
+    if (organizations.some((organization): organization is null => organization === null)) {
         throw new Error("INVALID_ORGANIZATIONS_RESPONSE");
     }
-    return organizations;
+    return organizations.filter(
+        (organization): organization is Organization => organization !== null,
+    );
 }
 
 export const fetchUsers = async (token: string): Promise<User[]> => {

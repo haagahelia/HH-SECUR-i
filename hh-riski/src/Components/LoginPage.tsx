@@ -8,7 +8,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { i18n } from "../util/translations";
 import { useFormAnswers } from "../context/FormAnswersContext";
 
-type LoginErrorCode = "" | "INVALID_CREDENTIALS" | "LOGIN_SERVICE_UNAVAILABLE" | "UNKNOWN";
+type LoginErrorCode = "" | "INVALID_CREDENTIALS" | "LOGIN_SERVICE_UNAVAILABLE" | "INVALID_ROLE" | "UNKNOWN";
 
 const LoginPage = () => {
 	const { login, sessionExpired } = useCurrentUser();
@@ -30,6 +30,11 @@ const LoginPage = () => {
 		}
 		if (errorCode === "LOGIN_SERVICE_UNAVAILABLE") {
 			return t.serviceError;
+		}
+		if (errorCode === "INVALID_ROLE") {
+			return selectedLanguage === "fi"
+				? "Käyttäjän roolin tulee olla user tai admin."
+				: "The user role must be user or admin.";
 		}
 		return t.loginFail;
 	};
@@ -53,6 +58,8 @@ const LoginPage = () => {
 					? "INVALID_CREDENTIALS"
 					: backendErrorCode === "LOGIN_SERVICE_UNAVAILABLE"
 						? "LOGIN_SERVICE_UNAVAILABLE"
+						: backendErrorCode === "INVALID_ROLE"
+							? "INVALID_ROLE"
 						: "UNKNOWN"
 			);
 		} finally {

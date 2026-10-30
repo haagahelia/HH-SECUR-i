@@ -104,6 +104,11 @@ const Navbar = () => {
                                     {selectedLanguage === "fi" ? "Aiemmat raportit" : "Reports"}
                                 </Button>
                             )}
+                            {user && (
+                                <Button component={RouterLink} to="/dashboard">
+                                    {selectedLanguage === "fi" ? "Kojelauta" : "Dashboard"}
+                                </Button>
+                            )}
 
                             <Button
                                 onClick={toggleLanguage}

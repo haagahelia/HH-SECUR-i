@@ -4,7 +4,7 @@ import { useCurrentUser } from "../../context/AuthContext";
 import Navbar from "../Layout/Navbar";
 import { useFormAnswers } from "../../context/FormAnswersContext";
 import { Button, Snackbar, Alert } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
 import styles from "../../styles.module.css";
@@ -53,6 +53,7 @@ const consortiumQuestionData: Question = fetchConsortiumType();
 
 const ResultsPage = () => {
     const { user, token } = useCurrentUser();
+    const navigate = useNavigate();
     const [saveMessageOpen, setSaveMessageOpen] = useState(false);
     const [errorCode, setErrorCode] = useState("");
 
@@ -109,6 +110,13 @@ const ResultsPage = () => {
         hhroleother: answers.hhroleother,
         organizationtypeother: answers.organizationtypeother,
     };
+    if (
+        user?.role !== "admin" &&
+        payload.ownerusername !== user?.username &&
+        payload.creatorusername !== user?.username
+    ) {
+        return;
+    }
 
     try {
         if (editingReportId !== null) {
@@ -118,7 +126,7 @@ const ResultsPage = () => {
             setEditingReportId(created.reportDetails.id); // next Save becomes PATCH
         }
         setErrorCode("");
-        setSaveMessageOpen(true);
+        navigate("/my-assessments");
     } catch (error) {
         if (error instanceof ApiError) {
             console.error("Backend said:", error.body);
@@ -160,6 +168,10 @@ const ResultsPage = () => {
         collaborationtypeother: cooperationTypeOther,
         additionalinformation: projectDescription
     };
+    const canSaveReport =
+        user?.role === "admin" ||
+        answers.ownername === user?.username ||
+        answers.creatorname === user?.username;
 
     useEffect(() => {
         if (!token) return;
@@ -212,7 +224,15 @@ const ResultsPage = () => {
                         {selectedLanguage === "fi" ? "Muokkaa" : "Edit"}
                     </Button>
                     <Button
-                        onClick={saveAssessment} variant="contained">
+                        onClick={saveAssessment}
+                        variant="contained"
+                        disabled={!canSaveReport}
+                        title={!canSaveReport
+                            ? selectedLanguage === "fi"
+                                ? "Vain raportin omistaja tai luoja voi tallentaa raportin"
+                                : "Only the report owner or creator can save this report"
+                            : undefined}
+                    >
                         {selectedLanguage === "fi" ? "Tallenna" : "Save"}
                     </Button>
                 </div>

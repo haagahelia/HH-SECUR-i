@@ -2,6 +2,7 @@ type AuthenticationResponse = {
 	token: string;
 	username: string;
 	id?: string | number;
+	role: "user" | "admin";
 	message?: string;
 };
 
@@ -40,8 +41,9 @@ export async function authenticateUser(user: { username: string, password: strin
 	if (!data.token || !data.username) {
 		throw new Error("LOGIN_SERVICE_UNAVAILABLE");
 	}
+	if (data.role !== "user" && data.role !== "admin") {
+		throw new Error("INVALID_ROLE");
+	}
 
 	return data as AuthenticationResponse;
 };
-
-
