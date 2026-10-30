@@ -32,7 +32,7 @@ type Field = { key: string; label: string; type?: "text" | "number" | "password"
 const fields: Record<AdminResource, Field[]> = {
     users: [
         { key: "username", label: "Username" },
-        { key: "name", label: "Name" },
+        { key: "email", label: "Email" },
         { key: "role", label: "Role" },
         { key: "password", label: "Password", type: "password" },
     ],
@@ -67,6 +67,7 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
     const { user, token } = useCurrentUser();
     const { selectedLanguage } = useFormAnswers();
     const isFinnish = selectedLanguage === "fi";
+    const supportsMutations = resource === "users";
     const resourceFields = fields[resource];
     const [records, setRecords] = useState<AdminRecord[]>([]);
     const [editing, setEditing] = useState<AdminRecord | null>(null);
@@ -142,40 +143,61 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
                     </Button>
                 </Stack>
                 {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-                <Paper sx={{ p: 2, mb: 3 }}>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                        {editing ? (isFinnish ? "Muokkaa" : "Edit") : (isFinnish ? "Lisää uusi" : "Add new")}
-                    </Typography>
-                    <Box component="form" onSubmit={submit}>
-                        <Stack direction={{ xs: "column", sm: "row" }} flexWrap="wrap" gap={2}>
-                            {resourceFields.map((field) => (
-                                <TextField
-                                    key={field.key}
-                                    label={field.label}
-                                    type={field.type ?? "text"}
-                                    value={form[field.key] ?? ""}
-                                    onChange={(event) => setForm({ ...form, [field.key]: field.type === "number" && event.target.value !== "" ? Number(event.target.value) : event.target.value })}
-                                    sx={{ flex: "1 1 220px" }}
-                                />
-                            ))}
-                        </Stack>
-                        <Stack direction="row" gap={1} sx={{ mt: 2 }}>
-                            <Button type="submit" variant="contained">{isFinnish ? "Tallenna" : "Save"}</Button>
-                            {editing && <Button onClick={startCreate}>{isFinnish ? "Peruuta" : "Cancel"}</Button>}
-                        </Stack>
-                    </Box>
-                </Paper>
+                {supportsMutations ? (
+                    <Paper sx={{ p: 2, mb: 3 }}>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
+                            {editing ? (isFinnish ? "Muokkaa" : "Edit") : (isFinnish ? "Lisää uusi" : "Add new")}
+                        </Typography>
+                        <Box component="form" onSubmit={submit}>
+                            <Stack direction={{ xs: "column", sm: "row" }} flexWrap="wrap" gap={2}>
+                                {resourceFields.map((field) => (
+                                    <TextField
+                                        key={field.key}
+                                        label={field.key === "password" && editing
+                                            ? (isFinnish ? "Salasana (vain uuden käyttäjän luonti)" : "Password (new users only)")
+                                            : field.label}
+                                        type={field.type ?? "text"}
+                                        value={form[field.key] ?? ""}
+                                        disabled={field.key === "password" && Boolean(editing)}
+                                        helperText={field.key === "password" && editing
+                                            ? (isFinnish ? "Salasanan vaihto otetaan käyttöön backendissä myöhemmin." : "Password changes will be enabled when backend hashing is available.")
+                                            : undefined}
+                                        onChange={(event) => setForm({ ...form, [field.key]: event.target.value })}
+                                        sx={{ flex: "1 1 220px" }}
+                                    />
+                                ))}
+                            </Stack>
+                            <Stack direction="row" gap={1} sx={{ mt: 2 }}>
+                                <Button type="submit" variant="contained">{isFinnish ? "Tallenna" : "Save"}</Button>
+                                {editing && <Button onClick={startCreate}>{isFinnish ? "Peruuta" : "Cancel"}</Button>}
+                            </Stack>
+                        </Box>
+                    </Paper>
+                ) : (
+                    <Alert severity="info" sx={{ mb: 3 }}>
+                        {isFinnish
+                            ? "Tietojen lisääminen, muokkaaminen ja poistaminen otetaan käyttöön backend-reittien valmistuttua."
+                            : "Add, edit, and delete actions will be enabled when the backend routes are available."}
+                    </Alert>
+                )}
                 <Paper sx={{ overflowX: "auto" }}>
                     <Table>
-                        <TableHead><TableRow>{columns.map((field) => <TableCell key={field.key}>{field.label}</TableCell>)}<TableCell /></TableRow></TableHead>
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((field) => <TableCell key={field.key}>{field.label}</TableCell>)}
+                                {supportsMutations && <TableCell />}
+                            </TableRow>
+                        </TableHead>
                         <TableBody>
                             {records.map((record) => (
                                 <TableRow key={recordId(record)}>
                                     {columns.map((field) => <TableCell key={field.key}>{String(record[field.key] ?? "")}</TableCell>)}
-                                    <TableCell>
-                                        <Button onClick={() => startEdit(record)}>{isFinnish ? "Muokkaa" : "Edit"}</Button>
-                                        <Button color="error" onClick={() => remove(record)}>{isFinnish ? "Poista" : "Delete"}</Button>
-                                    </TableCell>
+                                    {supportsMutations && (
+                                        <TableCell>
+                                            <Button onClick={() => startEdit(record)}>{isFinnish ? "Muokkaa" : "Edit"}</Button>
+                                            <Button color="error" onClick={() => remove(record)}>{isFinnish ? "Poista" : "Delete"}</Button>
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             ))}
                         </TableBody>

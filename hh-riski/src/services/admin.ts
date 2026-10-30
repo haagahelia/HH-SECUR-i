@@ -7,6 +7,7 @@ const backendUrl =
 export type AdminResource = "users" | "countries" | "organizations";
 
 export type AdminRecord = Record<string, string | number | null | undefined>;
+const mutationResources = new Set<AdminResource>(["users"]);
 
 const getRecords = (data: unknown, resource: AdminResource): AdminRecord[] => {
     if (Array.isArray(data)) return data.filter(isRecord);
@@ -26,6 +27,10 @@ async function request(
     id?: string,
     body?: AdminRecord,
 ): Promise<AdminRecord[]> {
+    if (method !== "GET" && !mutationResources.has(resource)) {
+        throw new Error(`${resource.toUpperCase()}_MUTATIONS_NOT_SUPPORTED`);
+    }
+
     const response = await authenticatedFetch(
         `${backendUrl}/${resource}${id ? `/${encodeURIComponent(id)}` : ""}`,
         token,
