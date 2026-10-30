@@ -49,7 +49,7 @@ const formatDateTime = (isoString: string) => {
 };
 
 const MyAssessmentsPage = () => {
-    const { token } = useCurrentUser();
+    const { user, token } = useCurrentUser();
     const navigate = useNavigate();
 
     const {
@@ -164,6 +164,12 @@ const MyAssessmentsPage = () => {
 
     const deleteAssessment = async (id: number) => {
     if (!token) return;
+    const report = assessments.find((item) => item.id === id);
+    const canManageReport =
+        user?.role === "admin" ||
+        report?.ownername === user?.username ||
+        report?.creatorname === user?.username;
+    if (!canManageReport) return;
     if (!window.confirm(selectedLanguage === "fi" ? "Poistetaanko raportti?" : "Delete this report?")) return;
     try {
         await deleteReport(token, id);
@@ -349,6 +355,10 @@ const MyAssessmentsPage = () => {
                             <TableBody>
                                 {filteredAssessments.map((item) => {
                                     const formatted = formatDateTime(item.created_at);
+                                    const canManageReport =
+                                        user?.role === "admin" ||
+                                        item.ownername === user?.username ||
+                                        item.creatorname === user?.username;
 
                                     return (
                                         <TableRow
@@ -420,15 +430,21 @@ const MyAssessmentsPage = () => {
                                             <TableCell>
                                                 <IconButton
                                                     onClick={() => deleteAssessment(item.id)}
+                                                    disabled={!canManageReport}
+                                                    aria-label={selectedLanguage === "fi" ? "Poista raportti" : "Delete report"}
                                                     sx={{
                                                         width: 42,
                                                         height: 42,
                                                         border: "2px solid #111",
                                                         borderRadius: 0,
                                                         backgroundColor: "#fff",
+                                                        "&.Mui-disabled": {
+                                                            borderColor: "#aaa",
+                                                            backgroundColor: "#eee",
+                                                        },
                                                     }}
                                                 >
-                                                    <DeleteOutline sx={{ color: "#111" }} />
+                                                    <DeleteOutline sx={{ color: canManageReport ? "#111" : "#aaa" }} />
                                                 </IconButton>
                                             </TableCell>
                                         </TableRow>

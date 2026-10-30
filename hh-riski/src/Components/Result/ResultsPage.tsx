@@ -109,6 +109,13 @@ const ResultsPage = () => {
         hhroleother: answers.hhroleother,
         organizationtypeother: answers.organizationtypeother,
     };
+    if (
+        user?.role !== "admin" &&
+        payload.ownerusername !== user?.username &&
+        payload.creatorusername !== user?.username
+    ) {
+        return;
+    }
 
     try {
         if (editingReportId !== null) {
@@ -160,6 +167,10 @@ const ResultsPage = () => {
         collaborationtypeother: cooperationTypeOther,
         additionalinformation: projectDescription
     };
+    const canSaveReport =
+        user?.role === "admin" ||
+        answers.ownername === user?.username ||
+        answers.creatorname === user?.username;
 
     useEffect(() => {
         if (!token) return;
@@ -212,7 +223,15 @@ const ResultsPage = () => {
                         {selectedLanguage === "fi" ? "Muokkaa" : "Edit"}
                     </Button>
                     <Button
-                        onClick={saveAssessment} variant="contained">
+                        onClick={saveAssessment}
+                        variant="contained"
+                        disabled={!canSaveReport}
+                        title={!canSaveReport
+                            ? selectedLanguage === "fi"
+                                ? "Vain raportin omistaja tai luoja voi tallentaa raportin"
+                                : "Only the report owner or creator can save this report"
+                            : undefined}
+                    >
                         {selectedLanguage === "fi" ? "Tallenna" : "Save"}
                     </Button>
                 </div>
