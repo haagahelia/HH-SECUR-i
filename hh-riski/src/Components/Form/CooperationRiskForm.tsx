@@ -74,7 +74,8 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
     setLoadError(false);
 
-    fetchOrganizations(token).then(setOrganizations).catch(() => {
+    fetchOrganizations(token).then(setOrganizations).catch((error) => {
+      console.error("Failed to load organizations", error);
       setOrganizations([]); 
       setLoadError(true);
     });

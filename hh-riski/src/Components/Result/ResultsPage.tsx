@@ -4,7 +4,7 @@ import { useCurrentUser } from "../../context/AuthContext";
 import Navbar from "../Layout/Navbar";
 import { useFormAnswers } from "../../context/FormAnswersContext";
 import { Button, Snackbar, Alert } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
 import styles from "../../styles.module.css";
@@ -53,6 +53,7 @@ const consortiumQuestionData: Question = fetchConsortiumType();
 
 const ResultsPage = () => {
     const { user, token } = useCurrentUser();
+    const navigate = useNavigate();
     const [saveMessageOpen, setSaveMessageOpen] = useState(false);
     const [errorCode, setErrorCode] = useState("");
 
@@ -125,7 +126,7 @@ const ResultsPage = () => {
             setEditingReportId(created.reportDetails.id); // next Save becomes PATCH
         }
         setErrorCode("");
-        setSaveMessageOpen(true);
+        navigate("/my-assessments");
     } catch (error) {
         if (error instanceof ApiError) {
             console.error("Backend said:", error.body);
