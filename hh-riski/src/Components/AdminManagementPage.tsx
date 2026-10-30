@@ -11,6 +11,7 @@ import {
     TableCell,
     TableHead,
     TableRow,
+    MenuItem,
     TextField,
     Typography,
 } from "@mui/material";
@@ -27,13 +28,13 @@ import {
     type AdminResource,
 } from "../services/admin";
 
-type Field = { key: string; label: string; type?: "text" | "number" | "password" };
+type Field = { key: string; label: string; type?: "text" | "number" | "password" | "role" };
 
 const fields: Record<AdminResource, Field[]> = {
     users: [
         { key: "username", label: "Username" },
         { key: "email", label: "Email" },
-        { key: "role", label: "Role" },
+        { key: "role", label: "Role", type: "role" },
         { key: "password", label: "Password", type: "password" },
     ],
     countries: [
@@ -98,7 +99,10 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
 
     const startEdit = (record: AdminRecord) => {
         setEditing(record);
-        setForm({ ...record });
+        setForm({
+            ...record,
+            role: record.role === "user" || record.role === "admin" ? record.role : "",
+        });
         setError("");
     };
 
@@ -157,6 +161,8 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
                                             ? (isFinnish ? "Salasana (vain uuden käyttäjän luonti)" : "Password (new users only)")
                                             : field.label}
                                         type={field.type ?? "text"}
+                                        select={field.type === "role"}
+                                        required={field.key !== "password" || !editing}
                                         value={form[field.key] ?? ""}
                                         disabled={field.key === "password" && Boolean(editing)}
                                         helperText={field.key === "password" && editing
@@ -164,7 +170,12 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
                                             : undefined}
                                         onChange={(event) => setForm({ ...form, [field.key]: event.target.value })}
                                         sx={{ flex: "1 1 220px" }}
-                                    />
+                                    >
+                                        {field.type === "role" && [
+                                            <MenuItem key="user" value="user">User</MenuItem>,
+                                            <MenuItem key="admin" value="admin">Admin</MenuItem>,
+                                        ]}
+                                    </TextField>
                                 ))}
                             </Stack>
                             <Stack direction="row" gap={1} sx={{ mt: 2 }}>

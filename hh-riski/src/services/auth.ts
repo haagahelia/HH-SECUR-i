@@ -38,10 +38,12 @@ export async function authenticateUser(user: { username: string, password: strin
 		throw new Error("LOGIN_SERVICE_UNAVAILABLE");
 	};
 
-	if (!data.token || !data.username || (data.role !== "user" && data.role !== "admin")) {
+	if (!data.token || !data.username) {
 		throw new Error("LOGIN_SERVICE_UNAVAILABLE");
+	}
+	if (data.role !== "user" && data.role !== "admin") {
+		throw new Error("INVALID_ROLE");
 	}
 
 	return data as AuthenticationResponse;
 };
-
