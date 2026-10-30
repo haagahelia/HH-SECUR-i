@@ -20,6 +20,28 @@ const getRecords = (data: unknown, resource: AdminResource): AdminRecord[] => {
 const isRecord = (value: unknown): value is AdminRecord =>
     typeof value === "object" && value !== null && !Array.isArray(value);
 
+const normalizeRecord = (
+    resource: AdminResource,
+    record: AdminRecord,
+): AdminRecord => {
+    if (
+        resource === "organizations" &&
+        typeof record.name === "object" &&
+        record.name !== null &&
+        !Array.isArray(record.name)
+    ) {
+        const name = record.name as Record<string, unknown>;
+        return {
+            ...record,
+            fi: typeof name.fi === "string" ? name.fi : "",
+            en: typeof name.en === "string" ? name.en : "",
+            country_code: record.countryId ?? record.country_code,
+        };
+    }
+
+    return record;
+};
+
 async function request(
     token: string,
     resource: AdminResource,
@@ -47,7 +69,9 @@ async function request(
 
     if (method === "DELETE") return [];
     const data: unknown = await response.json();
-    return getRecords(data, resource);
+    return getRecords(data, resource).map((record) =>
+        normalizeRecord(resource, record),
+    );
 }
 
 export const getAdminRecords = async (
