@@ -1,22 +1,8 @@
 import {
-  fetchConsortiumType,
-  fetchContractInfo,
-  fetchCooperationHistory,
-  fetchCooperationType,
-  fetchDualUse,
-  fetchDuration,
-  fetchEthicsAssessment,
-  fetchFunding,
-  fetchFundingExchange,
-  fetchFundingSource,
-  fetchFundingHistory,
-  fetchHhRole,
-  fetchLiability,
   fetchOrganizations,
   fetchUsers,
-  fetchOrganizationType,
-  fetchPersonalInformation,
   fetchCountries,
+  fetchOptions,
 } from "../../util/fetchData";
 
 import { useEffect, useState } from "react";
@@ -30,7 +16,7 @@ import {
   type ValidationField,
 } from "../../util/validation";
 
-import type { Country, Organization, Question, User } from "../../types";
+import type { Options, Country, Organization, User } from "../../types";
 import styles from "../../styles.module.css";
 
 /* import ProjectInfoSection from "./Sections/ProjectInfoSection"; */
@@ -45,21 +31,6 @@ type CooperationRiskFormProps = {
   language: "fi" | "en";
 };
 
-const hhRoleQuestionData: Question = fetchHhRole();
-const consortiumQuestionData: Question = fetchConsortiumType();
-const historyQuestionData: Question = fetchCooperationHistory();
-const organizationTypeData: Question = fetchOrganizationType();
-const contractInfoData: Question = fetchContractInfo();
-const fundingData: Question = fetchFunding();
-const fundingExchangeData: Question = fetchFundingExchange();
-const fundingSourceData: Question = fetchFundingSource();
-const fundingHistoryData: Question = fetchFundingHistory();
-const liabilityData: Question = fetchLiability();
-const personalData: Question = fetchPersonalInformation();
-const dualUseData: Question = fetchDualUse();
-const ethicsData: Question = fetchEthicsAssessment();
-const durationData: Question = fetchDuration();
-const cooperationTypeData: Question = fetchCooperationType();
 const OTHER_ORGANIZATION_COUNTRY_ID = "OTH";
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
@@ -67,6 +38,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
+  const [options, setOptions] = useState<Options | null>(null);
   const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
@@ -87,6 +59,11 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
     fetchCountries(token).then(setCountries).catch(() => {
       setCountries([]); 
+      setLoadError(true);
+    });
+
+    fetchOptions(token).then(setOptions).catch(() => {
+      setOptions(null); 
       setLoadError(true);
     });
   }, [token]);
@@ -239,7 +216,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("projectName")}
           <TextField
-            label={language === "fi" ? "Projektin nimi" : "Project name"}
+            label={options?.name.placeholder[language]}
             fullWidth
             size="small"
             slotProps={{ htmlInput: { maxLength: 100 } }}
@@ -269,8 +246,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("hhRole")}
           <SingleChoice
-            question={hhRoleQuestionData.question}
-            answers={hhRoleQuestionData.answers}
+            id="hhrole"
+            question={options?.hhrole}
+            answers={options?.hhrole.options}
             language={language}
             value={hhRole}
             onChange={(value) => {
@@ -284,7 +262,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             <>
               {renderFieldError("hhRoleOther")}
               <TextField
-                label={language === "fi" ? "Tarkenna" : "Please specify"}
+                label={options?.hhrole.other.placeholder[language]}
                 fullWidth
                 size="small"
                 slotProps={{ htmlInput: { maxLength: 100 } }}
@@ -298,8 +276,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("consortium")}
           <SingleChoice
-            question={consortiumQuestionData.question}
-            answers={consortiumQuestionData.answers}
+            id="consortium"
+            question={options?.consortium}
+            answers={options?.consortium.options}
             language={language}
             value={consortium}
             onChange={(value) => {
@@ -330,8 +309,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("history")}
           <SingleChoice
-            question={historyQuestionData.question}
-            answers={historyQuestionData.answers}
+            id="history"
+            question={options?.history}
+            answers={options?.history.options}
             language={language}
             value={history}
             onChange={(value) => {
@@ -342,8 +322,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("organizationType")}
           <SingleChoice
-            question={organizationTypeData.question}
-            answers={organizationTypeData.answers}
+            id="organizationtype"
+            question={options?.organizationtype}
+            answers={options?.organizationtype.options}
             language={language}
             value={organizationType}
             onChange={(value) => {
@@ -357,7 +338,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             <>
               {renderFieldError("organizationTypeOther")}
               <TextField
-                label={language === "fi" ? "Tarkenna" : "Please specify"}
+                label={options?.organizationtype.other.placeholder[language]}
                 fullWidth
                 size="small"
                 slotProps={{ htmlInput: { maxLength: 100 } }}
@@ -412,8 +393,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("contractStatus")}
           <SingleChoice
-            question={contractInfoData.question}
-            answers={contractInfoData.answers}
+            id="contract"
+            question={options?.contract}
+            answers={options?.contract.options}
             language={language}
             value={contractStatus}
             onChange={(value) => {
@@ -424,8 +406,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("cooperationType")}
           <MultiChoice
-            question={cooperationTypeData.question}
-            answers={cooperationTypeData.answers}
+            id="cooperationType"
+            question={options?.collaborationtype}
+            answers={options?.collaborationtype.options}
             language={language}
             value={cooperationType}
             onChange={(value) => {
@@ -439,7 +422,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             <>
               {renderFieldError("cooperationTypeOther")}
               <TextField
-                label={language === "fi" ? "Tarkenna" : "Please specify"}
+                label={options?.collaborationtype.other.placeholder[language]}
                 fullWidth
                 size="small"
                 slotProps={{ htmlInput: { maxLength: 100 } }}
@@ -453,8 +436,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("funding")}
           <SingleChoice
-            question={fundingData.question}
-            answers={fundingData.answers}
+            id="funding"
+            question={options?.funding}
+            answers={options?.funding.options}
             language={language}
             value={funding}
             onChange={(value) => {
@@ -472,12 +456,12 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             <li>
               {renderFieldError("exchange")}
               <SingleSelect
-                question={fundingExchangeData.question}
-                answers={fundingExchangeData.answers.map((answer) => ({
-                  id: answer.id,
+                question={options?.funding.exchange.placeholder}
+                answers={options?.funding.exchange.options.map((answer) => ({
+                  id: answer.code,
                   name: { fi: answer.fi, en: answer.en },
                 }))}
-                placeholder={{ fi: "Valitse valuutta", en: "Select currency" }}
+                placeholder={options?.funding.exchange}
                 language={language}
                 value={exchange}
                 onChange={setExchange}
@@ -486,12 +470,12 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             <li>
               {renderFieldError("fundingSource")}
               <SingleSelect
-                question={fundingSourceData.question}
-                answers={fundingSourceData.answers.map((answer) => ({
-                  id: answer.id,
+                question={options?.funding.fundingsource.placeholder}
+                answers={options?.funding.fundingsource.options.map((answer) => ({
+                  id: answer.code,
                   name: { fi: answer.fi, en: answer.en },
                 }))}
-                placeholder={{ fi: "Valitse rahoittajan tyyppi", en: "Select funding organization type" }}
+                placeholder={options?.funding.fundingsource}
                 language={language}
                 value={fundingSource}
                 onChange={setFundingSource}
@@ -500,12 +484,12 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             <li>
               {renderFieldError("fundingHistory")}
               <SingleSelect
-                question={fundingHistoryData.question}
-                answers={fundingHistoryData.answers.map((answer) => ({
-                  id: answer.id,
+                question={options?.funding.fundinghistory.placeholder}
+                answers={options?.funding.fundinghistory.options.map((answer) => ({
+                  id: answer.code,
                   name: { fi: answer.fi, en: answer.en },
                 }))}
-                placeholder={{ fi: "Valitse aiempi historia", en: "Select prior history" }}
+                placeholder={options?.funding.fundinghistory}
                 language={language}
                 value={fundingHistory}
                 onChange={setFundingHistory}
@@ -516,8 +500,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("liability")}
           <SingleChoice
-            question={liabilityData.question}
-            answers={liabilityData.answers}
+            id="liability"
+            question={options?.liability}
+            answers={options?.liability.options}
             language={language}
             value={liability}
             onChange={(value) => {
@@ -528,8 +513,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("personalInformation")}
           <SingleChoice
-            question={personalData.question}
-            answers={personalData.answers}
+            id="personalinformation"
+            question={options?.personalinformation}
+            answers={options?.personalinformation.options}
             language={language}
             value={personalInformation}
             onChange={(value) => {
@@ -540,8 +526,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("dualUse")}
           <SingleChoice
-            question={dualUseData.question}
-            answers={dualUseData.answers}
+            id="dualuse"
+            question={options?.dualuse}
+            answers={options?.dualuse.options}
             language={language}
             value={dualUse}
             onChange={(value) => {
@@ -552,8 +539,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("ethics")}
           <SingleChoice
-            question={ethicsData.question}
-            answers={ethicsData.answers}
+            id="ethics"
+            question={options?.ethics}
+            answers={options?.ethics.options}
             language={language}
             value={ethics}
             onChange={(value) => {
@@ -564,8 +552,9 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
         <li>
           {renderFieldError("duration")}
           <SingleChoice
-            question={durationData.question}
-            answers={durationData.answers}
+            id="duration"
+            question={options?.duration}
+            answers={options?.duration.options}
             language={language}
             value={duration}
             onChange={(value) => {

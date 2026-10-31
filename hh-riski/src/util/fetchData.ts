@@ -1,5 +1,4 @@
-
-import type { Country, CountryApiResponse, Organization, Question, User } from "../types";
+import type { Country, CountryApiResponse, Options, Organization, Question, User } from "../types";
 import { authenticatedFetch } from "./authenticatedFetch";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://hh-secur-be-git-main-hh-secur-i-backend.2.rahtiapp.fi';
@@ -42,6 +41,7 @@ const toOrganization = (value: unknown): Organization | null => {
 
     return null;
 };
+
 const isUser = (value: unknown): value is User => {
     return (
         isRecord(value) &&
@@ -50,6 +50,9 @@ const isUser = (value: unknown): value is User => {
         (value.name === undefined || typeof value.name === "string")
     );
 };
+
+const requiredOptionsDataKeys = ["name", "hhrole", "consortium", "history", "organizationtype", "contract", "collaborationtype", "funding", "liability", "personalinformation", "dualuse", "ethics", "duration", "additionalinformation"];
+
 
 export const fetchOrganizations = async (token: string): Promise<Organization[]> => {
     const response = await authenticatedFetch(`${backendUrl}/organizations`, token, {
@@ -102,6 +105,7 @@ export const fetchUsers = async (token: string): Promise<User[]> => {
     }
     return users;
 }
+
 export const fetchCountries = async (token: string): Promise<Country[]> => {
     const response = await authenticatedFetch(`${backendUrl}/countries`, token, {
         headers: {
@@ -133,6 +137,30 @@ export const fetchCountries = async (token: string): Promise<Country[]> => {
             en: country.en,
         },
     }));
+}
+
+export const fetchOptions = async (token: string): Promise<Options> => {
+    const response = await authenticatedFetch(`${backendUrl}/formcontent`, token, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`OPTIONS_REQUEST_FAILED_${response.status}`);
+    }
+
+    const data: unknown = await response.json();
+
+    if (
+        typeof data !== "object" ||
+        data === null ||
+        !requiredOptionsDataKeys.every(key => Object.hasOwn(data, key))
+    ) {
+        throw new Error("INVALID_OPTIONS_RESPONSE");
+    }
+
+    return data as Options;
 }
 
 //Haaga-Helia role in cooperation

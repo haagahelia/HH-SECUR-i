@@ -1,14 +1,15 @@
 import { Checkbox, FormControl, FormControlLabel, FormLabel } from "@mui/material";
 type Option = {
-    id: string;
+    code: string;
     fi: string;
     en: string;
     [key: string]: any;
 };
 
 type MultiChoiceProps = {
+    id: string;
     question: any;
-    answers: Option[];
+    answers: Option[] | undefined;
     language: string;
     value: string[];
     onChange: (value: string[]) => void;
@@ -16,6 +17,7 @@ type MultiChoiceProps = {
 
 
 const MultiChoice = ({
+    id,
     question,
     answers,
     language,
@@ -31,15 +33,15 @@ const MultiChoice = ({
     };
     return (
         <FormControl>
-            <FormLabel>{question[language]}</FormLabel>
+            <FormLabel>{question?.[language]}</FormLabel>
 
-            {answers.map((option) => (
+            {answers?.map((option) => (
                 <FormControlLabel
-                    key={`${question.id ?? question[language]}-${option.id}`}
+                    key={`${id ?? question[language]}-${option.code}`}
                     control={
                         <Checkbox
-                            checked={value.includes(option.id)}
-                            onChange={() => handleToggle(option.id)}
+                            checked={value.includes(option.code)}
+                            onChange={() => handleToggle(option.code)}
                         />
                     }
                     label={option[language]}

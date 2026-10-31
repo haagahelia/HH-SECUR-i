@@ -1,7 +1,7 @@
 type SingleSelectProps = {
-    question: { fi: string; en: string };
-    placeholder: { fi: string; en: string };
-    answers: { id: string; name: { fi: string; en: string } }[];
+    question: { fi: string; en: string } | undefined;
+    placeholder: { fi: string; en: string } | undefined;
+    answers: { id: string; name: { fi: string; en: string } }[] | undefined;
     language: "fi" | "en";
     value: string;
     onChange: (value: string) => void;
@@ -17,19 +17,19 @@ const SingleSelect = ({
     value,
     onChange,
 }: SingleSelectProps) => {
-    const label = question[language];
+    const label = question?.[language];
 
     return (
         <FormControl fullWidth size="small">
             <InputLabel>{label}</InputLabel>
             <Select
                 label={label}
-                value={value}
+                value={answers?.some(answer => answer.id === value) ? value : ""}
                 onChange={(event) => onChange(event.target.value)}
             >
-                <MenuItem value="">{placeholder[language]}</MenuItem>
+                <MenuItem value="">{placeholder?.[language]}</MenuItem>
 
-                {answers.map((answer) => (
+                {answers?.map((answer) => (
                     <MenuItem key={answer.id} value={answer.id}>
                         {answer.name[language]}
                     </MenuItem>

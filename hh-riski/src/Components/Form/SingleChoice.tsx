@@ -1,14 +1,16 @@
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
 
 type SingleChoiceProps = {
+    id: string;
     question: any;
-    answers: any[];
+    answers: any[] | undefined;
     language: "fi" | "en";
     value: string;
     onChange: (value: string) => void;
 };
 
 const SingleChoice = ({
+    id,
     question,
     answers,
     language,
@@ -21,17 +23,17 @@ const SingleChoice = ({
     return (
         <div>
             <FormControl>
-                <FormLabel id={`single-choice- ${question}`}>{question[language]}</FormLabel>
+                <FormLabel id={`single-choice-${id}`}>{question?.[language]}</FormLabel>
                 <RadioGroup
-                    aria-labelledby={`controlled-radio-buttons-group-${question}`}
-                    name={`controlled-radio-buttons-group-${question}`}
+                    aria-labelledby={`controlled-radio-buttons-group-${id}`}
+                    name={`controlled-radio-buttons-group-${id}`}
                     value={value}
                     onChange={handleChange}
                 >
-                    {answers.map((singleOption: any) => (
+                    {answers?.map((singleOption: any) => (
                         <FormControlLabel
-                            key={`${question.id ?? question[language]}-${singleOption.id}`}
-                            value={singleOption.id}
+                            key={`${id ?? question[language]}-${singleOption.code}`}
+                            value={singleOption.code}
                             control={<Radio />}
                             label={singleOption[language]}
                         />
