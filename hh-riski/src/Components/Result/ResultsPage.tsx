@@ -353,32 +353,34 @@ const ResultsPage = () => {
                                     value={funding}
                                 />
                             </li>
-
-                            <li>
-                                <SingleQuestionSummary
-                                    question={options?.funding.exchange.placeholder}
-                                    answers={options?.funding.exchange.options}
-                                    language={selectedLanguage}
-                                    value={exchange}
-                                />
-                            </li>
-                            <li>
-                                <SingleQuestionSummary
-                                    question={options?.funding.fundingsource.placeholder}
-                                    answers={options?.funding.fundingsource.options}
-                                    language={selectedLanguage}
-                                    value={fundingSource}
-                                />
-                            </li>
-                            <li>
-                                <SingleQuestionSummary
-                                    question={options?.funding.fundinghistory.placeholder}
-                                    answers={options?.funding.fundinghistory.options}
-                                    language={selectedLanguage}
-                                    value={fundingHistory}
-                                />
-                            </li>
-
+                            {funding === "option1" && (     
+                            <>          
+                                <li>
+                                    <SingleQuestionSummary
+                                        question={options?.funding.exchange.placeholder}
+                                        answers={options?.funding.exchange.options}
+                                        language={selectedLanguage}
+                                        value={exchange}
+                                    />
+                                </li>
+                                <li>
+                                    <SingleQuestionSummary
+                                        question={options?.funding.fundingsource.placeholder}
+                                        answers={options?.funding.fundingsource.options}
+                                        language={selectedLanguage}
+                                        value={fundingSource}
+                                    />
+                                </li>
+                                <li>
+                                    <SingleQuestionSummary
+                                        question={options?.funding.fundinghistory.placeholder}
+                                        answers={options?.funding.fundinghistory.options}
+                                        language={selectedLanguage}
+                                        value={fundingHistory}
+                                    />
+                                </li>
+                            </>
+                            )}
                             <li>
                                 <SingleQuestionSummary
                                     question={options?.liability}
