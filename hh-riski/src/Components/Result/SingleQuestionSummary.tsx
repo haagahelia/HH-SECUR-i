@@ -1,8 +1,6 @@
-import { useState } from "react";
-
 type SingleQuestionSummaryProps = {
     question: any;
-    answers: any[];
+    answers: any[] | undefined;
     language: "fi" | "en";
     value: string;
 };
@@ -13,11 +11,10 @@ const SingleQuestionSummary = ({
     language,
     value,
 }: SingleQuestionSummaryProps) => {
-    const [selectedAnswer, setSelectedAnswer] = useState(answers.find((answer) => answer.id === value))
-
+    const selectedAnswer = answers?.find((answer) => answer.code === value);
     return (
         <>
-            <p><b>{question[language]}</b></p>
+            <p><b>{question?.[language]}</b></p>
             {selectedAnswer &&
                 <p>{selectedAnswer[language]}</p>
             }

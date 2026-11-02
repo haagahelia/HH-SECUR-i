@@ -1,6 +1,6 @@
 type MultiQuestionSummaryProps = {
   question: any;
-  answers: any[];
+  answers: any[] |undefined;
   language: "fi" | "en";
   values: string[];
 };
@@ -11,18 +11,18 @@ const MultiQuestionSummary = ({
   language,
   values,
 }: MultiQuestionSummaryProps) => {
-  const selectedAnswers = answers.filter((answer) =>
-    values.includes(answer.id)
+  const selectedAnswers = answers?.filter((answer) =>
+    values.includes(answer.code)
   );
 
   return (
     <>
-      <p><b>{question[language]}</b></p>
+      <p><b>{question?.[language]}</b></p>
 
-      {selectedAnswers.length > 0 ? (
+      {selectedAnswers && selectedAnswers.length > 0 ? (
         <ul>
-          {selectedAnswers.map((answer) => (
-            <li key={answer.id}>{answer[language]}</li>
+          {selectedAnswers?.map((answer) => (
+            <li key={answer.code}>{answer[language]}</li>
           ))}
         </ul>
       ) : (
