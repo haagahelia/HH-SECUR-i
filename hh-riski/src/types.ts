@@ -2,6 +2,7 @@ export type User = {
     id?: string | number,
     username: string,
     name?: string,
+    role?: "user" | "admin",
 }
 
 export type RiskCalculationRequest = {
@@ -26,6 +27,8 @@ export type RiskCalculationRequest = {
     ethics: string;
     duration: string;
     organizationname?: string;
+    hhroleother?: string;
+    organizationtypeother?: string;
     collaborationtypeother?: string;
     additionalinformation?: string;
 }
@@ -286,6 +289,438 @@ export type Organization = {
         en: string
     }
     countryId: string
+}
+
+export type Options = {
+    name: {
+        type: string,
+        placeholder: {
+            fi: string,
+            en: string
+        }
+    },
+    hhrole: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ],
+        other: {
+            type: string,
+            placeholder: {
+                fi: string,
+                en: string
+            }
+        }
+    },
+    consortium: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ]
+    },
+    history: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ]
+    },
+    organizationtype: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ],
+        other: {
+            type: string,
+            placeholder: {
+                fi: string,
+                en: string
+            }
+        }
+    },
+    contract: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ]
+    },
+    collaborationtype: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ],
+        other: {
+            type: string,
+            placeholder: {
+                fi: string,
+                en: string
+            }
+        }
+    },
+    funding: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ],
+        exchange: {
+            type: string,
+            fi: string,
+            en: string,
+            options: [
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                },
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                },
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                }
+            ],
+            placeholder: {
+                fi: string,
+                en: string
+            }
+        },
+        fundingsource: {
+            type: string,
+            fi: string,
+            en: string,
+            options: [
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                },
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                },
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                },
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                },
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                },
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                },
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                },
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                }
+            ],
+            placeholder: {
+                fi: string,
+                en: string
+            }
+        },
+        fundinghistory: {
+            type: string,
+            fi: string,
+            en: string,
+            options: [
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                },
+                {
+                    code: string,
+                    fi: string,
+                    en: string
+                }
+            ],
+            placeholder: {
+                fi: string,
+                en: string
+            }
+        }
+    },
+    liability: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en:string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ]
+    },
+    personalinformation: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ]
+    },
+    dualuse: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ]
+    },
+    ethics: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ]
+    },
+    duration: {
+        type: string,
+        fi: string,
+        en: string,
+        options: [
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            },
+            {
+                code: string,
+                fi: string,
+                en: string
+            }
+        ]
+    },
+    additionalinformation: {
+        type: string,
+        fi: string,
+        en: string,
+        placeholder: {
+            fi: string,
+            en: string
+        }
+    }
 }
 
 export type Question = {

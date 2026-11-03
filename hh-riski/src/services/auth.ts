@@ -2,13 +2,13 @@ type AuthenticationResponse = {
 	token: string;
 	username: string;
 	id?: string | number;
+	role: "user" | "admin";
 	message?: string;
 };
 
 const url = import.meta.env.VITE_BACKEND_URL || 'https://hh-secur-be-git-main-hh-secur-i-backend.2.rahtiapp.fi';
 
 export async function authenticateUser(user: { username: string, password: string }): Promise<AuthenticationResponse> {
-	// TODO: Place port into an env. file
 	let response: Response;
 	try {
 		response = await fetch(`${url}/login`, {
@@ -40,8 +40,9 @@ export async function authenticateUser(user: { username: string, password: strin
 	if (!data.token || !data.username) {
 		throw new Error("LOGIN_SERVICE_UNAVAILABLE");
 	}
+	if (data.role !== "user" && data.role !== "admin") {
+		throw new Error("INVALID_ROLE");
+	}
 
 	return data as AuthenticationResponse;
 };
-
-

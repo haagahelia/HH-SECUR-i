@@ -17,7 +17,7 @@ const UserPage = () => {
 
 	return (
 		<>
-			<Navbar language={selectedLanguage} setLanguage={setSelectedLanguage} />
+			<Navbar />
 			<Box component="section" aria-labelledby="user-title" sx={{ maxWidth: 640, mx: "auto" }}>
 				<Typography id="user-title" component="h1" variant="h4" sx={{ mb: 3 }}>
 					{isFinnish ? "Käyttäjä" : "User"}

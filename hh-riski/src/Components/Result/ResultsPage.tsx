@@ -4,56 +4,26 @@ import { useCurrentUser } from "../../context/AuthContext";
 import Navbar from "../Layout/Navbar";
 import { useFormAnswers } from "../../context/FormAnswersContext";
 import { Button, Snackbar, Alert } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { West } from "@mui/icons-material";
 
 import styles from "../../styles.module.css";
-import type { RiskCalculationRequest, Question, RiskCalculationResponse } from "../../types";
-
-import {
-    fetchConsortiumType,
-    fetchContractInfo,
-    fetchCooperationHistory,
-    fetchCooperationType,
-    fetchDualUse,
-    fetchDuration,
-    fetchEthicsAssessment,
-    fetchFunding,
-    fetchFundingExchange,
-    fetchFundingSource,
-    fetchFundingHistory,
-    fetchHhRole,
-    fetchLiability,
-    fetchOrganizationType,
-    fetchPersonalInformation,
-} from "../../util/fetchData";
+import type { RiskCalculationRequest, Question, RiskCalculationResponse, Options } from "../../types";
 
 import SingleQuestionSummary from "./SingleQuestionSummary";
 import MultiQuestionSummary from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
 import { calculateRisk } from "../../services/riskCalculation";
+import { createReport, ApiError, updateReport } from "../../services/reports";
 import { i18n } from "../../util/translations";
-
-const hhRoleQuestionData: Question = fetchHhRole();
-const historyQuestionData: Question = fetchCooperationHistory();
-const organizationTypeData: Question = fetchOrganizationType();
-const contractInfoData: Question = fetchContractInfo();
-const fundingData: Question = fetchFunding();
-const fundingExchangeData: Question = fetchFundingExchange();
-const fundingSourceData: Question = fetchFundingSource();
-const fundingHistoryData: Question = fetchFundingHistory();
-const liabilityData: Question = fetchLiability();
-const personalData: Question = fetchPersonalInformation();
-const dualUseData: Question = fetchDualUse();
-const ethicsData: Question = fetchEthicsAssessment();
-const durationData: Question = fetchDuration();
-const cooperationTypeData: Question = fetchCooperationType();
-const consortiumQuestionData: Question = fetchConsortiumType();
+import { fetchOptions } from "../../util/fetchData";
 
 const ResultsPage = () => {
     const { user, token } = useCurrentUser();
+    const navigate = useNavigate();
     const [saveMessageOpen, setSaveMessageOpen] = useState(false);
     const [errorCode, setErrorCode] = useState("");
+    const [options, setOptions] = useState<Options | null>(null);
 
     const {
         selectedLanguage,
@@ -83,67 +53,59 @@ const ResultsPage = () => {
         cooperationTypeOther,
         duration,
         clearAnswers,
+        editingReportId,
+        setEditingReportId
     } = useFormAnswers();
 
     const t = i18n[selectedLanguage].riskAssessment
 
     const errorMessage = {
-        "AUTHENTICATION_ERROR": t.authFail,
-        "INVALID_REQUEST_BODY": t.fetchFail
+    "AUTHENTICATION_ERROR": t.authFail,
+    "INVALID_REQUEST_BODY": t.fetchFail,
+    "DUPLICATE_NAME": selectedLanguage === "fi"
+        ? "Tämän niminen raportti on jo olemassa. Valitse toinen nimi."
+        : "A report with this name already exists. Please choose another name.",
     }[errorCode] || t.unknown
 
-    const saveAssessment = () => {
-        if (!user) return;
+    const saveAssessment = async () => {
+    if (!token) return;
 
-        const riskLevel = results?.collaboration.risk ?? 0;
-
-        const data = {
-            id: crypto.randomUUID(),
-            createdAt: new Date().toISOString(),
-            riskLevel,
-
-            projectName,
-            projectDescription,
-            selectedCountry,
-            selectedOrganization,
-            organizationName,
-            selectedProjectOwner,
-            duration,
-            hhRole,
-            hhRoleOther,
-            consortium,
-            history,
-            organizationType,
-            organizationTypeOther,
-            contractStatus,
-            funding,
-            exchange,
-            fundingSource,
-            fundingHistory,
-            liability,
-            personalInformation,
-            dualUse,
-            ethics,
-            cooperationType,
-            cooperationTypeOther,
-            selectedLanguage,
-
-            savedBy: {
-                id: user.id,
-                username: user.username,
-            },
-        };
-
-        const existing = JSON.parse(localStorage.getItem("assessments") || "[]");
-
-        localStorage.setItem(
-            "assessments",
-            JSON.stringify([...existing, data])
-        );
-
-        console.log("Saved assessment:", data);
-        setSaveMessageOpen(true);
+    const payload = {
+        ...answers,
+        ownerusername: answers.ownername || user?.username,
+        creatorusername: answers.creatorname,
+        organizationother: answers.organizationname,
+        hhroleother: answers.hhroleother,
+        organizationtypeother: answers.organizationtypeother,
     };
+    if (
+        user?.role !== "admin" &&
+        payload.ownerusername !== user?.username &&
+        payload.creatorusername !== user?.username
+    ) {
+        return;
+    }
+
+    try {
+        if (editingReportId !== null) {
+            await updateReport(token, editingReportId, payload);
+        } else {
+            const created = await createReport(token, payload);
+            setEditingReportId(created.reportDetails.id); // next Save becomes PATCH
+        }
+        setErrorCode("");
+        navigate("/my-assessments");
+    } catch (error) {
+        if (error instanceof ApiError) {
+            console.error("Backend said:", error.body);
+            if (error.body?.details?.[0]?.type === "unique violation") {
+                setErrorCode("DUPLICATE_NAME");
+                return;
+            }
+        }
+        setErrorCode("UNKNOWN_ERROR");
+    }
+};
 
     const [results, setResults] = useState<RiskCalculationResponse>();
 
@@ -169,14 +131,24 @@ const ResultsPage = () => {
         ethics: ethics,
         duration: duration,
         organizationname: selectedOrganization?.countryId === "OTH" ? organizationName : undefined,
+        hhroleother: hhRoleOther,
+        organizationtypeother: organizationTypeOther,
         collaborationtypeother: cooperationTypeOther,
         additionalinformation: projectDescription
     };
+    const canSaveReport =
+        user?.role === "admin" ||
+        answers.ownername === user?.username ||
+        answers.creatorname === user?.username;
 
     useEffect(() => {
         if (!token) return;
 
         handleCalculateRisk(token)
+
+        fetchOptions(token).then(setOptions).catch(() => {
+              setOptions(null); 
+        });
     }, [token]);
 
     async function handleCalculateRisk(token: string) {
@@ -193,14 +165,10 @@ const ResultsPage = () => {
             console.error("Failed to calculate risk");
         }
     };
-    console.log(answers)
 
     return (
         <>
-            <Navbar
-                language={selectedLanguage}
-                setLanguage={setSelectedLanguage}
-            />
+            <Navbar />
 
             {errorCode && <Alert severity="error">{errorMessage}</Alert>}
 
@@ -227,7 +195,15 @@ const ResultsPage = () => {
                         {selectedLanguage === "fi" ? "Muokkaa" : "Edit"}
                     </Button>
                     <Button
-                        onClick={saveAssessment} variant="contained">
+                        onClick={saveAssessment}
+                        variant="contained"
+                        disabled={!canSaveReport}
+                        title={!canSaveReport
+                            ? selectedLanguage === "fi"
+                                ? "Vain raportin omistaja tai luoja voi tallentaa raportin"
+                                : "Only the report owner or creator can save this report"
+                            : undefined}
+                    >
                         {selectedLanguage === "fi" ? "Tallenna" : "Save"}
                     </Button>
                 </div>
@@ -283,8 +259,8 @@ const ResultsPage = () => {
 
                             <li>
                                 <SingleQuestionSummary
-                                    question={hhRoleQuestionData.question}
-                                    answers={hhRoleQuestionData.answers}
+                                    question={options?.hhrole}
+                                    answers={options?.hhrole.options}
                                     language={selectedLanguage}
                                     value={hhRole}
                                 />
@@ -295,8 +271,8 @@ const ResultsPage = () => {
 
                             <li>
                                 <MultiQuestionSummary
-                                    question={cooperationTypeData.question}
-                                    answers={cooperationTypeData.answers}
+                                    question={options?.collaborationtype}
+                                    answers={options?.collaborationtype.options}
                                     language={selectedLanguage}
                                     values={cooperationType}
                                 />
@@ -307,8 +283,8 @@ const ResultsPage = () => {
 
                             <li>
                                 <SingleQuestionSummary
-                                    question={consortiumQuestionData.question}
-                                    answers={consortiumQuestionData.answers}
+                                    question={options?.consortium}
+                                    answers={options?.consortium.options}
                                     language={selectedLanguage}
                                     value={consortium}
                                 />
@@ -321,8 +297,8 @@ const ResultsPage = () => {
 
                             <li>
                                 <SingleQuestionSummary
-                                    question={historyQuestionData.question}
-                                    answers={historyQuestionData.answers}
+                                    question={options?.history}
+                                    answers={options?.history.options}
                                     language={selectedLanguage}
                                     value={history}
                                 />
@@ -330,8 +306,8 @@ const ResultsPage = () => {
 
                             <li>
                                 <SingleQuestionSummary
-                                    question={organizationTypeData.question}
-                                    answers={organizationTypeData.answers}
+                                    question={options?.organizationtype}
+                                    answers={options?.organizationtype.options}
                                     language={selectedLanguage}
                                     value={organizationType}
                                 />
@@ -353,8 +329,8 @@ const ResultsPage = () => {
 
                             <li>
                                 <SingleQuestionSummary
-                                    question={contractInfoData.question}
-                                    answers={contractInfoData.answers}
+                                    question={options?.contract}
+                                    answers={options?.contract.options}
                                     language={selectedLanguage}
                                     value={contractStatus}
                                 />
@@ -362,8 +338,8 @@ const ResultsPage = () => {
 
                             <li>
                                 <SingleQuestionSummary
-                                    question={durationData.question}
-                                    answers={durationData.answers}
+                                    question={options?.duration}
+                                    answers={options?.duration.options}
                                     language={selectedLanguage}
                                     value={duration}
                                 />
@@ -371,42 +347,44 @@ const ResultsPage = () => {
 
                             <li>
                                 <SingleQuestionSummary
-                                    question={fundingData.question}
-                                    answers={fundingData.answers}
+                                    question={options?.funding}
+                                    answers={options?.funding.options}
                                     language={selectedLanguage}
                                     value={funding}
                                 />
                             </li>
-
+                            {funding === "option1" && (     
+                            <>          
+                                <li>
+                                    <SingleQuestionSummary
+                                        question={options?.funding.exchange.placeholder}
+                                        answers={options?.funding.exchange.options}
+                                        language={selectedLanguage}
+                                        value={exchange}
+                                    />
+                                </li>
+                                <li>
+                                    <SingleQuestionSummary
+                                        question={options?.funding.fundingsource.placeholder}
+                                        answers={options?.funding.fundingsource.options}
+                                        language={selectedLanguage}
+                                        value={fundingSource}
+                                    />
+                                </li>
+                                <li>
+                                    <SingleQuestionSummary
+                                        question={options?.funding.fundinghistory.placeholder}
+                                        answers={options?.funding.fundinghistory.options}
+                                        language={selectedLanguage}
+                                        value={fundingHistory}
+                                    />
+                                </li>
+                            </>
+                            )}
                             <li>
                                 <SingleQuestionSummary
-                                    question={fundingExchangeData.question}
-                                    answers={fundingExchangeData.answers}
-                                    language={selectedLanguage}
-                                    value={exchange}
-                                />
-                            </li>
-                            <li>
-                                <SingleQuestionSummary
-                                    question={fundingSourceData.question}
-                                    answers={fundingSourceData.answers}
-                                    language={selectedLanguage}
-                                    value={fundingSource}
-                                />
-                            </li>
-                            <li>
-                                <SingleQuestionSummary
-                                    question={fundingHistoryData.question}
-                                    answers={fundingHistoryData.answers}
-                                    language={selectedLanguage}
-                                    value={fundingHistory}
-                                />
-                            </li>
-
-                            <li>
-                                <SingleQuestionSummary
-                                    question={liabilityData.question}
-                                    answers={liabilityData.answers}
+                                    question={options?.liability}
+                                    answers={options?.liability.options}
                                     language={selectedLanguage}
                                     value={liability}
                                 />
@@ -414,8 +392,8 @@ const ResultsPage = () => {
 
                             <li>
                                 <SingleQuestionSummary
-                                    question={personalData.question}
-                                    answers={personalData.answers}
+                                    question={options?.personalinformation}
+                                    answers={options?.personalinformation.options}
                                     language={selectedLanguage}
                                     value={personalInformation}
                                 />
@@ -423,8 +401,8 @@ const ResultsPage = () => {
 
                             <li>
                                 <SingleQuestionSummary
-                                    question={dualUseData.question}
-                                    answers={dualUseData.answers}
+                                    question={options?.dualuse}
+                                    answers={options?.dualuse.options}
                                     language={selectedLanguage}
                                     value={dualUse}
                                 />
@@ -432,8 +410,8 @@ const ResultsPage = () => {
 
                             <li>
                                 <SingleQuestionSummary
-                                    question={ethicsData.question}
-                                    answers={ethicsData.answers}
+                                    question={options?.ethics}
+                                    answers={options?.ethics.options}
                                     language={selectedLanguage}
                                     value={ethics}
                                 />

@@ -34,9 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const login = (userData: User, userToken: string) => {
 		setSessionExpired(false);
-		setUser({
-			username: userData.username
-		});
+		setUser(userData);
 		setToken(userToken)
 		localStorage.setItem("user", JSON.stringify(userData));
 		localStorage.setItem("token", (userToken));
