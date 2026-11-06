@@ -1,0 +1,70 @@
+# Builds the hh-riski frontend and deploys it to the Azure Storage static website
+# (storage account: hhsecurifrontend, container: $web) whenever dev is updated.
+#
+# Required repository settings (Settings -> Secrets and variables -> Actions):
+#   Secret   AZURE_STORAGE_CONNECTION_STRING  connection string of the hhsecurifrontend storage account
+#   Variable VITE_BACKEND_URL                 backend URL baked into the build (optional for now)
+
+name: Deploy frontend to Azure (dev)
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - "hh-riski/**"
+      - ".github/workflows/azure-frontend-dev.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: azure-frontend-dev
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hh-riski
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: hh-riski/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
+
+      - name: Upload to Azure Storage ($web)
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+        run: |
+          # Hashed assets can be cached for a long time
+          az storage blob upload-batch \
+            --destination '$web' \
+            --source dist \
+            --overwrite \
+            --content-cache-control "public, max-age=31536000, immutable" \
+            --only-show-errors
+          # index.html must never be cached, so users always get the newest build
+          az storage blob upload \
+            --container-name '$web' \
+            --file dist/index.html \
+            --name index.html \
+            --overwrite \
+            --content-type "text/html" \
+            --content-cache-control "no-cache" \
+            --only-show-errors
+
+      - name: Show site URL
+        run: echo "Deployed to https://hhsecurifrontend.z1.web.core.windows.net/"
