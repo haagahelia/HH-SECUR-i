@@ -139,7 +139,14 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
             load();
         } catch (e) {
             console.error(`Failed to save ${resource}`, e);
-            setError(isFinnish ? "Tallennus epäonnistui." : "Failed to save changes.");
+            const message = e instanceof Error ? e.message : "";
+            setError(
+                message && !message.startsWith(`${resource.toUpperCase()}_REQUEST_FAILED_`)
+                    ? message
+                    : isFinnish
+                        ? "Tallennus epäonnistui."
+                        : "Failed to save changes.",
+            );
         }
     };
 
@@ -150,7 +157,14 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
             setRecords((current) => current.filter((item) => recordId(item) !== recordId(record)));
         } catch (e) {
             console.error(`Failed to delete ${resource}`, e);
-            setError(isFinnish ? "Poisto epäonnistui." : "Failed to delete record.");
+            const message = e instanceof Error ? e.message : "";
+            setError(
+                message && !message.startsWith(`${resource.toUpperCase()}_REQUEST_FAILED_`)
+                    ? message
+                    : isFinnish
+                        ? "Poisto epäonnistui."
+                        : "Failed to delete record.",
+            );
         }
     };
 
