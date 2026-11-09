@@ -6,8 +6,12 @@ const backendUrl =
 
 export type AdminResource = "users" | "countries" | "organizations";
 
-export type AdminRecord = Record<string, string | number | null | undefined>;
-const mutationResources = new Set<AdminResource>(["users"]);
+export type AdminRecord = Record<string, string | number | boolean | null | undefined>;
+const mutationResources = new Set<AdminResource>([
+    "users",
+    "countries",
+    "organizations",
+]);
 
 const getRecords = (data: unknown, resource: AdminResource): AdminRecord[] => {
     if (Array.isArray(data)) return data.filter(isRecord);
@@ -64,7 +68,21 @@ async function request(
     );
 
     if (!response.ok) {
-        throw new Error(`${resource.toUpperCase()}_REQUEST_FAILED_${response.status}`);
+        let message = `${resource.toUpperCase()}_REQUEST_FAILED_${response.status}`;
+        try {
+            const errorData: unknown = await response.json();
+            if (
+                typeof errorData === "object" &&
+                errorData !== null &&
+                "message" in errorData &&
+                typeof errorData.message === "string"
+            ) {
+                message = errorData.message;
+            }
+        } catch {
+            // Keep the status-based message when the backend returns no JSON.
+        }
+        throw new Error(message);
     }
 
     if (method === "DELETE") return [];

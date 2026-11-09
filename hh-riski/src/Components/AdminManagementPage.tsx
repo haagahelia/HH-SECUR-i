@@ -28,7 +28,12 @@ import {
     type AdminResource,
 } from "../services/admin";
 
-type Field = { key: string; label: string; type?: "text" | "number" | "password" | "role" };
+type Field = {
+    key: string;
+    label: string;
+    type?: "text" | "number" | "password" | "role" | "boolean";
+    requestKey?: string;
+};
 
 const fields: Record<AdminResource, Field[]> = {
     users: [
@@ -41,20 +46,21 @@ const fields: Record<AdminResource, Field[]> = {
         { key: "code", label: "Code" },
         { key: "fi", label: "Finnish name" },
         { key: "en", label: "English name" },
-        { key: "dataYear", label: "Data year", type: "number" },
+        { key: "dataYear", requestKey: "datayear", label: "Data year", type: "number" },
         { key: "corruption", label: "Corruption", type: "number" },
         { key: "security", label: "Security", type: "number" },
-        { key: "academicFreedom", label: "Academic freedom", type: "number" },
-        { key: "politicalStability", label: "Political stability", type: "number" },
+        { key: "academicFreedom", requestKey: "academicfreedom", label: "Academic freedom", type: "number" },
+        { key: "politicalStability", requestKey: "politicalstability", label: "Political stability", type: "number" },
         { key: "development", label: "Development", type: "number" },
         { key: "gdpr", label: "GDPR", type: "number" },
         { key: "sanctions", label: "Sanctions", type: "number" },
-        { key: "ruleOfLaw", label: "Rule of law", type: "number" },
+        { key: "ruleOfLaw", requestKey: "ruleoflaw", label: "Rule of law", type: "number" },
     ],
     organizations: [
         { key: "fi", label: "Finnish name" },
         { key: "en", label: "English name" },
-        { key: "country_code", label: "Country code" },
+        { key: "country_code", requestKey: "countrycode", label: "Country code" },
+        { key: "manuallyAdded", requestKey: "addedmanually", label: "Manually added", type: "boolean" },
     ],
 };
 
@@ -68,7 +74,6 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
     const { user, token } = useCurrentUser();
     const { selectedLanguage } = useFormAnswers();
     const isFinnish = selectedLanguage === "fi";
-    const supportsMutations = resource === "users";
     const resourceFields = fields[resource];
     const [records, setRecords] = useState<AdminRecord[]>([]);
     const [editing, setEditing] = useState<AdminRecord | null>(null);
@@ -102,6 +107,7 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
         setForm({
             ...record,
             role: record.role === "user" || record.role === "admin" ? record.role : "",
+            manuallyAdded: String(record.manuallyAdded ?? false),
         });
         setError("");
     };
@@ -110,10 +116,22 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
         event.preventDefault();
         if (!token) return;
         try {
+            const payload = Object.fromEntries(
+                resourceFields
+                    .filter((field) => form[field.key] !== undefined && form[field.key] !== "")
+                    .map((field) => [
+                        field.requestKey ?? field.key,
+                        field.type === "number"
+                            ? Number(form[field.key])
+                            : field.type === "boolean"
+                                ? form[field.key] === "true"
+                                : form[field.key],
+                    ]),
+            );
             if (editing) {
-                await updateAdminRecord(token, resource, recordId(editing), form);
+                await updateAdminRecord(token, resource, recordId(editing), payload);
             } else {
-                await createAdminRecord(token, resource, form);
+                await createAdminRecord(token, resource, payload);
             }
             setEditing(null);
             setForm({});
@@ -121,7 +139,14 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
             load();
         } catch (e) {
             console.error(`Failed to save ${resource}`, e);
-            setError(isFinnish ? "Tallennus epäonnistui." : "Failed to save changes.");
+            const message = e instanceof Error ? e.message : "";
+            setError(
+                message && !message.startsWith(`${resource.toUpperCase()}_REQUEST_FAILED_`)
+                    ? message
+                    : isFinnish
+                        ? "Tallennus epäonnistui."
+                        : "Failed to save changes.",
+            );
         }
     };
 
@@ -132,7 +157,14 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
             setRecords((current) => current.filter((item) => recordId(item) !== recordId(record)));
         } catch (e) {
             console.error(`Failed to delete ${resource}`, e);
-            setError(isFinnish ? "Poisto epäonnistui." : "Failed to delete record.");
+            const message = e instanceof Error ? e.message : "";
+            setError(
+                message && !message.startsWith(`${resource.toUpperCase()}_REQUEST_FAILED_`)
+                    ? message
+                    : isFinnish
+                        ? "Poisto epäonnistui."
+                        : "Failed to delete record.",
+            );
         }
     };
 
@@ -147,8 +179,7 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
                     </Button>
                 </Stack>
                 {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-                {supportsMutations ? (
-                    <Paper sx={{ p: 2, mb: 3 }}>
+                <Paper sx={{ p: 2, mb: 3 }}>
                         <Typography variant="h6" sx={{ mb: 2 }}>
                             {editing ? (isFinnish ? "Muokkaa" : "Edit") : (isFinnish ? "Lisää uusi" : "Add new")}
                         </Typography>
@@ -161,7 +192,7 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
                                             ? (isFinnish ? "Salasana (vain uuden käyttäjän luonti)" : "Password (new users only)")
                                             : field.label}
                                         type={field.type ?? "text"}
-                                        select={field.type === "role"}
+                                        select={field.type === "role" || field.type === "boolean"}
                                         required={field.key !== "password" || !editing}
                                         value={form[field.key] ?? ""}
                                         disabled={field.key === "password" && Boolean(editing)}
@@ -175,6 +206,10 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
                                             <MenuItem key="user" value="user">User</MenuItem>,
                                             <MenuItem key="admin" value="admin">Admin</MenuItem>,
                                         ]}
+                                        {field.type === "boolean" && [
+                                            <MenuItem key="true" value="true">Yes</MenuItem>,
+                                            <MenuItem key="false" value="false">No</MenuItem>,
+                                        ]}
                                     </TextField>
                                 ))}
                             </Stack>
@@ -183,32 +218,23 @@ const AdminManagementPage = ({ resource }: { resource: AdminResource }) => {
                                 {editing && <Button onClick={startCreate}>{isFinnish ? "Peruuta" : "Cancel"}</Button>}
                             </Stack>
                         </Box>
-                    </Paper>
-                ) : (
-                    <Alert severity="info" sx={{ mb: 3 }}>
-                        {isFinnish
-                            ? "Tietojen lisääminen, muokkaaminen ja poistaminen otetaan käyttöön backend-reittien valmistuttua."
-                            : "Add, edit, and delete actions will be enabled when the backend routes are available."}
-                    </Alert>
-                )}
+                </Paper>
                 <Paper sx={{ overflowX: "auto" }}>
                     <Table>
                         <TableHead>
                             <TableRow>
                                 {columns.map((field) => <TableCell key={field.key}>{field.label}</TableCell>)}
-                                {supportsMutations && <TableCell />}
+                                <TableCell />
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {records.map((record) => (
                                 <TableRow key={recordId(record)}>
                                     {columns.map((field) => <TableCell key={field.key}>{String(record[field.key] ?? "")}</TableCell>)}
-                                    {supportsMutations && (
-                                        <TableCell>
-                                            <Button onClick={() => startEdit(record)}>{isFinnish ? "Muokkaa" : "Edit"}</Button>
-                                            <Button color="error" onClick={() => remove(record)}>{isFinnish ? "Poista" : "Delete"}</Button>
-                                        </TableCell>
-                                    )}
+                                    <TableCell>
+                                        <Button onClick={() => startEdit(record)}>{isFinnish ? "Muokkaa" : "Edit"}</Button>
+                                        <Button color="error" onClick={() => remove(record)}>{isFinnish ? "Poista" : "Delete"}</Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
