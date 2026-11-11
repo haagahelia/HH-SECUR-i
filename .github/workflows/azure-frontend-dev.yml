@@ -1,4 +1,4 @@
-# Builds the hh-riski frontend and deploys it to the Azure Storage static website
+# Builds the hh-securi frontend and deploys it to the Azure Storage static website
 # (storage account: hhsecurifrontend, container: $web) whenever dev is updated.
 #
 # Required repository settings (Settings -> Secrets and variables -> Actions):
@@ -11,7 +11,7 @@ on:
   push:
     branches: [dev]
     paths:
-      - "hh-riski/**"
+      - "hh-securi/**"
       - ".github/workflows/azure-frontend-dev.yml"
   workflow_dispatch:
 
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: hh-riski
+        working-directory: hh-securi
 
     steps:
       - name: Check out code
@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: hh-riski/package-lock.json
+          cache-dependency-path: hh-securi/package-lock.json
 
       - name: Install dependencies
         run: npm ci
