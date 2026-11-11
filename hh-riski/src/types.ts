@@ -289,6 +289,7 @@ export type Organization = {
         en: string
     }
     countryId: string
+    manuallyAdded: boolean
 }
 
 export type Options = {

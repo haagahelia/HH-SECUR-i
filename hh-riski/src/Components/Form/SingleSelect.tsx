@@ -1,13 +1,13 @@
 type SingleSelectProps = {
     question: { fi: string; en: string } | undefined;
     placeholder: { fi: string; en: string } | undefined;
-    answers: { id: string; name: { fi: string; en: string } }[] | undefined;
+    answers: { id: string; name: { fi: string; en: string }; manuallyAdded?: boolean; }[] | undefined;
     language: "fi" | "en";
     value: string;
     onChange: (value: string) => void;
 };
 
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, Chip } from "@mui/material";
 
 const SingleSelect = ({
     question,
@@ -32,6 +32,14 @@ const SingleSelect = ({
                 {answers?.map((answer) => (
                     <MenuItem key={answer.id} value={answer.id}>
                         {answer.name[language]}
+                        {answer.manuallyAdded && (
+                            <Chip 
+                            label={language === "fi" ? "Lisätty manuaalisesti" : "Manually added"}
+                            size="small"
+                            color="info"
+                            sx={{ ml: 1}}
+                            />
+                        )}
                     </MenuItem>
                 ))}
 
