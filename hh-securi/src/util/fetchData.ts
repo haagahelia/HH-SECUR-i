@@ -17,12 +17,14 @@ const toOrganization = (value: unknown): Organization | null => {
         isRecord(value.name) &&
         typeof value.name.fi === "string" &&
         typeof value.name.en === "string" &&
-        typeof value.countryId === "string"
+        typeof value.countryId === "string" &&
+        typeof value.manuallyAdded === "boolean"
     ) {
         return {
             id: String(value.id),
             name: { fi: value.name.fi, en: value.name.en },
             countryId: value.countryId,
+            manuallyAdded: value.manuallyAdded,
         };
     }
 
@@ -36,6 +38,7 @@ const toOrganization = (value: unknown): Organization | null => {
             id: String(value.id),
             name: { fi: value.fi, en: value.en },
             countryId: value.country_code,
+            manuallyAdded: false,
         };
     }
 
