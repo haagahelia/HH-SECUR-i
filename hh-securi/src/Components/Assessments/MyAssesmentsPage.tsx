@@ -160,6 +160,7 @@ const MyAssessmentsPage = () => {
                       id: String(org.id),
                       name: { fi: org.fi, en: org.en },
                       countryId: org.country_code,
+                      manuallyAdded: false,
                   }
                 : null,
         );
