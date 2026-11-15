@@ -1,6 +1,7 @@
 import type { RiskCalculationResponse } from "../../types";
 import styles from "../../styles.module.css";
 import { useFormAnswers } from "../../context/FormAnswersContext";
+import { Typography, List, ListItem } from "@mui/material";
 
 type CountryRiskAssessmentProps = {
     language: "fi" | "en";
@@ -31,84 +32,86 @@ const CountryRiskAssessment = ({
                 <div>
                     <div>
                         {language === "fi" ?
-                            <h3>Yhteistyön riskit</h3>
+                            <Typography component="h3" variant="h5">Yhteistyön riskit</Typography>
                             :
-                            <h3>Collaboration Risks</h3>
+                            <Typography component="h3" variant="h5">Collaboration Risks</Typography>
                         }
-                        <p><b>{results.collaboration.title[language]}</b></p>
-                        {riskSymbol(results.collaboration.risk)}<p><i>{results.collaboration.description[language]}</i></p>
+                        <Typography fontWeight="bold">{results.collaboration.title[language]}</Typography>
+                        {riskSymbol(results.collaboration.risk)}<Typography>{results.collaboration.description[language]}</Typography>
                     </div>
                     <div>
                         {language === "fi" ?
-                            <p style={{ maxWidth: "1000px" }}>Alla mainittujen riskitekijöiden lisäksi kokonaisriskiin vaikuttavat antamasi tiedot Haaga-Helian roolista yhteistyössä.</p>
+                            <Typography sx={{ maxWidth: "1000px" }}>Alla mainittujen riskitekijöiden lisäksi kokonaisriskiin vaikuttavat antamasi tiedot Haaga-Helian roolista yhteistyössä.</Typography>
                             :
-                            <p style={{ maxWidth: "1000px" }}>In addition to the risk factors listed below, the overall risk is also influenced by the information you provided about Haaga-Helia’s role in the collaboration.</p>
+                            <Typography sx={{ maxWidth: "1000px", padding: "0px" }}>In addition to the risk factors listed below, the overall risk is also influenced by the information you provided about Haaga-Helia’s role in the collaboration.</Typography>
                         }
                     </div>
                     <div>
-                        <p><b>{results.country.overall.title[language]}</b></p>
-                        {riskSymbol(results.country.overall.risk)}<p><i>{results.collaboration.description[language]}</i></p>
+                        <Typography fontWeight="bold">{results.country.overall.title[language]}</Typography>
+                        {riskSymbol(results.country.overall.risk)}<Typography>{results.collaboration.description[language]}</Typography>
+                    </div>
+                    
+                    <List>
+                        <ListItem>
+                            <Typography>{results.country.corruption.title[language]}</Typography>
+                            {riskSymbol(results.country.corruption.risk)}<Typography>{results.country.corruption.description[language]}</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Typography>{results.country.security.title[language]}</Typography>
+                            {riskSymbol(results.country.security.risk)}<Typography>{results.country.security.description[language]}</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Typography>{results.country.academicfreedom.title[language]}</Typography>
+                            {riskSymbol(results.country.academicfreedom.risk)}<Typography>{results.country.academicfreedom.description[language]}</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Typography>{results.country.politicalstability.title[language]}</Typography>
+                            {riskSymbol(results.country.politicalstability.risk)}<Typography>{results.country.politicalstability.description[language]}</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Typography>{results.country.development.title[language]}</Typography>
+                            {riskSymbol(results.country.development.risk)}<Typography>{results.country.development.description[language]}</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Typography>{results.country.gdpr.title[language]}</Typography>
+                            {riskSymbol(results.country.gdpr.risk)}<Typography>{results.country.gdpr.description[language]}</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Typography>{results.country.sanctions.title[language]}</Typography>
+                            {riskSymbol(results.country.sanctions.risk)}<Typography>{results.country.sanctions.description[language]}</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Typography>{results.country.ruleoflaw.title[language]}</Typography>
+                            {riskSymbol(results.country.ruleoflaw.risk)}<Typography>{results.country.ruleoflaw.description[language]}</Typography>
+                        </ListItem>
+                    </List>
+                    
+                    <div>
+                        <Typography fontWeight="bold">{results.organization.title[language]}</Typography>
+                        {riskSymbol(results.organization.risk)}<Typography>{results.organization.description[language]}</Typography>
+                    </div>
+                    <div>
+                        <Typography fontWeight="bold">{results.financial.overall.title[language]}</Typography>
+                        {riskSymbol(results.financial.overall.risk)}<Typography>{results.financial.overall.description[language]}</Typography>
                     </div>
 
-                    <ul>
-                        <li>
-                            <p>{results.country.corruption.title[language]}</p>
-                            {riskSymbol(results.country.corruption.risk)}<p><i>{results.country.corruption.description[language]}</i></p>
-                        </li>
-                        <li>
-                            <p>{results.country.security.title[language]}</p>
-                            {riskSymbol(results.country.security.risk)}<p><i>{results.country.security.description[language]}</i></p>
-                        </li>
-                        <li>
-                            <p>{results.country.academicfreedom.title[language]}</p>
-                            {riskSymbol(results.country.academicfreedom.risk)}<p><i>{results.country.academicfreedom.description[language]}</i></p>
-                        </li>
-                        <li>
-                            <p>{results.country.politicalstability.title[language]}</p>
-                            {riskSymbol(results.country.politicalstability.risk)}<p><i>{results.country.politicalstability.description[language]}</i></p>
-                        </li>
-                        <li>
-                            <p>{results.country.development.title[language]}</p>
-                            {riskSymbol(results.country.development.risk)}<p><i>{results.country.development.description[language]}</i></p>
-                        </li>
-                        <li>
-                            <p>{results.country.gdpr.title[language]}</p>
-                            {riskSymbol(results.country.gdpr.risk)}<p><i>{results.country.gdpr.description[language]}</i></p>
-                        </li>
-                        <li>
-                            <p>{results.country.sanctions.title[language]}</p>
-                            {riskSymbol(results.country.sanctions.risk)}<p><i>{results.country.sanctions.description[language]}</i></p>
-                        </li>
-                        <li>
-                            <p>{results.country.ruleoflaw.title[language]}</p>
-                            {riskSymbol(results.country.ruleoflaw.risk)}<p><i>{results.country.ruleoflaw.description[language]}</i></p>
-                        </li>
-                    </ul>
-                    <div>
-                        <p><b>{results.organization.title[language]}</b></p>
-                        {riskSymbol(results.organization.risk)}<p><i>{results.organization.description[language]}</i></p>
-                    </div>
-                    <div>
-                        <p><b>{results.financial.overall.title[language]}</b></p>
-                        {riskSymbol(results.financial.overall.risk)}<p><i>{results.financial.overall.description[language]}</i></p>
-                    </div>
-                    <ul>
-                        <li>
-                            <p>{results.financial.exchange.title[language]}</p>
-                            {riskSymbol(results.financial.exchange.risk)}<p><i>{results.financial.exchange.description[language]}</i></p>
-                        </li>
-                        <li>
-                            <p>{results.financial.scope.title[language]}</p>
-                            {riskSymbol(results.financial.scope.risk)}<p><i>{results.financial.scope.description[language]}</i></p>
-                        </li>
-                    </ul>
+                    <List>
+                        <ListItem>
+                            <Typography>{results.financial.exchange.title[language]}</Typography>
+                            {riskSymbol(results.financial.exchange.risk)}<Typography>{results.financial.exchange.description[language]}</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Typography>{results.financial.scope.title[language]}</Typography>
+                            {riskSymbol(results.financial.scope.risk)}<Typography>{results.financial.scope.description[language]}</Typography>
+                        </ListItem>
+                    </List>
 
                     <div>
-                        <p><b>{results.dualuse.title[language]}</b></p>
-                        {riskSymbol(results.dualuse.risk)}<p><i>{results.dualuse.description[language]}</i></p>
+                        <Typography fontWeight="bold">{results.dualuse.title[language]}</Typography>
+                        {riskSymbol(results.dualuse.risk)}<Typography>{results.dualuse.description[language]}</Typography>
                     </div>
-                    <p><b>{results.ethics.title[language]}</b></p>
-                    {riskSymbol(results.ethics.risk)}<p><i>{results.ethics.description[language]}</i></p>
+                    <Typography fontWeight="bold">{results.ethics.title[language]}</Typography>
+                    {riskSymbol(results.ethics.risk)}<Typography>{results.ethics.description[language]}</Typography>
                 </div>
             }
         </ >
