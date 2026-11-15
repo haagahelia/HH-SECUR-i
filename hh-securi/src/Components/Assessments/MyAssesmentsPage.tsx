@@ -15,12 +15,32 @@ import {
     TextField,
     Typography,
     Paper,
-    TableSortLabel
+    TableSortLabel,
+    Alert,
 } from "@mui/material";
 import { DeleteOutline, Search, West } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../../context/AuthContext";
-import { getReports, getReport, deleteReport, type ReportListItem } from "../../services/reports";
+import { getReports, getReport, deleteReport, ApiError, type ReportListItem } from "../../services/reports";
+
+const getErrorMessage = (error: unknown, fallback: string) => {
+    if (error instanceof ApiError) {
+        const body = error.body;
+        const details = body?.details
+            ?.map((detail) => detail.message)
+            .filter((message): message is string => Boolean(message))
+            .join(" ");
+        if (body?.error || details) {
+            return [body?.error, details].filter(Boolean).join(" - ");
+        }
+    }
+
+    if (error instanceof Error && error.message) {
+        return error.message;
+    }
+
+    return fallback;
+};
 
 const getRowColor = (level: number) => {
     if (level === 1) return "rgb(255, 255, 255)";
@@ -93,16 +113,29 @@ const MyAssessmentsPage = () => {
 
     const [assessments, setAssessments] = useState<ReportListItem[]>([]);
     const [search, setSearch] = useState("");
+    const [loadError, setLoadError] = useState("");
+    const [actionError, setActionError] = useState("");
 
     useEffect(() => {
         if (!token) return;
         getReports(token)
-        .then(setAssessments)
-        .catch((e) => console.error("Failed to load reports", e));
-    }, [token]);
+            .then((reports) => {
+                setAssessments(reports);
+                setLoadError("");
+            })
+            .catch((e: unknown) => {
+                console.error("Failed to load reports", e);
+                setAssessments([]);
+                setLoadError(getErrorMessage(
+                    e,
+                    selectedLanguage === "fi" ? "Raporttien lataus epäonnistui." : "Failed to load reports.",
+                ));
+            });
+    }, [token, selectedLanguage]);
 
     const openReport = async (id: number) => {
     if (!token) return;
+    setActionError("");
     try {
         const { reportDetails, choices } = await getReport(token, id);
         const organizations = reportDetails.consortium.organizations;
@@ -157,6 +190,10 @@ const MyAssessmentsPage = () => {
         navigate("/results");
     } catch (e) {
         console.error("Failed to open report", e);
+        setActionError(getErrorMessage(
+            e,
+            selectedLanguage === "fi" ? "Raportin avaaminen epäonnistui." : "Failed to open report.",
+        ));
     }
 };
 
@@ -171,11 +208,16 @@ const MyAssessmentsPage = () => {
         report?.creatorname === user?.username;
     if (!canManageReport) return;
     if (!window.confirm(selectedLanguage === "fi" ? "Poistetaanko raportti?" : "Delete this report?")) return;
+    setActionError("");
     try {
         await deleteReport(token, id);
         setAssessments((prev) => prev.filter((item) => item.id !== id));
     } catch (e) {
         console.error("Failed to delete report", e);
+        setActionError(getErrorMessage(
+            e,
+            selectedLanguage === "fi" ? "Raportin poistaminen epäonnistui." : "Failed to delete report.",
+        ));
     }
     };
 
@@ -250,6 +292,8 @@ const MyAssessmentsPage = () => {
                             ? "Aikaisemmat riskiarviosi"
                             : "Previous risk assessments"}
                     </Typography>
+                    {loadError && <Alert severity="error" sx={{ mb: 2 }}>{loadError}</Alert>}
+                    {actionError && <Alert severity="error" sx={{ mb: 2 }}>{actionError}</Alert>}
 
                     <Box
                         sx={{
@@ -451,7 +495,7 @@ const MyAssessmentsPage = () => {
                                     );
                                 })}
 
-                                {filteredAssessments.length === 0 && (
+                                {!loadError && filteredAssessments.length === 0 && (
                                     <TableRow>
                                         <TableCell colSpan={5}>
                                             <Typography sx={{ py: 2 }}>
