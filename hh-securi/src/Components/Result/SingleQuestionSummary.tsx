@@ -1,3 +1,7 @@
+import { Typography } from "@mui/material";
+import { Text, View } from "@react-pdf/renderer";
+import { PDFstyles } from "../../PDFstyles";
+
 type SingleQuestionSummaryProps = {
     question: any;
     answers: any[] | undefined;
@@ -5,7 +9,7 @@ type SingleQuestionSummaryProps = {
     value: string;
 };
 
-const SingleQuestionSummary = ({
+export const SingleQuestionSummary = ({
     question,
     answers,
     language,
@@ -14,12 +18,28 @@ const SingleQuestionSummary = ({
     const selectedAnswer = answers?.find((answer) => answer.code === value);
     return (
         <>
-            <p><b>{question?.[language]}</b></p>
+            <Typography fontWeight="bold">{question?.[language]}</Typography>
             {selectedAnswer &&
-                <p>{selectedAnswer[language]}</p>
+                <Typography>{selectedAnswer[language]}</Typography>
             }
         </ >
     );
 };
 
-export default SingleQuestionSummary;
+export const SingleQuestionSummaryPDF = ({
+    question,
+    answers,
+    language,
+    value,
+}: SingleQuestionSummaryProps) => {
+    const selectedAnswer = answers?.find((answer) => answer.code === value);
+    return (
+        <View style={PDFstyles.summaryListP}>
+            <Text style={PDFstyles.bold}>{question?.[language]}</Text>
+            {selectedAnswer &&
+                <Text>{selectedAnswer[language]}</Text>
+            }
+        </View>
+    );
+};
+
