@@ -1,10 +1,12 @@
-import { i18n } from "./translations"; 
+
+import { i18n } from "./translations";
 
 export type ValidationField =
   | "projectName"
   | "ownername"
   | "selectedCountry"
   | "selectedOrganization"
+  | "otherOrganizationCountry"
   | "organizationName"
   | "hhRole"
   | "hhRoleOther"
@@ -33,8 +35,10 @@ export type CooperationRiskFormValues = {
   ownername: string;
   selectedCountry: string;
   selectedOrganization: string;
+  selectedOrganizations: string[];
   organizationIsOther: boolean;
   organizationName?: string;
+  otherOrganizationCountry: string;
   hhRole: string;
   hhRoleOther: string;
   consortium: string;
@@ -61,30 +65,28 @@ export const validateCooperationRiskForm = (
   language: "fi" | "en",
 ): ValidationErrors => {
   const errors: ValidationErrors = {};
-  const t = i18n[language].formValidation
+  const t = i18n[language].formValidation;
 
   const requiredMessage = (message: string) => message;
+
   const toString = (value: unknown): string =>
     value == null ? "" : String(value);
 
+  // Projektin nimi
   if (!toString(values.projectName).trim()) {
-    errors.projectName = requiredMessage(
-      t.projectName.required
-    );
+    errors.projectName = requiredMessage(t.projectName.required);
   } else if (toString(values.projectName).trim().length < 3) {
-    errors.projectName = requiredMessage(
-      t.projectName.atLeast
-    );
+    errors.projectName = requiredMessage(t.projectName.atLeast);
   } else if (toString(values.projectName).length > 100) {
-    errors.projectName = requiredMessage(
-      t.projectName.orLess
-    );
+    errors.projectName = requiredMessage(t.projectName.orLess);
   }
 
+  // Haaga-Helian muu rooli
   if (values.hhRole === "other" && !toString(values.hhRoleOther).trim()) {
     errors.hhRoleOther = requiredMessage(t.hhRoleOther.required);
   }
 
+  // Muu organisaatiotyyppi
   if (
     values.organizationType === "option5" &&
     !toString(values.organizationTypeOther).trim()
@@ -94,74 +96,136 @@ export const validateCooperationRiskForm = (
     );
   }
 
-  if (values.organizationIsOther && !toString(values.organizationName).trim()) {
+  // Organisaation nimi, jos Muu on valittu
+  if (
+    values.organizationIsOther &&
+    !toString(values.organizationName).trim()
+  ) {
     errors.organizationName = requiredMessage(
-      language === "fi" ? "Anna organisaation nimi" : "Please specify the organization name",
+      language === "fi"
+        ? "Anna muun organisaation nimi"
+        : "Please specify the other organization's name",
     );
   }
 
-  const requiredFields: Array<[
-    Exclude<ValidationField, "projectName" | "cooperationType" | "projectDescription">,
-    string,
-    string,
-    string,
-  ]> = [
-    ["ownername", "Projektin omistaja", "Project owner", language === "fi" ? "Projektin omistaja on pakollinen" : "Project owner is required"],
-    ["selectedCountry", "Maa", "Country", t.selectedCountry.required],
+  // Pakolliset kentät
+  const requiredFields: Array<
     [
-      "selectedOrganization",
-      "Organisaatio",
-      "Organization",
-      t.selectedOrganization.required
-    ],
-    ["hhRole", "Haaga-Helian rooli", "HH role", t.hhRole.required],
-    ["consortium", "Konsortio", "Consortium", t.consortium.required],
-    ["history", "Yhteistyöhistoria", "History", t.history.required],
+      Exclude<
+        ValidationField,
+        | "projectName"
+        | "cooperationType"
+        | "projectDescription"
+        | "selectedOrganization"
+        | "otherOrganizationCountry"
+        | "organizationName"
+      >,
+      string
+    ]
+  > = [
     [
-      "organizationType",
-      "Organisaatiotyyppi",
-      "Organization type",
-      t.organizationType.required
+      "ownername",
+      language === "fi"
+        ? "Projektin omistaja on pakollinen"
+        : "Project owner is required",
     ],
-    ["contractStatus", "Sopimustiedot", "Contract status", t.contractStatus.required],
-    ["funding", "Rahoitus", "Funding", t.funding.required],
-    ["liability", "Vastuut", "Liability", t.liability.required],
-    [
-      "personalInformation",
-      "Henkilötiedot",
-      "Personal information",
-      t.personalInformation.required,
-    ],
-    ["dualUse", "Kaksikäyttöisyys", "Dual use", t.dualUse.required],
-    ["ethics", "Eettinen arviointi", "Ethics", t.ethics.required],
-    ["duration", "Kesto", "Duration", t.duration.required],
+    ["selectedCountry", t.selectedCountry.required],
+    ["hhRole", t.hhRole.required],
+    ["consortium", t.consortium.required],
+    ["history", t.history.required],
+    ["organizationType", t.organizationType.required],
+    ["contractStatus", t.contractStatus.required],
+    ["funding", t.funding.required],
+    ["liability", t.liability.required],
+    ["personalInformation", t.personalInformation.required],
+    ["dualUse", t.dualUse.required],
+    ["ethics", t.ethics.required],
+    ["duration", t.duration.required],
   ];
 
-  requiredFields.forEach(([field, , , message]) => {
-    const fieldValue = toString(values[field]);
-    if (!fieldValue.trim()) {
+  requiredFields.forEach(([field, message]) => {
+    if (!toString(values[field]).trim()) {
       errors[field] = requiredMessage(message);
     }
   });
 
+  // Organisaation valinnan validointi
+  if (values.consortium === "option2") {
+    // Monenkeskinen yhteistyö: vähintään yksi organisaatio
+    const hasOrganizations =
+      Array.isArray(values.selectedOrganizations) &&
+      values.selectedOrganizations.length > 0;
+
+    if (!hasOrganizations) {
+      errors.selectedOrganization = t.selectedOrganization.required;
+    }
+
+    // Muu-organisaation lisätietojen validointi
+    if (values.organizationIsOther) {
+      if (!toString(values.organizationName).trim()) {
+        errors.organizationName = requiredMessage(
+          language === "fi"
+            ? "Anna muun organisaation nimi"
+            : "Please specify the other organization's name",
+        );
+      }
+
+      if (!toString(values.otherOrganizationCountry).trim()) {
+        errors.otherOrganizationCountry = requiredMessage(
+          language === "fi"
+            ? "Valitse muun organisaation sijaintimaa"
+            : "Select the other organization's country",
+        );
+      }
+    }
+  } else {
+    // Kahdenvälinen yhteistyö: yksi organisaatio
+    if (!toString(values.selectedOrganization).trim()) {
+      errors.selectedOrganization = t.selectedOrganization.required;
+    }
+  }
+
+  // Rahoituksen lisätiedot
   if (values.funding === "option1") {
-    for (const [field, message] of [
-      ["exchange", language === "fi" ? "Rahoitukseen liittyvä vaihto on pakollinen" : "Funding exchange is required"],
-      ["fundingSource", language === "fi" ? "Rahoituksen lähde on pakollinen" : "Funding source is required"],
-      ["fundingHistory", language === "fi" ? "Rahoitushistoria on pakollinen" : "Funding history is required"],
-    ] as const) {
+    const fundingRequiredFields = [
+      [
+        "exchange",
+        language === "fi"
+          ? "Rahoitukseen liittyvä vaihto on pakollinen"
+          : "Funding exchange is required",
+      ],
+      [
+        "fundingSource",
+        language === "fi"
+          ? "Rahoituksen lähde on pakollinen"
+          : "Funding source is required",
+      ],
+      [
+        "fundingHistory",
+        language === "fi"
+          ? "Rahoitushistoria on pakollinen"
+          : "Funding history is required",
+      ],
+    ] as const;
+
+    for (const [field, message] of fundingRequiredFields) {
       if (!toString(values[field]).trim()) {
         errors[field] = message;
       }
     }
   }
 
-  if (!Array.isArray(values.cooperationType) || values.cooperationType.length === 0) {
+  // Yhteistyötyypit
+  if (
+    !Array.isArray(values.cooperationType) ||
+    values.cooperationType.length === 0
+  ) {
     errors.cooperationType = requiredMessage(
       t.cooperationType.required,
     );
   }
 
+  // Muu yhteistyötyyppi
   if (
     Array.isArray(values.cooperationType) &&
     values.cooperationType.includes("option7") &&
@@ -172,13 +236,18 @@ export const validateCooperationRiskForm = (
     );
   }
 
+  // Lisätiedot
   const projectDescription = toString(values.projectDescription);
   const descriptionLength = projectDescription.trim().length;
+
   if (projectDescription.length > 1000) {
     errors.projectDescription = requiredMessage(
       t.projectDescription.orLess,
     );
-  } else if (descriptionLength > 0 && descriptionLength < 10) {
+  } else if (
+    descriptionLength > 0 &&
+    descriptionLength < 10
+  ) {
     errors.projectDescription = requiredMessage(
       t.projectDescription.atLeast,
     );

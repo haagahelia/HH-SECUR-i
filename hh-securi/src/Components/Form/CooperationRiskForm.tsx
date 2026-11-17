@@ -23,7 +23,12 @@ import styles from "../../styles.module.css";
 import SingleChoice from "./SingleChoice";
 import MultiChoice from "./MultiChoice";
 import SingleSelect from "./SingleSelect";
-import { Button, TextField } from "@mui/material";
+import {
+    Button,
+    TextField,
+    Autocomplete,
+    createFilterOptions,
+} from "@mui/material";
 import { useFormAnswers } from "../../context/FormAnswersContext";
 import { i18n } from "../../util/translations";
 
@@ -32,6 +37,15 @@ type CooperationRiskFormProps = {
 };
 
 const OTHER_ORGANIZATION_COUNTRY_ID = "OTH";
+
+const organizationFilter = createFilterOptions<Organization>({
+    stringify: (organization) =>
+        `${organization.name.fi} ${organization.name.en}`,
+    ignoreCase: true,
+    ignoreAccents: true,
+    matchFrom: "any",
+    limit: 100,
+});
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const { token } = useCurrentUser();
@@ -46,10 +60,14 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
 
     setLoadError(false);
 
-    fetchOrganizations(token).then(setOrganizations).catch((error) => {
-      console.error("Failed to load organizations", error);
-      setOrganizations([]); 
-      setLoadError(true);
+    fetchOrganizations(token)
+    .then((data) => {
+        setOrganizations(Array.isArray(data) ? data : []);
+    })
+    .catch((error) => {
+        console.error("Failed to load organizations", error);
+        setOrganizations([]);
+        setLoadError(true);
     });
 
     fetchUsers(token).then(setUsers).catch(() => {
@@ -71,6 +89,10 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const {
     selectedOrganization,
     setSelectedOrganization,
+    selectedOrganizations,
+    setSelectedOrganizations,
+    otherOrganizationCountry,
+    setOtherOrganizationCountry,
     organizationName,
     setOrganizationName,
     selectedProjectOwner,
@@ -120,20 +142,27 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     clearAnswers,
   } = useFormAnswers();
 
-  const filteredOrganizations = organizations.filter(
-    (organization) => organization.countryId === selectedCountry?.id,
-  );
   const otherOrganization = organizations.find(
-    (organization) => organization.countryId === OTHER_ORGANIZATION_COUNTRY_ID,
+    (organization) =>
+        organization.countryId === OTHER_ORGANIZATION_COUNTRY_ID
   );
+
   const sortedOrganizations = [
-    ...sortElements(filteredOrganizations, language),
-    ...(otherOrganization
-      ? [{
-          ...otherOrganization,
-          name: { fi: "Muu", en: "Other" },
-        }]
-      : []),
+      ...sortElements(
+          organizations.filter(
+              (organization) =>
+                  organization.countryId !== OTHER_ORGANIZATION_COUNTRY_ID
+          ),
+          language
+      ),
+      ...(otherOrganization
+          ? [
+              {
+                  ...otherOrganization,
+                  name: { fi: "Muu", en: "Other" },
+              },
+          ]
+          : []),
   ];
 
   const sortedCountries = sortElements([...countries], language);
@@ -148,8 +177,24 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     projectName,
     ownername: selectedProjectOwner?.username ?? "",
     selectedCountry: String(selectedCountry?.id ?? ""),
-    selectedOrganization: selectedOrganization?.id ?? "",
-    organizationIsOther: selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID,
+    selectedOrganization:
+    consortium === "option2"
+        ? selectedOrganizations[0]?.id ?? ""
+        : selectedOrganization?.id ?? "",
+
+    selectedOrganizations:
+    consortium === "option2"
+        ? selectedOrganizations.map((org) => String(org.id))
+        : [],
+
+    organizationIsOther:
+    consortium === "option2"
+        ? selectedOrganizations.some(
+            (org) =>
+                org.countryId === OTHER_ORGANIZATION_COUNTRY_ID
+        )
+        : selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID,
+    otherOrganizationCountry: otherOrganizationCountry?.id ?? "",
     organizationName,
     hhRole,
     hhRoleOther,
@@ -283,26 +328,204 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={consortium}
             onChange={(value) => {
               setConsortium(value);
+
+              setSelectedOrganization(null);
+              setSelectedOrganizations([]);
+              setOrganizationName("");
             }}
           />
         </li>
+        
+        <li>
+          {renderFieldError("selectedOrganization")}
+
+          {consortium === "option2" ? (
+              // Monenkeskinen: usean organisaation valinta
+              <>
+                  <Autocomplete<Organization, true, false, false>
+                      multiple
+                      disableCloseOnSelect
+                      options={sortedOrganizations}
+                      filterOptions={organizationFilter}
+                      value={selectedOrganizations}
+                      onChange={(_event, newValue) => {
+                          setSelectedOrganizations(newValue);
+
+                          const hasOtherOrganization = newValue.some(
+                              (org) =>
+                                  org.countryId === OTHER_ORGANIZATION_COUNTRY_ID
+                          );
+
+                          if (!hasOtherOrganization) {
+                              setOrganizationName("");
+                              setOtherOrganizationCountry(null);
+                          }
+                      }}
+                      getOptionLabel={(option) => option.name[language]}
+                      isOptionEqualToValue={(option, value) =>
+                          String(option.id) === String(value.id)
+                      }
+                      filterSelectedOptions
+                      noOptionsText={
+                          language === "fi"
+                              ? "Organisaatioita ei löytynyt"
+                              : "No organizations found"
+                      }
+                      renderInput={(params) => (
+                          <TextField
+                              {...params}
+                              label={
+                                  language === "fi"
+                                      ? "Organisaatiot"
+                                      : "Organizations"
+                              }
+                              placeholder={
+                                  language === "fi"
+                                      ? "Hae organisaatiota nimellä..."
+                                      : "Search organizations by name..."
+                              }
+                              size="small"
+                              error={Boolean(fieldErrors.selectedOrganization)}
+                          />
+                      )}
+                  />
+
+                  {selectedOrganizations.some(
+                      (org) =>
+                          org.countryId === OTHER_ORGANIZATION_COUNTRY_ID
+                  ) && (
+                      <>
+                          <TextField
+                              label={
+                                  language === "fi"
+                                      ? "Muun organisaation nimi"
+                                      : "Other organization name"
+                              }
+                              fullWidth
+                              size="small"
+                              margin="normal"
+                              value={organizationName}
+                              onChange={(event) =>
+                                  setOrganizationName(event.target.value)
+                              }
+                              slotProps={{
+                                  htmlInput: { maxLength: 100 },
+                              }}
+                              error={Boolean(fieldErrors.organizationName)}
+                              helperText={fieldErrors.organizationName}
+                          />
+
+                          {renderFieldError("otherOrganizationCountry")}
+
+                          <SingleSelect
+                              question={{
+                                  fi: "Muun organisaation sijaintimaa",
+                                  en: "Other organization's country",
+                              }}
+                              answers={sortedCountries}
+                              placeholder={{
+                                  fi: "Valitse sijaintimaa",
+                                  en: "Select country",
+                              }}
+                              language={language}
+                              value={otherOrganizationCountry?.id ?? ""}
+                              onChange={(value) => {
+                                  setOtherOrganizationCountry(
+                                      countries.find(
+                                          (country) => country.id === value
+                                      ) ?? null
+                                  );
+                              }}
+                          />
+                      </>
+                  )}
+              </>
+            ) : (
+                // Kahdenvälinen: yhden organisaation valinta
+                <>
+                    <Autocomplete<Organization, false, false, false>
+                        options={sortedOrganizations}
+                        filterOptions={organizationFilter}
+                        value={selectedOrganization}
+                        onChange={(_event, newValue) => {
+                            setSelectedOrganization(newValue);
+
+                            if (
+                                newValue?.countryId !==
+                                OTHER_ORGANIZATION_COUNTRY_ID
+                            ) {
+                                setOrganizationName("");
+                            }
+                        }}
+                        getOptionLabel={(option) => option.name[language]}
+                        isOptionEqualToValue={(option, value) =>
+                            String(option.id) === String(value.id)
+                        }
+                        noOptionsText={
+                            language === "fi"
+                                ? "Organisaatioita ei löytynyt"
+                                : "No organizations found"
+                        }
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label={
+                                    language === "fi"
+                                        ? "Organisaatio"
+                                        : "Organization"
+                                }
+                                placeholder={
+                                    language === "fi"
+                                        ? "Hae organisaatiota nimellä..."
+                                        : "Search organizations by name..."
+                                }
+                                size="small"
+                                error={Boolean(fieldErrors.selectedOrganization)}
+                            />
+                        )}
+                    />
+
+                    {selectedOrganization?.countryId ===
+                        OTHER_ORGANIZATION_COUNTRY_ID && (
+                        <TextField
+                            label={
+                                language === "fi"
+                                    ? "Muun organisaation nimi"
+                                    : "Other organization name"
+                            }
+                            fullWidth
+                            size="small"
+                            margin="normal"
+                            value={organizationName}
+                            onChange={(event) =>
+                                setOrganizationName(event.target.value)
+                            }
+                            slotProps={{
+                                htmlInput: { maxLength: 100 },
+                            }}
+                            error={Boolean(fieldErrors.organizationName)}
+                            helperText={fieldErrors.organizationName}
+                        />
+                    )}
+                </>
+            )}
+        </li>
+
         <li>
           {renderFieldError("selectedCountry")}
           <SingleSelect
             question={{
-              fi: "Yhteistyökumppanin sijaintimaa",
-              en: "Collaborator's country of origin",
+              fi: "Yhteistyökumppanin tai pääyhteistyökumppanin sijaintimaa",
+              en: "Collaborator's or main collaborator's country of origin",
             }}
             answers={sortedCountries}
             placeholder={{ fi: "Valitse sijaintimaa", en: "Select country" }}
             language={language}
             value={selectedCountry?.id ?? ""}
             onChange={(value) => {
-              setSelectedOrganization(null);
-              setOrganizationName("");
-              setSelectedCountry(
-                countries.find((country) => country.id === value) ?? null
-              );
+                setSelectedCountry(
+                    countries.find((country) => country.id === value) ?? null
+                );
             }}
           />
         </li>
@@ -349,47 +572,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             </>
           )}
         </li>
-        <li>
-          {renderFieldError("selectedOrganization")}
-          <SingleSelect
-            question={{ fi: "Organisaatio", en: "Organization" }}
-            answers={[
-              ...sortedOrganizations,
-            ]}
-            placeholder={{
-              fi: "Valitse organisaatio",
-              en: "Select organization",
-            }}
-            language={language}
-            value={selectedOrganization?.id ?? ""}
-            onChange={(value) => {
-              if (value === otherOrganization?.id) {
-                setSelectedOrganization(otherOrganization);
-                return;
-              }
-
-              setOrganizationName("");
-              setSelectedOrganization(
-                organizations.find((organization) => organization.id === value) ?? null,
-              );
-            }}
-          />
-          {selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID && (
-            <>
-              {renderFieldError("organizationName")}
-              <TextField
-                label={language === "fi" ? "Organisaation nimi" : "Organization name"}
-                placeholder={language === "fi" ? "Kirjoita organisaation nimi" : "Enter organization name"}
-                fullWidth
-                size="small"
-                slotProps={{ htmlInput: { maxLength: 100 } }}
-                error={Boolean(fieldErrors.organizationName)}
-                value={organizationName}
-                onChange={(event) => setOrganizationName(event.target.value)}
-              />
-            </>
-          )}
-        </li>
+        
         <li>
           {renderFieldError("contractStatus")}
           <SingleChoice
