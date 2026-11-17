@@ -32,6 +32,7 @@ const ResultsPage = () => {
         setSelectedLanguage,
         selectedCountry,
         selectedOrganization,
+        selectedOrganizations,
         organizationName,
         selectedProjectOwner,
         projectName,
@@ -118,7 +119,14 @@ const ResultsPage = () => {
         hhrole: hhRole,
         collaborationtype: cooperationType,
         country: selectedCountry?.id ?? "",
-        organization: Number(selectedOrganization!.id),
+        organization: consortium === "option2"
+            ? [
+                Number(selectedOrganization!.id),
+                ...selectedOrganizations.map((organization) =>
+                    Number(organization.id)
+                ),
+            ]
+            : Number(selectedOrganization!.id),
         organizationtype: organizationType,
         history: history,
         contract: contractStatus,
@@ -361,14 +369,43 @@ const ResultsPage = () => {
                             </ListItem>
 
                             <ListItem>
-                                <Typography fontWeight="bold">{selectedLanguage === "fi" ? "Organisaatio" : "Organization"}</Typography>
-                                <Typography>
-                                    {selectedOrganization?.id === "other"
-                                        ? organizationName || "-"
-                                        : selectedOrganization
-                                            ? selectedOrganization.name[selectedLanguage]
-                                            : "-"}
-                                </Typography>
+                                <div>
+                                    <Typography fontWeight="bold">
+                                        {consortium === "option2"
+                                            ? selectedLanguage === "fi"
+                                                ? "Pääyhteistyökumppani"
+                                                : "Main collaborator"
+                                            : selectedLanguage === "fi"
+                                                ? "Organisaatio"
+                                                : "Organization"}
+                                    </Typography>
+                                    <Typography>
+                                        {selectedOrganization?.countryId === "OTH"
+                                            ? organizationName || "-"
+                                            : selectedOrganization
+                                                ? selectedOrganization.name[selectedLanguage]
+                                                : "-"}
+                                    </Typography>
+
+                                    {consortium === "option2" && selectedOrganizations.length > 0 && (
+                                        <>
+                                            <Typography fontWeight="bold" sx={{ mt: 1 }}>
+                                                {selectedLanguage === "fi"
+                                                    ? "Muut yhteistyökumppanit"
+                                                    : "Other collaborators"}
+                                            </Typography>
+                                            <List dense disablePadding>
+                                                {selectedOrganizations.map((organization) => (
+                                                    <ListItem key={organization.id} disableGutters>
+                                                        <Typography>
+                                                            {organization.name[selectedLanguage]}
+                                                        </Typography>
+                                                    </ListItem>
+                                                ))}
+                                            </List>
+                                        </>
+                                    )}
+                                </div>
                             </ListItem>
 
                             <ListItem>
