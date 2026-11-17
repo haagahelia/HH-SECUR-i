@@ -118,7 +118,7 @@ const ResultsPage = () => {
         hhrole: hhRole,
         collaborationtype: cooperationType,
         country: selectedCountry?.id ?? "",
-        organization: selectedOrganization?.id ?? "",
+        organization: Number(selectedOrganization!.id),
         organizationtype: organizationType,
         history: history,
         contract: contractStatus,
