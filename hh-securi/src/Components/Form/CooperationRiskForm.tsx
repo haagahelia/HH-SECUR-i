@@ -23,7 +23,12 @@ import styles from "../../styles.module.css";
 import SingleChoice from "./SingleChoice";
 import MultiChoice from "./MultiChoice";
 import SingleSelect from "./SingleSelect";
-import { Button, TextField } from "@mui/material";
+import {
+    Button,
+    TextField,
+    Autocomplete,
+    createFilterOptions,
+} from "@mui/material";
 import { useFormAnswers } from "../../context/FormAnswersContext";
 import { i18n } from "../../util/translations";
 
@@ -33,6 +38,15 @@ type CooperationRiskFormProps = {
 
 const OTHER_ORGANIZATION_COUNTRY_ID = "OTH";
 
+const organizationFilter = createFilterOptions<Organization>({
+    stringify: (organization) =>
+        `${organization.name.fi} ${organization.name.en}`,
+    ignoreCase: true,
+    ignoreAccents: true,
+    matchFrom: "any",
+    limit: 100,
+});
+
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const { token } = useCurrentUser();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -40,16 +54,23 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [options, setOptions] = useState<Options | null>(null);
   const [loadError, setLoadError] = useState(false);
+  const [additionalCountry, setAdditionalCountry] = useState<Country | null>(null);
+  const [additionalOrganization, setAdditionalOrganization] =
+    useState<Organization | null>(null);
 
   useEffect(() => {
     if (!token) return;
 
     setLoadError(false);
 
-    fetchOrganizations(token).then(setOrganizations).catch((error) => {
-      console.error("Failed to load organizations", error);
-      setOrganizations([]); 
-      setLoadError(true);
+    fetchOrganizations(token)
+    .then((data) => {
+        setOrganizations(Array.isArray(data) ? data : []);
+    })
+    .catch((error) => {
+        console.error("Failed to load organizations", error);
+        setOrganizations([]);
+        setLoadError(true);
     });
 
     fetchUsers(token).then(setUsers).catch(() => {
@@ -71,6 +92,10 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const {
     selectedOrganization,
     setSelectedOrganization,
+    selectedOrganizations,
+    setSelectedOrganizations,
+    otherOrganizationCountry,
+    setOtherOrganizationCountry,
     organizationName,
     setOrganizationName,
     selectedProjectOwner,
@@ -120,21 +145,41 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     clearAnswers,
   } = useFormAnswers();
 
-  const filteredOrganizations = organizations.filter(
-    (organization) => organization.countryId === selectedCountry?.id,
-  );
   const otherOrganization = organizations.find(
-    (organization) => organization.countryId === OTHER_ORGANIZATION_COUNTRY_ID,
+    (organization) =>
+        organization.countryId === OTHER_ORGANIZATION_COUNTRY_ID
   );
-  const sortedOrganizations = [
-    ...sortElements(filteredOrganizations, language),
-    ...(otherOrganization
-      ? [{
-          ...otherOrganization,
-          name: { fi: "Muu", en: "Other" },
-        }]
-      : []),
-  ];
+
+
+  const filteredOrganizations = selectedCountry
+    ? organizations.filter(
+          (organization) =>
+              String(organization.countryId) === String(selectedCountry.id) &&
+              organization.countryId !== OTHER_ORGANIZATION_COUNTRY_ID
+      )
+    : [];
+
+  
+
+const sortedOrganizations = sortElements(
+    filteredOrganizations,
+    language
+);
+
+  const filteredAdditionalOrganizations = additionalCountry
+    ? organizations.filter(
+        (organization) =>
+          String(organization.countryId) === String(additionalCountry.id) &&
+          organization.countryId !== OTHER_ORGANIZATION_COUNTRY_ID &&
+          organization.id !== selectedOrganization?.id &&
+          !selectedOrganizations.some((selected) => selected.id === organization.id)
+      )
+    : [];
+
+  const sortedAdditionalOrganizations = sortElements(
+    filteredAdditionalOrganizations,
+    language
+  );
 
   const sortedCountries = sortElements([...countries], language);
 
@@ -149,7 +194,13 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
     ownername: selectedProjectOwner?.username ?? "",
     selectedCountry: String(selectedCountry?.id ?? ""),
     selectedOrganization: selectedOrganization?.id ?? "",
-    organizationIsOther: selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID,
+    selectedOrganizations:
+      consortium === "option2"
+        ? selectedOrganizations.map((org) => String(org.id))
+        : [],
+    organizationIsOther:
+      selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID,
+    otherOrganizationCountry: otherOrganizationCountry?.id ?? "",
     organizationName,
     hhRole,
     hhRoleOther,
@@ -283,29 +334,181 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             value={consortium}
             onChange={(value) => {
               setConsortium(value);
+
+              setSelectedOrganization(null);
+              setSelectedOrganizations([]);
+              setAdditionalCountry(null);
+              setAdditionalOrganization(null);
+              setOrganizationName("");
             }}
           />
         </li>
+        
         <li>
           {renderFieldError("selectedCountry")}
           <SingleSelect
             question={{
-              fi: "Yhteistyökumppanin sijaintimaa",
-              en: "Collaborator's country of origin",
+              fi: consortium === "option2"
+                  ? "Pääyhteistyökumppanin sijaintimaa"
+                  : "Yhteistyökumppanin sijaintimaa",
+              en: consortium === "option2"
+                  ? "Main collaborator's country of origin"
+                  : "Collaborator's country of origin",
             }}
             answers={sortedCountries}
             placeholder={{ fi: "Valitse sijaintimaa", en: "Select country" }}
             language={language}
             value={selectedCountry?.id ?? ""}
             onChange={(value) => {
-              setSelectedOrganization(null);
-              setOrganizationName("");
-              setSelectedCountry(
-                countries.find((country) => country.id === value) ?? null
-              );
+                setSelectedCountry(
+                    countries.find((country) => country.id === value) ?? null
+                );
             }}
           />
         </li>
+
+        <li>
+          {renderFieldError("selectedOrganization")}
+
+          {/* Pääyhteistyökumppani */}
+          <Autocomplete<Organization, false, false, false>
+            options={sortedOrganizations}
+            filterOptions={organizationFilter}
+            value={selectedOrganization}
+            onChange={(_event, newValue) => {
+              setSelectedOrganization(newValue);
+              if (newValue?.countryId !== OTHER_ORGANIZATION_COUNTRY_ID) {
+                setOrganizationName("");
+                setOtherOrganizationCountry(null);
+              }
+            }}
+            getOptionLabel={(option) => option.name[language]}
+            isOptionEqualToValue={(option, value) =>
+              String(option.id) === String(value.id)
+            }
+            noOptionsText={language === "fi" ? "Organisaatioita ei löytynyt" : "No organizations found"}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={
+                  consortium === "option2"
+                    ? (language === "fi" ? "Pääyhteistyökumppani" : "Main collaborator")
+                    : (language === "fi" ? "Organisaatio" : "Organization")
+                }
+                placeholder={
+                  language === "fi" ? "Hae organisaatiota nimellä..." : "Search organizations by name..."
+                }
+                size="small"
+                error={Boolean(fieldErrors.selectedOrganization)}
+              />
+            )}
+          />
+
+          {selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID && (
+            <>
+              <TextField
+                label={language === "fi" ? "Muun organisaation nimi" : "Other organization name"}
+                fullWidth
+                size="small"
+                margin="normal"
+                value={organizationName}
+                onChange={(event) => setOrganizationName(event.target.value)}
+                slotProps={{ htmlInput: { maxLength: 100 } }}
+                error={Boolean(fieldErrors.organizationName)}
+                helperText={fieldErrors.organizationName}
+              />
+              {renderFieldError("otherOrganizationCountry")}
+              <SingleSelect
+                question={{ fi: "Muun organisaation sijaintimaa", en: "Other organization's country" }}
+                answers={sortedCountries}
+                placeholder={{ fi: "Valitse sijaintimaa", en: "Select country" }}
+                language={language}
+                value={otherOrganizationCountry?.id ?? ""}
+                onChange={(value) => setOtherOrganizationCountry(
+                  countries.find((country) => country.id === value) ?? null
+                )}
+              />
+            </>
+          )}
+
+          {consortium === "option2" && (
+            <div style={{ marginTop: "24px" }}>
+              <strong>{language === "fi" ? "Lisää muut yhteistyökumppanit" : "Add other collaborators"}</strong>
+
+              <div style={{ marginTop: "12px" }}>
+                <SingleSelect
+                  question={{ fi: "Organisaation sijaintimaa", en: "Organization's country" }}
+                  answers={sortedCountries}
+                  placeholder={{ fi: "Valitse maa", en: "Select country" }}
+                  language={language}
+                  value={additionalCountry?.id ?? ""}
+                  onChange={(value) => {
+                    setAdditionalCountry(countries.find((country) => country.id === value) ?? null);
+                    setAdditionalOrganization(null);
+                  }}
+                />
+              </div>
+
+              <div style={{ marginTop: "12px" }}>
+                <Autocomplete<Organization, false, false, false>
+                  options={sortedAdditionalOrganizations}
+                  filterOptions={organizationFilter}
+                  value={additionalOrganization}
+                  onChange={(_event, newValue) => setAdditionalOrganization(newValue)}
+                  getOptionLabel={(option) => option.name[language]}
+                  isOptionEqualToValue={(option, value) => String(option.id) === String(value.id)}
+                  disabled={!additionalCountry}
+                  noOptionsText={language === "fi" ? "Organisaatioita ei löytynyt" : "No organizations found"}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={language === "fi" ? "Organisaatio" : "Organization"}
+                      placeholder={language === "fi" ? "Hae organisaatiota nimellä..." : "Search organizations by name..."}
+                      size="small"
+                    />
+                  )}
+                />
+              </div>
+
+              <Button
+                variant="outlined"
+                disabled={!additionalOrganization}
+                onClick={() => {
+                  if (!additionalOrganization) return;
+                  setSelectedOrganizations((previous) => [...previous, additionalOrganization]);
+                  setAdditionalCountry(null);
+                  setAdditionalOrganization(null);
+                }}
+                sx={{ marginTop: 1 }}
+              >
+                {language === "fi" ? "Lisää organisaatio" : "Add organization"}
+              </Button>
+
+              {selectedOrganizations.length > 0 && (
+                <div style={{ marginTop: "16px" }}>
+                  <strong>{language === "fi" ? "Lisätyt organisaatiot" : "Added organizations"}</strong>
+                  <ul>
+                    {selectedOrganizations.map((organization) => (
+                      <li key={organization.id}>
+                        {organization.name[language]}
+                        <Button
+                          size="small"
+                          color="error"
+                          onClick={() => setSelectedOrganizations((previous) =>
+                            previous.filter((item) => item.id !== organization.id)
+                          )}
+                        >
+                          {language === "fi" ? "Poista" : "Remove"}
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </li>
+
         <li>
           {renderFieldError("history")}
           <SingleChoice
@@ -349,47 +552,7 @@ const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
             </>
           )}
         </li>
-        <li>
-          {renderFieldError("selectedOrganization")}
-          <SingleSelect
-            question={{ fi: "Organisaatio", en: "Organization" }}
-            answers={[
-              ...sortedOrganizations,
-            ]}
-            placeholder={{
-              fi: "Valitse organisaatio",
-              en: "Select organization",
-            }}
-            language={language}
-            value={selectedOrganization?.id ?? ""}
-            onChange={(value) => {
-              if (value === otherOrganization?.id) {
-                setSelectedOrganization(otherOrganization);
-                return;
-              }
-
-              setOrganizationName("");
-              setSelectedOrganization(
-                organizations.find((organization) => organization.id === value) ?? null,
-              );
-            }}
-          />
-          {selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID && (
-            <>
-              {renderFieldError("organizationName")}
-              <TextField
-                label={language === "fi" ? "Organisaation nimi" : "Organization name"}
-                placeholder={language === "fi" ? "Kirjoita organisaation nimi" : "Enter organization name"}
-                fullWidth
-                size="small"
-                slotProps={{ htmlInput: { maxLength: 100 } }}
-                error={Boolean(fieldErrors.organizationName)}
-                value={organizationName}
-                onChange={(event) => setOrganizationName(event.target.value)}
-              />
-            </>
-          )}
-        </li>
+        
         <li>
           {renderFieldError("contractStatus")}
           <SingleChoice

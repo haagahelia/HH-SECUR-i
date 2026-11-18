@@ -8,8 +8,12 @@ type FormAnswersContextValues = {
     setSelectedCountry: React.Dispatch<React.SetStateAction<Country | null>>;
     selectedOrganization: Organization | null;
     setSelectedOrganization: React.Dispatch<React.SetStateAction<Organization | null>>;
+    selectedOrganizations: Organization[];
+    setSelectedOrganizations: React.Dispatch<React.SetStateAction<Organization[]>>;
     organizationName: string;
     setOrganizationName: React.Dispatch<React.SetStateAction<string>>;
+    otherOrganizationCountry: Country | null;
+    setOtherOrganizationCountry: React.Dispatch<React.SetStateAction<Country | null>>;
     selectedProjectOwner: User | null;
     setSelectedProjectOwner: React.Dispatch<React.SetStateAction<User | null>>;
     projectName: string;
@@ -63,7 +67,9 @@ const FormAnswersContext = createContext<FormAnswersContextValues | undefined>(u
 export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
     const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
+    const [selectedOrganizations, setSelectedOrganizations] =useState<Organization[]>([]);
     const [organizationName, setOrganizationName] = useState("");
+    const [otherOrganizationCountry, setOtherOrganizationCountry] = useState<Country | null>(null); 
     const [selectedProjectOwner, setSelectedProjectOwner] = useState<User | null>(null);
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
@@ -98,6 +104,8 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const clearAnswers = () => {
         setSelectedCountry(null);
         setSelectedOrganization(null);
+        setSelectedOrganizations([]);
+        setOtherOrganizationCountry(null);
         setOrganizationName("");
         setSelectedProjectOwner(null);
         setProjectName("");
@@ -126,10 +134,10 @@ export const FormAnswersProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     return (
         <FormAnswersContext.Provider value={{
-            selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, organizationName, setOrganizationName, selectedProjectOwner, setSelectedProjectOwner, projectName, setProjectName,
+            selectedLanguage, setSelectedLanguage, selectedCountry, setSelectedCountry, selectedOrganization, setSelectedOrganization, selectedOrganizations, setSelectedOrganizations, organizationName, setOrganizationName, selectedProjectOwner, setSelectedProjectOwner, projectName, setProjectName,
             projectDescription, setProjectDescription, duration, setDuration, hhRole, setHhRole, hhRoleOther, setHhRoleOther, consortium, setConsortium, history, setHistory, organizationType, setOrganizationType, organizationTypeOther, setOrganizationTypeOther,
             contractStatus, setContractStatus, funding, setFunding, exchange, setExchange, fundingSource, setFundingSource, fundingHistory, setFundingHistory, liability, setLiability, personalInformation, setPersonalInformation, dualUse, setDualUse, ethics, setEthics,
-            cooperationType, setCooperationType, cooperationTypeOther, setCooperationTypeOther, clearAnswers, editingReportId, setEditingReportId
+            cooperationType, setCooperationType, cooperationTypeOther, setCooperationTypeOther, clearAnswers, editingReportId, setEditingReportId, otherOrganizationCountry, setOtherOrganizationCountry
         }}>
             {children}
         </FormAnswersContext.Provider>
