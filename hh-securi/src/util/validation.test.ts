@@ -9,7 +9,10 @@ const validValues: CooperationRiskFormValues = {
   ownername: "owner",
   selectedCountry: "fi",
   selectedOrganization: "hh",
+  selectedOrganizations: [],
   organizationIsOther: false,
+  organizationName: "",
+  otherOrganizationCountry: "",
   hhRole: "researcher",
   hhRoleOther: "",
   consortium: "yes",
@@ -37,6 +40,7 @@ describe("validateCooperationRiskForm", () => {
       {
         ...validValues,
         projectName: "",
+        ownername: "",
         selectedCountry: "",
         selectedOrganization: "",
         hhRole: "",
@@ -46,9 +50,6 @@ describe("validateCooperationRiskForm", () => {
         contractStatus: "",
         cooperationType: [],
         funding: "",
-        exchange: "",
-        fundingSource: "",
-        fundingHistory: "",
         liability: "",
         personalInformation: "",
         dualUse: "",
@@ -59,8 +60,11 @@ describe("validateCooperationRiskForm", () => {
     );
 
     expect(errors.projectName).toBe("Project name is required");
+    expect(errors.ownername).toBe("Project owner is required");
     expect(errors.selectedCountry).toBe("Country is required");
-    expect(errors.cooperationType).toBe("Select at least one cooperation type");
+    expect(errors.cooperationType).toBe(
+      "Select at least one cooperation type",
+    );
     expect(errors.duration).toBe("Duration is required");
   });
 
