@@ -9,7 +9,7 @@ const validValues: CooperationRiskFormValues = {
   ownername: "owner",
   selectedCountry: "fi",
   selectedOrganization: "hh",
-  selectedOrganizations: [],
+  selectedOrganizations: ["1", "2"],
   organizationIsOther: false,
   organizationName: "",
   otherOrganizationCountry: "",
