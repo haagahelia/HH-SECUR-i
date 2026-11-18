@@ -9,7 +9,7 @@ export type RiskCalculationRequest = {
     hhrole: string;
     collaborationtype: string[];
     country: string;
-    organization: string | null;
+    organization: number | number[];
     organizationtype: string;
     history: string;
     contract: string;
@@ -289,6 +289,7 @@ export type Organization = {
         en: string
     }
     countryId: string
+    manuallyAdded: boolean
 }
 
 export type Options = {

@@ -104,7 +104,7 @@ const Navbar = () => {
                                     {selectedLanguage === "fi" ? "Aiemmat raportit" : "Reports"}
                                 </Button>
                             )}
-                            {user && (
+                            {user?.role === "admin" && (
                                 <Button component={RouterLink} to="/dashboard">
                                     {selectedLanguage === "fi" ? "Kojelauta" : "Dashboard"}
                                 </Button>

@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
 import { useCurrentUser } from "../../context/AuthContext";
-
 import Navbar from "../Layout/Navbar";
 import { useFormAnswers } from "../../context/FormAnswersContext";
-import { Button, Snackbar, Alert } from "@mui/material";
+import { Button, Snackbar, Alert, List, ListItem } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { West } from "@mui/icons-material";
-
+import Typography from '@mui/material/Typography';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import styles from "../../styles.module.css";
-import type { RiskCalculationRequest, Question, RiskCalculationResponse, Options } from "../../types";
+import type { RiskCalculationRequest, RiskCalculationResponse, Options } from "../../types";
 
-import SingleQuestionSummary from "./SingleQuestionSummary";
-import MultiQuestionSummary from "./MultiQuestionSummary";
+import { SingleQuestionSummary } from "./SingleQuestionSummary";
+import { MultiQuestionSummary } from "./MultiQuestionSummary";
 import CountryRiskAssessment from "./CountryRiskAssessment";
 import { calculateRisk } from "../../services/riskCalculation";
 import { createReport, ApiError, updateReport } from "../../services/reports";
 import { i18n } from "../../util/translations";
 import { fetchOptions } from "../../util/fetchData";
+import { ResultsDocument } from "./PDF/ResultDocumentPDF";
+
 
 const ResultsPage = () => {
     const { user, token } = useCurrentUser();
@@ -30,6 +32,7 @@ const ResultsPage = () => {
         setSelectedLanguage,
         selectedCountry,
         selectedOrganization,
+        selectedOrganizations,
         organizationName,
         selectedProjectOwner,
         projectName,
@@ -60,52 +63,52 @@ const ResultsPage = () => {
     const t = i18n[selectedLanguage].riskAssessment
 
     const errorMessage = {
-    "AUTHENTICATION_ERROR": t.authFail,
-    "INVALID_REQUEST_BODY": t.fetchFail,
-    "DUPLICATE_NAME": selectedLanguage === "fi"
-        ? "Tämän niminen raportti on jo olemassa. Valitse toinen nimi."
-        : "A report with this name already exists. Please choose another name.",
+        "AUTHENTICATION_ERROR": t.authFail,
+        "INVALID_REQUEST_BODY": t.fetchFail,
+        "DUPLICATE_NAME": selectedLanguage === "fi"
+            ? "Tämän niminen raportti on jo olemassa. Valitse toinen nimi."
+            : "A report with this name already exists. Please choose another name.",
     }[errorCode] || t.unknown
 
     const saveAssessment = async () => {
-    if (!token) return;
+        if (!token) return;
 
-    const payload = {
-        ...answers,
-        ownerusername: answers.ownername || user?.username,
-        creatorusername: answers.creatorname,
-        organizationother: answers.organizationname,
-        hhroleother: answers.hhroleother,
-        organizationtypeother: answers.organizationtypeother,
-    };
-    if (
-        user?.role !== "admin" &&
-        payload.ownerusername !== user?.username &&
-        payload.creatorusername !== user?.username
-    ) {
-        return;
-    }
-
-    try {
-        if (editingReportId !== null) {
-            await updateReport(token, editingReportId, payload);
-        } else {
-            const created = await createReport(token, payload);
-            setEditingReportId(created.reportDetails.id); // next Save becomes PATCH
+        const payload = {
+            ...answers,
+            ownerusername: answers.ownername || user?.username,
+            creatorusername: answers.creatorname,
+            organizationother: answers.organizationname,
+            hhroleother: answers.hhroleother,
+            organizationtypeother: answers.organizationtypeother,
+        };
+        if (
+            user?.role !== "admin" &&
+            payload.ownerusername !== user?.username &&
+            payload.creatorusername !== user?.username
+        ) {
+            return;
         }
-        setErrorCode("");
-        navigate("/my-assessments");
-    } catch (error) {
-        if (error instanceof ApiError) {
-            console.error("Backend said:", error.body);
-            if (error.body?.details?.[0]?.type === "unique violation") {
-                setErrorCode("DUPLICATE_NAME");
-                return;
+
+        try {
+            if (editingReportId !== null) {
+                await updateReport(token, editingReportId, payload);
+            } else {
+                const created = await createReport(token, payload);
+                setEditingReportId(created.reportDetails.id); // next Save becomes PATCH
             }
+            setErrorCode("");
+            navigate("/my-assessments");
+        } catch (error) {
+            if (error instanceof ApiError) {
+                console.error("Backend said:", error.body);
+                if (error.body?.details?.[0]?.type === "unique violation") {
+                    setErrorCode("DUPLICATE_NAME");
+                    return;
+                }
+            }
+            setErrorCode("UNKNOWN_ERROR");
         }
-        setErrorCode("UNKNOWN_ERROR");
-    }
-};
+    };
 
     const [results, setResults] = useState<RiskCalculationResponse>();
 
@@ -116,7 +119,14 @@ const ResultsPage = () => {
         hhrole: hhRole,
         collaborationtype: cooperationType,
         country: selectedCountry?.id ?? "",
-        organization: selectedOrganization?.id ?? "",
+        organization: consortium === "option2"
+            ? [
+                Number(selectedOrganization!.id),
+                ...selectedOrganizations.map((organization) =>
+                    Number(organization.id)
+                ),
+            ]
+            : Number(selectedOrganization!.id),
         organizationtype: organizationType,
         history: history,
         contract: contractStatus,
@@ -147,7 +157,7 @@ const ResultsPage = () => {
         handleCalculateRisk(token)
 
         fetchOptions(token).then(setOptions).catch(() => {
-              setOptions(null); 
+            setOptions(null);
         });
     }, [token]);
 
@@ -165,6 +175,37 @@ const ResultsPage = () => {
             console.error("Failed to calculate risk");
         }
     };
+
+    const PDFprops = {
+        language: selectedLanguage,
+        results,
+        selectedProjectOwner,
+        user,
+        projectName,
+        hhRole,
+        options,
+        hhRoleOther,
+        cooperationType,
+        cooperationTypeOther,
+        consortium,
+        selectedCountry,
+        history,
+        organizationType,
+        organizationTypeOther,
+        selectedOrganization,
+        organizationName,
+        contractStatus,
+        duration,
+        funding,
+        exchange,
+        fundingSource,
+        fundingHistory,
+        liability,
+        personalInformation,
+        dualUse,
+        ethics,
+        projectDescription,
+    }
 
     return (
         <>
@@ -206,13 +247,24 @@ const ResultsPage = () => {
                     >
                         {selectedLanguage === "fi" ? "Tallenna" : "Save"}
                     </Button>
+                    <PDFDownloadLink
+                        document={<ResultsDocument {...PDFprops} />}
+                        fileName="assessment.pdf"
+                    >
+                        <Button
+                            variant="outlined"
+                            disabled={!user || !results}
+                        >
+                            {selectedLanguage === "fi" ? "Lataa PDF" : "Download PDF"}
+                        </Button>
+                    </PDFDownloadLink>
                 </div>
 
                 <div>
                     {selectedLanguage === "fi" ? (
-                        <h1>Yhteistyön riskit</h1>
+                        <Typography component="h1" variant="h4">Riskiarvio</Typography>
                     ) : (
-                        <h1>Collaboration Risks</h1>
+                        <Typography component="h1" variant="h4">Risk assessment</Typography>
                     )}
                 </div>
             </div>
@@ -226,9 +278,9 @@ const ResultsPage = () => {
                 </div>
             ) : (
                 selectedLanguage === "fi" ? (
-                    <p>Kirjaudu sisään nähdäksesi sivun</p>
+                    <Typography>Kirjaudu sisään nähdäksesi sivun</Typography>
                 ) : (
-                    <p>Log in to view the page</p>
+                    <Typography>Log in to view the page</Typography>
                 )
             )}
 
@@ -236,28 +288,28 @@ const ResultsPage = () => {
                 <div className={styles.resultsSummary}>
                     <div>
                         {selectedLanguage === "fi" ? (
-                            <h4>Yhteenveto valinnoistasi</h4>
+                            <Typography variant="h5">Yhteenveto valinnoistasi</Typography>
                         ) : (
-                            <h4>Selection Summary</h4>
+                            <Typography variant="h5">Selection Summary</Typography>
                         )}
 
-                        <ul className={styles.summaryList}>
-                            <li>
-                                <p><b>{selectedLanguage === "fi" ? "Lomakkeen täyttäjä" : "Form Respondent"}</b></p>
-                                <p>{selectedProjectOwner?.name ?? selectedProjectOwner?.username ?? "-"}</p>
-                            </li>
+                        <List className={styles.summaryList}>
+                            <ListItem>
+                                <Typography fontWeight="bold">{selectedLanguage === "fi" ? "Lomakkeen täyttäjä" : "Form Respondent"}</Typography>
+                                <Typography>{selectedProjectOwner?.name ?? selectedProjectOwner?.username ?? "-"}</Typography>
+                            </ListItem>
 
-                            <li>
-                                <p><b>{selectedLanguage === "fi" ? "Projektin omistaja" : "Project Owner"}</b></p>
-                                <p>{user.username}</p>
-                            </li>
+                            <ListItem>
+                                <Typography fontWeight="bold">{selectedLanguage === "fi" ? "Projektin omistaja" : "Project Owner"}</Typography>
+                                <Typography>{user.username}</Typography>
+                            </ListItem>
 
-                            <li>
-                                <p><b>{selectedLanguage === "fi" ? "Yhteistyön/yhteistyöprojektin nimi" : "Collaboration name"}</b></p>
-                                <p>{projectName || "-"}</p>
-                            </li>
+                            <ListItem>
+                                <Typography fontWeight="bold">{selectedLanguage === "fi" ? "Yhteistyön/yhteistyöprojektin nimi" : "Collaboration name"}</Typography>
+                                <Typography>{projectName || "-"}</Typography>
+                            </ListItem>
 
-                            <li>
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.hhrole}
                                     answers={options?.hhrole.options}
@@ -265,11 +317,11 @@ const ResultsPage = () => {
                                     value={hhRole}
                                 />
                                 {hhRoleOther.trim() && (
-                                    <p><b>{selectedLanguage === "fi" ? "Tarkennus" : "Details"}</b>: {hhRoleOther}</p>
+                                    <Typography fontWeight="bold">{selectedLanguage === "fi" ? "Tarkennus" : "Details"}: {hhRoleOther}</Typography>
                                 )}
-                            </li>
+                            </ListItem>
 
-                            <li>
+                            <ListItem>
                                 <MultiQuestionSummary
                                     question={options?.collaborationtype}
                                     answers={options?.collaborationtype.options}
@@ -277,34 +329,34 @@ const ResultsPage = () => {
                                     values={cooperationType}
                                 />
                                 {cooperationTypeOther.trim() && (
-                                    <p><b>{selectedLanguage === "fi" ? "Tarkennus" : "Details"}</b>: {cooperationTypeOther}</p>
+                                    <Typography fontWeight="bold">{selectedLanguage === "fi" ? "Tarkennus" : "Details"}: {cooperationTypeOther}</Typography>
                                 )}
-                            </li>
+                            </ListItem>
 
-                            <li>
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.consortium}
                                     answers={options?.consortium.options}
                                     language={selectedLanguage}
                                     value={consortium}
                                 />
-                            </li>
+                            </ListItem>
 
-                            <li>
-                                <p><b>{selectedLanguage === "fi" ? "Yhteistyökumppanin sijaintimaa" : "Partner country"}</b></p>
-                                <p>{selectedCountry ? selectedCountry.name[selectedLanguage] : "-"}</p>
-                            </li>
+                            <ListItem>
+                                <Typography fontWeight="bold">{selectedLanguage === "fi" ? "Yhteistyökumppanin sijaintimaa" : "Partner country"}</Typography>
+                                <Typography>{selectedCountry ? selectedCountry.name[selectedLanguage] : "-"}</Typography>
+                            </ListItem>
 
-                            <li>
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.history}
                                     answers={options?.history.options}
                                     language={selectedLanguage}
                                     value={history}
                                 />
-                            </li>
+                            </ListItem>
 
-                            <li>
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.organizationtype}
                                     answers={options?.organizationtype.options}
@@ -312,116 +364,145 @@ const ResultsPage = () => {
                                     value={organizationType}
                                 />
                                 {organizationTypeOther.trim() && (
-                                    <p><b>{selectedLanguage === "fi" ? "Tarkennus" : "Details"}</b>: {organizationTypeOther}</p>
+                                    <Typography fontWeight="bold">{selectedLanguage === "fi" ? "Tarkennus" : "Details"}: {organizationTypeOther}</Typography>
                                 )}
-                            </li>
+                            </ListItem>
 
-                            <li>
-                                <p><b>{selectedLanguage === "fi" ? "Organisaatio" : "Organization"}</b></p>
-                                <p>
-                                    {selectedOrganization?.id === "other"
-                                        ? organizationName || "-"
-                                        : selectedOrganization
-                                        ? selectedOrganization.name[selectedLanguage]
-                                        : "-"}
-                                </p>
-                            </li>
+                            <ListItem>
+                                <div>
+                                    <Typography fontWeight="bold">
+                                        {consortium === "option2"
+                                            ? selectedLanguage === "fi"
+                                                ? "Pääyhteistyökumppani"
+                                                : "Main collaborator"
+                                            : selectedLanguage === "fi"
+                                                ? "Organisaatio"
+                                                : "Organization"}
+                                    </Typography>
+                                    <Typography>
+                                        {selectedOrganization?.countryId === "OTH"
+                                            ? organizationName || "-"
+                                            : selectedOrganization
+                                                ? selectedOrganization.name[selectedLanguage]
+                                                : "-"}
+                                    </Typography>
 
-                            <li>
+                                    {consortium === "option2" && selectedOrganizations.length > 0 && (
+                                        <>
+                                            <Typography fontWeight="bold" sx={{ mt: 1 }}>
+                                                {selectedLanguage === "fi"
+                                                    ? "Muut yhteistyökumppanit"
+                                                    : "Other collaborators"}
+                                            </Typography>
+                                            <List dense disablePadding>
+                                                {selectedOrganizations.map((organization) => (
+                                                    <ListItem key={organization.id} disableGutters>
+                                                        <Typography>
+                                                            {organization.name[selectedLanguage]}
+                                                        </Typography>
+                                                    </ListItem>
+                                                ))}
+                                            </List>
+                                        </>
+                                    )}
+                                </div>
+                            </ListItem>
+
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.contract}
                                     answers={options?.contract.options}
                                     language={selectedLanguage}
                                     value={contractStatus}
                                 />
-                            </li>
+                            </ListItem>
 
-                            <li>
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.duration}
                                     answers={options?.duration.options}
                                     language={selectedLanguage}
                                     value={duration}
                                 />
-                            </li>
+                            </ListItem>
 
-                            <li>
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.funding}
                                     answers={options?.funding.options}
                                     language={selectedLanguage}
                                     value={funding}
                                 />
-                            </li>
-                            {funding === "option1" && (     
-                            <>          
-                                <li>
-                                    <SingleQuestionSummary
-                                        question={options?.funding.exchange.placeholder}
-                                        answers={options?.funding.exchange.options}
-                                        language={selectedLanguage}
-                                        value={exchange}
-                                    />
-                                </li>
-                                <li>
-                                    <SingleQuestionSummary
-                                        question={options?.funding.fundingsource.placeholder}
-                                        answers={options?.funding.fundingsource.options}
-                                        language={selectedLanguage}
-                                        value={fundingSource}
-                                    />
-                                </li>
-                                <li>
-                                    <SingleQuestionSummary
-                                        question={options?.funding.fundinghistory.placeholder}
-                                        answers={options?.funding.fundinghistory.options}
-                                        language={selectedLanguage}
-                                        value={fundingHistory}
-                                    />
-                                </li>
-                            </>
+                            </ListItem>
+                            {funding === "option1" && (
+                                <>
+                                    <ListItem>
+                                        <SingleQuestionSummary
+                                            question={options?.funding.exchange.placeholder}
+                                            answers={options?.funding.exchange.options}
+                                            language={selectedLanguage}
+                                            value={exchange}
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <SingleQuestionSummary
+                                            question={options?.funding.fundingsource.placeholder}
+                                            answers={options?.funding.fundingsource.options}
+                                            language={selectedLanguage}
+                                            value={fundingSource}
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <SingleQuestionSummary
+                                            question={options?.funding.fundinghistory.placeholder}
+                                            answers={options?.funding.fundinghistory.options}
+                                            language={selectedLanguage}
+                                            value={fundingHistory}
+                                        />
+                                    </ListItem>
+                                </>
                             )}
-                            <li>
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.liability}
                                     answers={options?.liability.options}
                                     language={selectedLanguage}
                                     value={liability}
                                 />
-                            </li>
+                            </ListItem>
 
-                            <li>
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.personalinformation}
                                     answers={options?.personalinformation.options}
                                     language={selectedLanguage}
                                     value={personalInformation}
                                 />
-                            </li>
+                            </ListItem>
 
-                            <li>
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.dualuse}
                                     answers={options?.dualuse.options}
                                     language={selectedLanguage}
                                     value={dualUse}
                                 />
-                            </li>
+                            </ListItem>
 
-                            <li>
+                            <ListItem>
                                 <SingleQuestionSummary
                                     question={options?.ethics}
                                     answers={options?.ethics.options}
                                     language={selectedLanguage}
                                     value={ethics}
                                 />
-                            </li>
+                            </ListItem>
 
-                            <li>
-                                <p><b>{selectedLanguage === "fi" ? "Lisätiedot" : "Additional Information"}</b></p>
-                                <p>{projectDescription || "-"}</p>
-                            </li>
-                        </ul>
+                            <ListItem>
+                                <Typography fontWeight="bold">{selectedLanguage === "fi" ? "Lisätiedot" : "Additional Information"}</Typography>
+                                <Typography>{projectDescription || "-"}</Typography>
+                            </ListItem>
+                        </List>
                     </div>
                 </div>
             )}
