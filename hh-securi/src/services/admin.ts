@@ -1,8 +1,5 @@
 import { authenticatedFetch } from "../util/authenticatedFetch";
-
-const backendUrl =
-    import.meta.env.VITE_BACKEND_URL ||
-    "https://hh-secur-be-git-main-hh-secur-i-backend.2.rahtiapp.fi";
+import { backendUrl } from "../config/backendUrl";
 
 export type AdminResource = "users" | "countries" | "organizations";
 

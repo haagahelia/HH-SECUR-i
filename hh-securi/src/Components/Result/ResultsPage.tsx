@@ -75,11 +75,8 @@ const ResultsPage = () => {
 
         const payload = {
             ...answers,
-            ownerusername: answers.ownername || user?.username,
-            creatorusername: answers.creatorname,
-            organizationother: answers.organizationname,
-            hhroleother: answers.hhroleother,
-            organizationtypeother: answers.organizationtypeother,
+            ownerusername: answers.ownerusername || user?.username,
+            creatorusername: answers.creatorusername,
         };
         if (
             user?.role !== "admin" &&
@@ -114,8 +111,8 @@ const ResultsPage = () => {
 
     const answers: RiskCalculationRequest = {
         name: projectName,
-        ownername: selectedProjectOwner?.username ?? "",
-        creatorname: user?.username ?? "",
+        ownerusername: selectedProjectOwner?.username ?? "",
+        creatorusername: user?.username ?? "",
         hhrole: hhRole,
         collaborationtype: cooperationType,
         country: selectedCountry?.id ?? "",
@@ -148,8 +145,8 @@ const ResultsPage = () => {
     };
     const canSaveReport =
         user?.role === "admin" ||
-        answers.ownername === user?.username ||
-        answers.creatorname === user?.username;
+        answers.ownerusername === user?.username ||
+        answers.creatorusername === user?.username;
 
     useEffect(() => {
         if (!token) return;

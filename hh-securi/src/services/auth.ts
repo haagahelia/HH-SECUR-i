@@ -1,3 +1,5 @@
+import { backendUrl } from "../config/backendUrl";
+
 type AuthenticationResponse = {
 	token: string;
 	username: string;
@@ -6,7 +8,7 @@ type AuthenticationResponse = {
 	message?: string;
 };
 
-const url = import.meta.env.VITE_BACKEND_URL || 'https://hh-secur-be-git-main-hh-secur-i-backend.2.rahtiapp.fi';
+const url = backendUrl;
 
 export async function authenticateUser(user: { username: string, password: string }): Promise<AuthenticationResponse> {
 	let response: Response;

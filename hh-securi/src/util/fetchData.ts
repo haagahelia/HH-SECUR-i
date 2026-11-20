@@ -1,7 +1,6 @@
 import type { Country, CountryApiResponse, Options, Organization, Question, User } from "../types";
+import { backendUrl } from "../config/backendUrl";
 import { authenticatedFetch } from "./authenticatedFetch";
-
-const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://hh-secur-be-git-main-hh-secur-i-backend.2.rahtiapp.fi';
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
     return typeof value === "object" && value !== null && !Array.isArray(value);

@@ -19,8 +19,8 @@ export type RiskCalculationRequest = {
     fundingsource: string;
     fundinghistory: string;
     name: string;
-    ownername: string;
-    creatorname: string;
+    ownerusername: string;
+    creatorusername: string;
     liability: string;
     personalinformation: string;
     dualuse: string;
@@ -214,7 +214,6 @@ export type RiskCalculationResponse = {
             en: string;
         }
     },
-    organizationother?: string;
     collaborationtypeother?: string;
     additionalinformation?: string
     realCalculationImpementedFor: string[]
