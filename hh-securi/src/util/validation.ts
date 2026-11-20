@@ -153,8 +153,9 @@ export const validateCooperationRiskForm = (
   if (values.consortium === "option2") {
     // Monenkeskinen yhteistyö: vähintään yksi organisaatio
     const hasOrganizations =
-      Array.isArray(values.selectedOrganizations) &&
-      values.selectedOrganizations.length > 0;
+      Boolean(toString(values.selectedOrganization).trim()) ||
+      (Array.isArray(values.selectedOrganizations) &&
+      values.selectedOrganizations.length > 0);
 
     if (!hasOrganizations) {
       errors.selectedOrganization = t.selectedOrganization.required;

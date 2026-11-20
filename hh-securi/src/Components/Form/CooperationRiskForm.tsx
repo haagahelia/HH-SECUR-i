@@ -335,11 +335,11 @@ const sortedOrganizations = sortElements(
             onChange={(value) => {
               setConsortium(value);
 
-              setSelectedOrganization(null);
+             
               setSelectedOrganizations([]);
               setAdditionalCountry(null);
               setAdditionalOrganization(null);
-              setOrganizationName("");
+              
             }}
           />
         </li>
@@ -376,6 +376,7 @@ const sortedOrganizations = sortElements(
             filterOptions={organizationFilter}
             value={selectedOrganization}
             onChange={(_event, newValue) => {
+              
               setSelectedOrganization(newValue);
               if (newValue?.countryId !== OTHER_ORGANIZATION_COUNTRY_ID) {
                 setOrganizationName("");
