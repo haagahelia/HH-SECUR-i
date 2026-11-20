@@ -50,7 +50,7 @@ const LoginPage = () => {
 				username: "",
 				password: ""
 			})
-			navigate("/user");
+			navigate("/");
 		} catch (error) {
 			const backendErrorCode = error instanceof Error ? error.message : "";
 			setErrorCode(
