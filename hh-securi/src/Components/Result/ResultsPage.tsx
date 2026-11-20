@@ -193,6 +193,7 @@ const ResultsPage = () => {
         organizationType,
         organizationTypeOther,
         selectedOrganization,
+        selectedOrganizations,
         organizationName,
         contractStatus,
         duration,
@@ -329,7 +330,7 @@ const ResultsPage = () => {
                                     values={cooperationType}
                                 />
                                 {cooperationTypeOther.trim() && (
-                                    <Typography fontWeight="bold">{selectedLanguage === "fi" ? "Tarkennus" : "Details"}: {cooperationTypeOther}</Typography>
+                                    <Typography sx={{pl: 2}} fontWeight="bold">{selectedLanguage === "fi" ? "Tarkennus" : "Details"}: {cooperationTypeOther}</Typography>
                                 )}
                             </ListItem>
 
@@ -369,43 +370,41 @@ const ResultsPage = () => {
                             </ListItem>
 
                             <ListItem>
-                                <div>
-                                    <Typography fontWeight="bold">
-                                        {consortium === "option2"
-                                            ? selectedLanguage === "fi"
-                                                ? "Pääyhteistyökumppani"
-                                                : "Main collaborator"
-                                            : selectedLanguage === "fi"
-                                                ? "Organisaatio"
-                                                : "Organization"}
-                                    </Typography>
-                                    <Typography>
-                                        {selectedOrganization?.countryId === "OTH"
-                                            ? organizationName || "-"
-                                            : selectedOrganization
-                                                ? selectedOrganization.name[selectedLanguage]
-                                                : "-"}
-                                    </Typography>
+                                <Typography fontWeight="bold">
+                                    {consortium === "option2"
+                                        ? selectedLanguage === "fi"
+                                            ? "Pääyhteistyökumppani"
+                                            : "Main collaborator"
+                                        : selectedLanguage === "fi"
+                                            ? "Organisaatio"
+                                            : "Organization"}
+                                </Typography>
+                                <Typography>
+                                    {selectedOrganization?.countryId === "OTH"
+                                        ? organizationName || "-"
+                                        : selectedOrganization
+                                            ? selectedOrganization.name[selectedLanguage]
+                                            : "-"}
+                                </Typography>
 
-                                    {consortium === "option2" && selectedOrganizations.length > 0 && (
-                                        <>
-                                            <Typography fontWeight="bold" sx={{ mt: 1 }}>
-                                                {selectedLanguage === "fi"
-                                                    ? "Muut yhteistyökumppanit"
-                                                    : "Other collaborators"}
-                                            </Typography>
-                                            <List dense disablePadding>
-                                                {selectedOrganizations.map((organization) => (
-                                                    <ListItem key={organization.id} disableGutters>
-                                                        <Typography>
-                                                            {organization.name[selectedLanguage]}
-                                                        </Typography>
-                                                    </ListItem>
-                                                ))}
-                                            </List>
-                                        </>
-                                    )}
-                                </div>
+                                {consortium === "option2" && selectedOrganizations.length > 0 && (
+                                    <>
+                                        <Typography fontWeight="bold" sx={{ mt: 1 }}>
+                                            {selectedLanguage === "fi"
+                                                ? "Muut yhteistyökumppanit"
+                                                : "Other collaborators"}
+                                        </Typography>
+                                        <List dense disablePadding>
+                                            {selectedOrganizations.map((organization) => (
+                                                <ListItem key={organization.id}>
+                                                    <Typography>
+                                                        {organization.name[selectedLanguage]}
+                                                    </Typography>
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    </>
+                                )}
                             </ListItem>
 
                             <ListItem>
