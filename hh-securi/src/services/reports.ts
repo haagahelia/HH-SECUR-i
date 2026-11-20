@@ -1,4 +1,6 @@
-const BASE = import.meta.env.VITE_BACKEND_URL;
+import { backendUrl } from "../config/backendUrl";
+
+const BASE = backendUrl;
 
 export interface ApiErrorBody {
   error?: string;
@@ -23,8 +25,8 @@ export interface ReportListItem {
   id: number;
   name: string;
   risk: number;
-  ownername: string;
-  creatorname: string;
+  ownerusername: string;
+  creatorusername: string;
   country: { code: string; fi: string; en: string };
   organizations: { id: number; fi: string; en: string; country_code: string }[];
   created_at: string;
@@ -52,7 +54,7 @@ export interface ReportChoices {
   dualuse: string;
   ethics: string;
   duration: string;
-  organizationother?: string;
+  organizationname?: string;
   hhroleother?: string;
   organizationtypeother?: string;
   collaborationtypeother?: string;

@@ -3,7 +3,7 @@ import { i18n } from "./translations";
 
 export type ValidationField =
   | "projectName"
-  | "ownername"
+  | "ownerusername"
   | "selectedCountry"
   | "selectedOrganization"
   | "otherOrganizationCountry"
@@ -32,7 +32,7 @@ export type ValidationErrors = Partial<Record<ValidationField, string>>;
 
 export type CooperationRiskFormValues = {
   projectName: string;
-  ownername: string;
+  ownerusername: string;
   selectedCountry: string;
   selectedOrganization: string;
   selectedOrganizations: string[];
@@ -124,7 +124,7 @@ export const validateCooperationRiskForm = (
     ]
   > = [
     [
-      "ownername",
+      "ownerusername",
       language === "fi"
         ? "Projektin omistaja on pakollinen"
         : "Project owner is required",

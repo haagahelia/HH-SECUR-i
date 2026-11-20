@@ -144,7 +144,7 @@ const MyAssessmentsPage = () => {
             : choices.organization;
         const org = organizations.find(
             (organization) => organization.id === Number(organizationId),
-        ) ?? (choices.organizationother
+        ) ?? (choices.organizationname
             ? organizations.find(
                 (organization) => organization.country_code === "OTH",
             )
@@ -164,7 +164,7 @@ const MyAssessmentsPage = () => {
                   }
                 : null,
         );
-        setOrganizationName(choices.organizationother ?? "");
+        setOrganizationName(choices.organizationname ?? "");
         setSelectedProjectOwner({ username: choices.ownerusername });
         setProjectName(choices.name);
         setProjectDescription(choices.additionalinformation ?? "");
@@ -205,8 +205,8 @@ const MyAssessmentsPage = () => {
     const report = assessments.find((item) => item.id === id);
     const canManageReport =
         user?.role === "admin" ||
-        report?.ownername === user?.username ||
-        report?.creatorname === user?.username;
+        report?.ownerusername === user?.username ||
+        report?.creatorusername === user?.username;
     if (!canManageReport) return;
     if (!window.confirm(selectedLanguage === "fi" ? "Poistetaanko raportti?" : "Delete this report?")) return;
     setActionError("");
@@ -402,8 +402,8 @@ const MyAssessmentsPage = () => {
                                     const formatted = formatDateTime(item.created_at);
                                     const canManageReport =
                                         user?.role === "admin" ||
-                                        item.ownername === user?.username ||
-                                        item.creatorname === user?.username;
+                                        item.ownerusername === user?.username ||
+                                        item.creatorusername === user?.username;
 
                                     return (
                                         <TableRow

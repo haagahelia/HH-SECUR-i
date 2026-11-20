@@ -6,7 +6,7 @@ import {
 
 const validValues: CooperationRiskFormValues = {
   projectName: "Risk project",
-  ownername: "owner",
+  ownerusername: "owner",
   selectedCountry: "fi",
   selectedOrganization: "hh",
   selectedOrganizations: ["1", "2"],
@@ -40,7 +40,7 @@ describe("validateCooperationRiskForm", () => {
       {
         ...validValues,
         projectName: "",
-        ownername: "",
+        ownerusername: "",
         selectedCountry: "",
         selectedOrganization: "",
         hhRole: "",
@@ -60,7 +60,7 @@ describe("validateCooperationRiskForm", () => {
     );
 
     expect(errors.projectName).toBe("Project name is required");
-    expect(errors.ownername).toBe("Project owner is required");
+    expect(errors.ownerusername).toBe("Project owner is required");
     expect(errors.selectedCountry).toBe("Country is required");
     expect(errors.cooperationType).toBe(
       "Select at least one cooperation type",

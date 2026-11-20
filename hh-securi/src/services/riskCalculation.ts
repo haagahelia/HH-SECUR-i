@@ -1,7 +1,8 @@
 import type { RiskCalculationRequest, RiskCalculationResponse } from "../types";
+import { backendUrl } from "../config/backendUrl";
 import { authenticatedFetch } from "../util/authenticatedFetch";
 
-const url = import.meta.env.VITE_BACKEND_URL;
+const url = backendUrl;
 
 export async function calculateRisk(answers: RiskCalculationRequest, token: string) {
     const response = await authenticatedFetch(`${url}/calculaterisk`, token, {

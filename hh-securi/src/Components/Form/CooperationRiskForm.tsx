@@ -191,7 +191,7 @@ const sortedOrganizations = sortElements(
 
   const formValues: CooperationRiskFormValues = {
     projectName,
-    ownername: selectedProjectOwner?.username ?? "",
+    ownerusername: selectedProjectOwner?.username ?? "",
     selectedCountry: String(selectedCountry?.id ?? ""),
     selectedOrganization: selectedOrganization?.id ?? "",
     selectedOrganizations:
@@ -277,7 +277,7 @@ const sortedOrganizations = sortElements(
           />
         </li>
         <li>
-          {renderFieldError("ownername")}
+          {renderFieldError("ownerusername")}
           <SingleSelect
             question={{ fi: "Projektin omistaja", en: "Project owner" }}
             answers={users.map((user) => ({
