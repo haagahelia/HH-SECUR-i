@@ -22,6 +22,7 @@ type ResultsProps = {
     organizationType: string;
     organizationTypeOther: string;
     selectedOrganization: Organization | null;
+    selectedOrganizations: Organization[];
     organizationName: string;
     contractStatus: string;
     duration: string;
@@ -55,6 +56,7 @@ export const ResultsDocument = ({
     organizationType,
     organizationTypeOther,
     selectedOrganization,
+    selectedOrganizations,
     organizationName,
     contractStatus,
     duration,
@@ -90,109 +92,113 @@ export const ResultsDocument = ({
                     <Text style={PDFstyles.summaryListH5}>Selection Summary</Text>
                 )}
 
-                <View>
-                    <View wrap={false} style={PDFstyles.summaryListLi}>
-                        <View style={PDFstyles.summaryListP}>
-                            <Text style={PDFstyles.bold}>{language === "fi" ? "Lomakkeen täyttäjä" : "Form Respondent"}</Text>
-                            <Text>{selectedProjectOwner?.name ?? selectedProjectOwner?.username ?? "-"}</Text>
-                        </View>
-                    </View>
-
-                    <View wrap={false} style={PDFstyles.summaryListLi}>
-                        <View style={PDFstyles.summaryListP}>
-                            <Text style={PDFstyles.bold}>{language === "fi" ? "Projektin omistaja" : "Project Owner"}</Text>
-                            <Text>{user?.username}</Text>
-                        </View>
-                    </View>
-
-                    <View wrap={false} style={PDFstyles.summaryListLi}>
-                        <View style={PDFstyles.summaryListP}>
-                            <Text style={PDFstyles.bold}>{language === "fi" ? "Yhteistyön/yhteistyöprojektin nimi" : "Collaboration name"}</Text>
-                            <Text>{projectName || "-"}</Text>
-                        </View>
-                    </View>
-
-                    <View wrap={false} style={PDFstyles.summaryListLi}>
-                        <View>
-                            <SingleQuestionSummaryPDF
-                                question={options?.hhrole}
-                                answers={options?.hhrole.options}
-                                language={language}
-                                value={hhRole}
-                            />
-                            {hhRoleOther.trim() && (
-                                <View style={{ paddingTop: 4}}>
-                                    <Text style={PDFstyles.bold}>{language === "fi" ? "Tarkennus" : "Details"}: {hhRoleOther}</Text>
-                                </View>
-                            )}
-                        </View>
-                    </View>
-
-                    <View wrap={false} style={PDFstyles.summaryListLi}>
-                        <View>
-                            <MultiQuestionSummaryPDF
-                                question={options?.collaborationtype}
-                                answers={options?.collaborationtype.options}
-                                language={language}
-                                values={cooperationType}
-                            />
-                            {cooperationTypeOther.trim() && (
-                                <View style={{ paddingTop: 4}}>
-                                    <Text style={PDFstyles.bold}>{language === "fi" ? "Tarkennus" : "Details"}: {cooperationTypeOther}</Text>
-                                </View>
-                            )}
-                        </View>
-                    </View>
-
-                    <View wrap={false} style={PDFstyles.summaryListLi}>
-                        <View>
-                            <SingleQuestionSummaryPDF
-                                question={options?.consortium}
-                                answers={options?.consortium.options}
-                                language={language}
-                                value={consortium}
-                            />
-                        </View>
-                    </View>
-
-                    <View wrap={false} style={PDFstyles.summaryListLi}>
-                        <View style={PDFstyles.summaryListP}>
-                            <Text style={PDFstyles.bold}>{language === "fi" ? "Yhteistyökumppanin sijaintimaa" : "Partner country"}</Text>
-                            <Text>{selectedCountry ? selectedCountry.name[language] : "-"}</Text>
-                        </View>
-                    </View>
-
-                    <View wrap={false} style={PDFstyles.summaryListLi}>
-                        <View>
-                            <SingleQuestionSummaryPDF
-                                question={options?.history}
-                                answers={options?.history.options}
-                                language={language}
-                                value={history}
-                            />
-                        </View>
+                <View wrap={false} style={PDFstyles.summaryListLi}>
+                    <View style={PDFstyles.summaryListP}>
+                        <Text style={PDFstyles.bold}>{language === "fi" ? "Lomakkeen täyttäjä" : "Form Respondent"}</Text>
+                        <Text>{selectedProjectOwner?.name ?? selectedProjectOwner?.username ?? "-"}</Text>
                     </View>
                 </View>
 
                 <View wrap={false} style={PDFstyles.summaryListLi}>
                     <View style={PDFstyles.summaryListP}>
+                        <Text style={PDFstyles.bold}>{language === "fi" ? "Projektin omistaja" : "Project Owner"}</Text>
+                        <Text>{user?.username}</Text>
+                    </View>
+                </View>
+
+                <View wrap={false} style={PDFstyles.summaryListLi}>
+                    <View style={PDFstyles.summaryListP}>
+                        <Text style={PDFstyles.bold}>{language === "fi" ? "Yhteistyön/yhteistyöprojektin nimi" : "Collaboration name"}</Text>
+                        <Text>{projectName || "-"}</Text>
+                    </View>
+                </View>
+
+                <View wrap={false} style={PDFstyles.summaryListLi}>
+                    <View>
                         <SingleQuestionSummaryPDF
-                            question={options?.organizationtype}
-                            answers={options?.organizationtype.options}
+                            question={options?.hhrole}
+                            answers={options?.hhrole.options}
                             language={language}
-                            value={organizationType}
+                            value={hhRole}
                         />
-                        {organizationTypeOther.trim() && (
-                            <View style={{ paddingTop: 4}}>
-                                <Text style={PDFstyles.bold}>{language === "fi" ? "Tarkennus" : "Details"}: {organizationTypeOther}</Text>
+                        {hhRoleOther.trim() && (
+                            <View style={{ paddingTop: 4 }}>
+                                <Text style={PDFstyles.bold}>{language === "fi" ? "Tarkennus" : "Details"}: {hhRoleOther}</Text>
                             </View>
                         )}
                     </View>
                 </View>
 
                 <View wrap={false} style={PDFstyles.summaryListLi}>
+                    <View>
+                        <MultiQuestionSummaryPDF
+                            question={options?.collaborationtype}
+                            answers={options?.collaborationtype.options}
+                            language={language}
+                            values={cooperationType}
+                        />
+                        {cooperationTypeOther.trim() && (
+                            <View style={{ paddingTop: 4, paddingLeft: 10 }}>
+                                <Text style={PDFstyles.bold}>{language === "fi" ? "Tarkennus" : "Details"}: {cooperationTypeOther}</Text>
+                            </View>
+                        )}
+                    </View>
+                </View>
+
+                <View wrap={false} style={PDFstyles.summaryListLi}>
+                    <View>
+                        <SingleQuestionSummaryPDF
+                            question={options?.consortium}
+                            answers={options?.consortium.options}
+                            language={language}
+                            value={consortium}
+                        />
+                    </View>
+                </View>
+
+                <View wrap={false} style={PDFstyles.summaryListLi}>
                     <View style={PDFstyles.summaryListP}>
-                        <Text style={PDFstyles.bold}>{language === "fi" ? "Organisaatio" : "Organization"}</Text>
+                        <Text style={PDFstyles.bold}>{language === "fi" ? "Yhteistyökumppanin sijaintimaa" : "Partner country"}</Text>
+                        <Text>{selectedCountry ? selectedCountry.name[language] : "-"}</Text>
+                    </View>
+                </View>
+
+                <View wrap={false} style={PDFstyles.summaryListLi}>
+                    <View>
+                        <SingleQuestionSummaryPDF
+                            question={options?.history}
+                            answers={options?.history.options}
+                            language={language}
+                            value={history}
+                        />
+                    </View>
+                </View>
+
+                <View wrap={false} style={PDFstyles.summaryListLi}>
+                    <SingleQuestionSummaryPDF
+                        question={options?.organizationtype}
+                        answers={options?.organizationtype.options}
+                        language={language}
+                        value={organizationType}
+                    />
+                    {organizationTypeOther.trim() && (
+                        <View style={{ paddingTop: 4 }}>
+                            <Text style={PDFstyles.bold}>{language === "fi" ? "Tarkennus" : "Details"}: {organizationTypeOther}</Text>
+                        </View>
+                    )}
+                </View>
+
+                <View style={PDFstyles.summaryListLi}>
+                    <View wrap={false} style={PDFstyles.summaryListP}>
+                        <Text style={PDFstyles.bold}>
+                            {consortium === "option2"
+                                ? language === "fi"
+                                    ? "Pääyhteistyökumppani"
+                                    : "Main collaborator"
+                                : language === "fi"
+                                    ? "Organisaatio"
+                                    : "Organization"}
+                        </Text>
                         <Text>
                             {selectedOrganization?.id === "other"
                                 ? organizationName || "-"
@@ -201,6 +207,28 @@ export const ResultsDocument = ({
                                     : "-"}
                         </Text>
                     </View>
+
+
+                    {consortium === "option2" && selectedOrganizations.length > 0 && (
+                        <View wrap={false} style={{ marginTop: 8 }}>
+                            <View style={PDFstyles.summaryListP}>
+                                <Text style={PDFstyles.bold}>
+                                    {language === "fi"
+                                        ? "Muut yhteistyökumppanit"
+                                        : "Other collaborators"}
+                                </Text>
+                                <View style={PDFstyles.summaryListUl}>
+                                    {selectedOrganizations.map((organization) => (
+                                        <View key={organization.id}>
+                                            <Text>
+                                                {organization.name[language]}
+                                            </Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            </View>
+                        </View>
+                    )}
                 </View>
 
                 <View wrap={false} style={PDFstyles.summaryListLi}>

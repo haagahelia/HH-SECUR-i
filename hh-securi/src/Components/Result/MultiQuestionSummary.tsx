@@ -24,7 +24,7 @@ export const MultiQuestionSummary = ({
       <Typography fontWeight="bold">{question?.[language]}</Typography>
 
       {selectedAnswers && selectedAnswers.length > 0 ? (
-        <List sx={{padding: "0px"}}>
+        <List dense disablePadding>
           {selectedAnswers?.map((answer) => (
             <ListItem key={answer.code}>{answer[language]}</ListItem>
           ))}

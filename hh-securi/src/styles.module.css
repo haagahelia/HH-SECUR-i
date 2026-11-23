@@ -77,15 +77,13 @@
 }
 
 .resultsSummary {
-    div {
-        border-left-width: 1px;
-        border-left-style: solid;
-        margin-top: 10px;
-        margin-left: 10px;
-        margin-bottom: 20px;
-        padding-left: 20px;
-        text-align: left;
-    }
+    border-left-width: 1px;
+    border-left-style: solid;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    padding-left: 20px;
+    text-align: left;
 }
 
 .summaryList {
@@ -93,11 +91,6 @@
 
     li::marker {
         content: "";
-    }
-
-    p {
-        margin: 0;
-        padding: 0;
     }
 
     li {
