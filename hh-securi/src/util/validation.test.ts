@@ -12,7 +12,6 @@ const validValues: CooperationRiskFormValues = {
   selectedOrganizations: ["1", "2"],
   organizationIsOther: false,
   organizationName: "",
-  otherOrganizationCountry: "",
   hhRole: "researcher",
   hhRoleOther: "",
   consortium: "yes",

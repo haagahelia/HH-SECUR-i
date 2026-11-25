@@ -117,13 +117,24 @@ const ResultsPage = () => {
         collaborationtype: cooperationType,
         country: selectedCountry?.id ?? "",
         organization: consortium === "option2"
-            ? [
-                Number(selectedOrganization!.id),
-                ...selectedOrganizations.map((organization) =>
-                    Number(organization.id)
-                ),
-            ]
+        ? [
+            ...(selectedOrganization?.countryId === "OTH"
+                ? []
+                : [Number(selectedOrganization!.id)]),
+            ...selectedOrganizations.map((organization) =>
+                Number(organization.id)
+            ),
+        ]
+        : selectedOrganization?.countryId === "OTH"
+            ? []
             : Number(selectedOrganization!.id),
+
+        neworganization: selectedOrganization?.countryId === "OTH"
+        ? [{
+            name: organizationName.trim(),
+            countrycode: selectedCountry?.id ?? "",
+        }]
+        : undefined,
         organizationtype: organizationType,
         history: history,
         contract: contractStatus,

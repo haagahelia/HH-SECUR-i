@@ -38,14 +38,35 @@ type CooperationRiskFormProps = {
 
 const OTHER_ORGANIZATION_COUNTRY_ID = "OTH";
 
-const organizationFilter = createFilterOptions<Organization>({
-    stringify: (organization) =>
-        `${organization.name.fi} ${organization.name.en}`,
-    ignoreCase: true,
-    ignoreAccents: true,
-    matchFrom: "any",
-    limit: 100,
+const baseOrganizationFilter = createFilterOptions<Organization>({
+  stringify: (organization) =>
+    `${organization.name.fi} ${organization.name.en}`,
+  ignoreCase: true,
+  ignoreAccents: true,
+  matchFrom: "any",
+  limit: 100,
 });
+
+const organizationFilter = (
+  options: Organization[],
+  state: Parameters<typeof baseOrganizationFilter>[1],
+) => {
+  const otherOption = options.find(
+    (organization) =>
+      organization.countryId === OTHER_ORGANIZATION_COUNTRY_ID,
+  );
+
+  const regularOptions = options.filter(
+    (organization) =>
+      organization.countryId !== OTHER_ORGANIZATION_COUNTRY_ID,
+  );
+
+  const filteredOptions = baseOrganizationFilter(regularOptions, state);
+
+  return otherOption
+    ? [...filteredOptions, otherOption]
+    : filteredOptions;
+};
 
 const CooperationRiskForm = ({ language }: CooperationRiskFormProps) => {
   const { token } = useCurrentUser();
@@ -166,6 +187,11 @@ const sortedOrganizations = sortElements(
     language
 );
 
+  // Keep "Other" as the final option, including when the search has no matches.
+  const organizationsWithOther = selectedCountry && otherOrganization
+    ? [...sortedOrganizations, otherOrganization]
+    : sortedOrganizations;
+
   const filteredAdditionalOrganizations = additionalCountry
     ? organizations.filter(
         (organization) =>
@@ -200,7 +226,6 @@ const sortedOrganizations = sortElements(
         : [],
     organizationIsOther:
       selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID,
-    otherOrganizationCountry: otherOrganizationCountry?.id ?? "",
     organizationName,
     hhRole,
     hhRoleOther,
@@ -372,7 +397,7 @@ const sortedOrganizations = sortElements(
 
           {/* Pääyhteistyökumppani */}
           <Autocomplete<Organization, false, false, false>
-            options={sortedOrganizations}
+            options={organizationsWithOther}
             filterOptions={organizationFilter}
             value={selectedOrganization}
             onChange={(_event, newValue) => {
@@ -405,10 +430,16 @@ const sortedOrganizations = sortElements(
             )}
           />
 
+          <div style={{ marginTop: "8px", fontSize: "0.875rem", color: "#666" }}>
+                {language === "fi"
+                  ? "Huom! Valitse 'Muu' listan lopusta, jos organisaatiota ei löydy."
+                  : "Note! Select 'Other' from the end of the list if the organization is not listed above."}
+          </div>
+
           {selectedOrganization?.countryId === OTHER_ORGANIZATION_COUNTRY_ID && (
             <>
               <TextField
-                label={language === "fi" ? "Muun organisaation nimi" : "Other organization name"}
+                label={language === "fi" ? "Lisää organisaation nimi" : "Add organization name"}
                 fullWidth
                 size="small"
                 margin="normal"
@@ -417,17 +448,6 @@ const sortedOrganizations = sortElements(
                 slotProps={{ htmlInput: { maxLength: 100 } }}
                 error={Boolean(fieldErrors.organizationName)}
                 helperText={fieldErrors.organizationName}
-              />
-              {renderFieldError("otherOrganizationCountry")}
-              <SingleSelect
-                question={{ fi: "Muun organisaation sijaintimaa", en: "Other organization's country" }}
-                answers={sortedCountries}
-                placeholder={{ fi: "Valitse sijaintimaa", en: "Select country" }}
-                language={language}
-                value={otherOrganizationCountry?.id ?? ""}
-                onChange={(value) => setOtherOrganizationCountry(
-                  countries.find((country) => country.id === value) ?? null
-                )}
               />
             </>
           )}

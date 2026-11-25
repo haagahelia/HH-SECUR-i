@@ -10,6 +10,7 @@ export type RiskCalculationRequest = {
     collaborationtype: string[];
     country: string;
     organization: number | number[];
+    neworganization?: NewOrganization[];
     organizationtype: string;
     history: string;
     contract: string;
@@ -261,6 +262,12 @@ export type Country = {
         en: string
     }
 }
+
+export type NewOrganization = {
+    name: string
+    countrycode: string;
+}
+        
 
 export type CountryRaw = {
     id: string

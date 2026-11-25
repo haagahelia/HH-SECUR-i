@@ -6,7 +6,6 @@ export type ValidationField =
   | "ownerusername"
   | "selectedCountry"
   | "selectedOrganization"
-  | "otherOrganizationCountry"
   | "organizationName"
   | "hhRole"
   | "hhRoleOther"
@@ -38,7 +37,6 @@ export type CooperationRiskFormValues = {
   selectedOrganizations: string[];
   organizationIsOther: boolean;
   organizationName?: string;
-  otherOrganizationCountry: string;
   hhRole: string;
   hhRoleOther: string;
   consortium: string;
@@ -117,7 +115,6 @@ export const validateCooperationRiskForm = (
         | "cooperationType"
         | "projectDescription"
         | "selectedOrganization"
-        | "otherOrganizationCountry"
         | "organizationName"
       >,
       string
@@ -168,14 +165,6 @@ export const validateCooperationRiskForm = (
           language === "fi"
             ? "Anna muun organisaation nimi"
             : "Please specify the other organization's name",
-        );
-      }
-
-      if (!toString(values.otherOrganizationCountry).trim()) {
-        errors.otherOrganizationCountry = requiredMessage(
-          language === "fi"
-            ? "Valitse muun organisaation sijaintimaa"
-            : "Select the other organization's country",
         );
       }
     }
