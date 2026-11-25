@@ -76,6 +76,8 @@ const MyAssessmentsPage = () => {
         selectedLanguage,
         setSelectedCountry,
         setSelectedOrganization,
+        selectedOrganizations,
+        setSelectedOrganizations,
         setOrganizationName,
         setSelectedProjectOwner,
         setProjectName,
@@ -149,6 +151,22 @@ const MyAssessmentsPage = () => {
                 (organization) => organization.country_code === "OTH",
             )
             : undefined);
+            const selectedOrgs = organizations.filter(
+            (organization) =>
+            choices.organization.includes(organization.id) &&
+            organization.id !== Number(organizationId),
+            );
+            setSelectedOrganizations(
+    selectedOrgs.map((organization) => ({
+        id: String(organization.id),
+        name: {
+            fi: organization.fi,
+            en: organization.en,
+        },
+        countryId: organization.country_code,
+        manuallyAdded: false,
+    })),
+);
 
         setSelectedCountry({
             id: reportDetails.country.code,
