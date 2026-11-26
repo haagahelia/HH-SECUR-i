@@ -1,4 +1,11 @@
+
 import { test, expect } from '@playwright/test';
+
+const passwordFromEnv = process.env.TEST_PASSWORD;
+
+if (!passwordFromEnv) {
+  throw new Error('TEST_PASSWORD puuttuu .env-tiedostosta');
+}
 
 test('login page displays username and password fields', async ({ page }) => {
   await page.goto('https://hh-riski-main-hh-secur-i-frontend.2.rahtiapp.fi/');
@@ -32,14 +39,12 @@ test('user can enter username and password', async ({ page }) => {
   ).toHaveValue('testpasword');
 });
 
-
 test('user can log in', async ({ page }) => {
   await page.goto(
     'https://hh-riski-main-hh-secur-i-frontend.2.rahtiapp.fi/'
   );
 
   await page.getByRole('textbox', { name: 'Käyttäjänimi' }).fill('username');
-
   await page.getByRole('textbox', { name: 'Salasana' }).fill('password');
 
   await expect(
@@ -52,12 +57,10 @@ test('user can log in', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Kirjaudu' }).click();
 
-  
   await expect(page).not.toHaveURL(
     'https://hh-riski-main-hh-secur-i-frontend.2.rahtiapp.fi/'
   );
 });
-
 
 test('successful login displays user page', async ({ page }) => {
   await page.goto(
@@ -66,7 +69,7 @@ test('successful login displays user page', async ({ page }) => {
 
   await page.getByRole('textbox', { name: 'Käyttäjänimi' }).fill('pekka13');
 
-  await page.getByRole('textbox', { name: 'Salasana' }).fill('Aamukahv!');
+  await page.getByRole('textbox', { name: 'Salasana' }).fill(passwordFromEnv);
 
   await page.getByRole('button', { name: 'Kirjaudu' }).click();
 
@@ -84,7 +87,6 @@ test('successful login displays user page', async ({ page }) => {
       .getByRole('button', { name: 'Kirjaudu ulos' })
   ).toBeVisible();
 });
-
 
 test('user can show and hide password', async ({ page }) => {
   await page.goto(
@@ -104,7 +106,6 @@ test('user can show and hide password', async ({ page }) => {
   await expect(password).toHaveAttribute('type', 'password');
 });
 
-
 test('user cannot submit empty login form', async ({ page }) => {
   await page.goto(
     'https://hh-riski-main-hh-secur-i-frontend.2.rahtiapp.fi/'
@@ -118,8 +119,6 @@ test('user cannot submit empty login form', async ({ page }) => {
   await expect(username).toHaveAttribute('required', '');
   await expect(password).toHaveAttribute('required', '');
 });
-
-
 
 test('invalid login shows error message', async ({ page }) => {
   await page.goto(
@@ -135,8 +134,6 @@ test('invalid login shows error message', async ({ page }) => {
     page.getByText('Virheellinen käyttäjänimi tai salasana.')
   ).toBeVisible();
 });
-
-
 
 test('user can change the language', async ({ page }) => {
   await page.goto(
